@@ -1,0 +1,81 @@
+<resources>
+    <string name="app_name">Wazaby</string>
+    <string name="about">À propos</string>
+    <string name="email">E-mail</string>
+    <string name="password">Mot de passe</string>
+    <string name="connexion">Connexion</string>
+    <string name="inscript">S\'Inscrire</string>
+    <string name="passforget">Mot de Passe oublié?</string>
+    <string name="internet">Mauvaise connexion internet</string>
+    <string name="send">Envoyer</string>
+    <string name="email_error">Entrer un email valide</string>
+    <string name="password_error1">Mauvais mot de passe</string>
+    <string name="password_error2">Le mot de passe doit faire au moins 8 caractères</string>
+    <!--Les nouveaux names-->
+    <string name="inscript_sexe">Veuillez selectionner votre sexe</string>
+    <string name="inscript1_1">Inscription 1/3</string>
+    <string name="inscript1_2">Inscription 2/3</string>
+    <string name="inscript1_3">Inscription 3/3</string>
+    <string name="inscript_prenom">Votre Prenom</string>
+    <string name="inscript_nom">Votre Nom</string>
+    <string name="inscript_naissance">Date de naissance</string>
+    <string name="inscript_next">SUIVANT</string>
+    <string name="inscript_email">Votre e-mail</string>
+    <string name="inscript_password">Mot de passe</string>
+    <string name="inscript_confirm_password">Mot de passe (Confirmation)</string>
+    <string name="password_error3">Le mot de passe de confirmation doit etre identique au mot de passe</string>
+    <string name="password_error4">Le mot de passe ne doit pas etre vide</string>
+    <string name="nom_error">Le nom doit etre non vide</string>
+    <string name="prenom_error">Le prenom doit etre non vide</string>
+    <string name="inscript_upload">UPLOADER</string>
+    <string name="inscript_uploading">Photo de Profil</string>
+    <string name="inscript_finish">TERMINER</string>
+    <string name="title_prob">Problématique</string>
+    <string name="title_accueil">Accueil</string>
+
+    <string name="profil">Profil</string>
+    <string name="param">Paramètres</string>
+    <string name="help">Aide</string>
+    <string name="deco">Déconnexion</string>
+
+
+    <string-array name="nav_drawer_labels">
+        <item>Accueil</item>
+        <item>Problématique</item>
+    </string-array>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
+
+    <!--Les erreurs de réseaux-->
+    <string name="error_volley_error">Une erreur viens de survenir</string>
+    <string name="error_volley_servererror">Une erreur au niveau du serveur viens de survenir</string>
+    <string name="error_volley_noconnectionerror">Problème de connexion, veuillez revoir votre connexion</string>
+    <string name="error_volley_timeouterror">Votre delai d\'attente à exepirer, veuillez revoir votre connexion</string>
+    <string name="try_again">Réessayer</string>
+
+
+    <string name="convertpublic_inters">Interventions</string>
+    <string name="convertpublic_inter">Interventions</string>
+    <string name="commentaire">Commentaire</string>
+    <string name="commentaires">Commentaires</string>
+
+    <string name="chargement">En cours de chargement...</string>
+    <string name="comment_share">Votre commentaire à été publier avec succès</string>
+
+    <string name="hint1">Rechercher une catégorie de problématique</string>
+    <string name="hint">Rechercher une problématique</string>
+    <string name="ajouter">Ajouter Problématique</string>
+
+    <string name="prob">Problematique</string>
+
+    <string name="code_de_validation">Veuillez inserer le code recu par mail dans le champ code validation</string>
+    <string name="code_de_libelle">Code validation</string>
+
+    <string name="title_add_message">Ajouter un commentaire</string>
+    <string name="add_comment">Ajouter</string>
+    <string name="cancel_comment">Annuler</string>
+    <string name="your_comment">Votre Commentaire</string>
+
+
+</resources>

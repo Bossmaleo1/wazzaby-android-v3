@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#64B5F6</color>
+    <color name="colorPrimaryDark">#1565C0</color>
+    <color name="colorAccent">#42A5F5</color>
+    <color name="primarygray">#E0E0E0</color>
+    <color name="primarygraydark">#9E9E9E</color>
+    <color name="graycolor">#E0E0E0</color>
+    <color name="colorError">#D50000</color>
+    <color name="greencolor">#4CAF50</color>
+    <color name="placeholder_bg">#dddddd</color>
+    <color name="item_name">#0c0c0c</color>
+    <color name="description">#1a1a1a</color>
+    <color name="chef">#777</color>
+    <color name="timestamp">#777</color>
+</resources>
