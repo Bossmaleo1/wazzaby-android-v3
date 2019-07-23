@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:fresco="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbarlayout"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:expandedTitleGravity="bottom"
+                android:textSize="2dp"
+                app:contentScrim="?attr/colorPrimary"
+                app:expandedTitleMarginStart="4dp"
+                app:expandedTitleMarginEnd="0dp"
+                app:layout_scrollFlags="enterAlwaysCollapsed">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/my_image_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    fresco:progressBarImage="@drawable/progress_bar"
+                    fresco:progressBarImageScaleType="centerInside"
+                    fresco:progressBarAutoRotateInterval="1000"
+                    fresco:placeholderImage="@drawable/my_drawable"
+                    />
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@android:color/transparent"
+                    app:layout_collapseMode="pin"
+                    />
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <RelativeLayout
+            android:layout_below="@+id/appbarlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/graycolor"
+            android:padding="10dp"
+            >
+
+
+            <RelativeLayout
+                android:id="@+id/name_block"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/background_menu_message_public"
+                >
+
+                <LinearLayout
+                    android:id="@+id/block_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    >
+
+                    <ImageView
+                        android:id="@+id/edit_name_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_account_circle_black_24"
+                        android:tint="@color/colorPrimary"
+                        android:tintMode="@color/colorPrimary"
+                        android:layout_gravity="center"
+                        />
+
+                    <TextView
+                        android:id="@+id/edit_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="Piece d'Identite Verifiee"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_gravity="center"
+                        />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/edit_name_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_mode_edit_black_24dp"
+                    android:tint="@color/colorPrimary"
+                    android:layout_marginRight="20dp"
+                    android:tintMode="@color/colorPrimary"
+                    android:layout_centerInParent="true"
+                    android:layout_alignParentRight="true"
+                    />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/problematique_block"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/name_block"
+                android:layout_gravity="center"
+                android:background="@drawable/background_menu_message_public"
+                >
+
+                <LinearLayout
+                    android:id="@+id/block_problematique_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    >
+
+                    <ImageView
+                        android:id="@+id/edit_problematique_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_subject_black_24dp"
+                        android:tint="@color/colorPrimary"
+                        android:tintMode="@color/colorPrimary"
+                        android:layout_gravity="center"
+                        />
+
+                    <TextView
+                        android:id="@+id/edit_problematique"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Piece d'Identite Verifiee"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/edit_problematique_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_mode_edit_black_24dp"
+                    android:tint="@color/colorPrimary"
+                    android:layout_marginRight="20dp"
+                    android:tintMode="@color/colorPrimary"
+                    android:layout_centerInParent="true"
+                    android:layout_alignParentRight="true"
+                    />
+            </RelativeLayout>
+
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,10 +1,91 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/white">
 
 
+    <RelativeLayout
+        android:id="@+id/nav_header_container"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimary">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/ic_profile"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_profile_colorier"
+            fresco:roundedCornerRadius="40dp"
+            android:layout_centerInParent="true"
+            />
+
+        <TextView
+            android:id="@+id/welcome_msg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            style="@style/Base.TextAppearance.AppCompat.Headline"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:layout_below="@+id/ic_profile"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/mySwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nav_header_container"
+        >
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            app:useMaterialThemeColors="false"
+            android:checked="false"
+            android:id="@+id/compatSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/view"
+        android:layout_below="@+id/mySwitch"
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_marginLeft="4dip"
+        android:layout_marginRight="4dip"
+        android:background="?android:attr/dividerHorizontal"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/drawerList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view"
+        android:layout_gravity="center"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:scrollbars="vertical"
+        />
+
+    <View
+        android:id="@+id/viewbis"
+        android:layout_below="@+id/drawerList"
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_marginLeft="4dip"
+        android:layout_marginRight="4dip"
+        android:background="?android:attr/dividerHorizontal"
+        />
 
 
 
