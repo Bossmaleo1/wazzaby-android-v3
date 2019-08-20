@@ -1,18 +1,16 @@
-package com.wazzaby.android.wazzaby.fragments;
+package com.wazzaby.android.wazzaby.appviews;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.view.GestureDetector;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,11 +30,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.wazzaby.android.wazzaby.R;
 import com.wazzaby.android.wazzaby.adapter.ConversationspublicAdapter;
-import com.wazzaby.android.wazzaby.appviews.Sharepublicconversation;
 import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
@@ -51,134 +47,78 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Conversationspublic extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class Historique extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
 
-    public static RecyclerView recyclerView;
-    private ConversationspublicAdapter allUsersAdapter;
-    private FloatingActionButton fab;
+    private Toolbar toolbar;
     private CoordinatorLayout coordinatorLayout;
+    private Resources res;
     //private ProgressBar progressBar;
     private JSONObject object;
     private Snackbar snackbar;
-    private Resources res;
     private Context context;
     private DatabaseHandler database;
     private SessionManager session;
     private List<ConversationPublicItem> data = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
     private ShimmerFrameLayout mShimmerViewContainer;
-
-    public Conversationspublic() {
-        // Required empty public constructor
-    }
+    public static RecyclerView recyclerView;
+    private ConversationspublicAdapter allUsersAdapter;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View bossmaleo = inflater.inflate(R.layout.conversationspublic, container, false);
-        fab = bossmaleo.findViewById(R.id.fab);
-        context = getActivity();
+        setContentView(R.layout.historique);
+        coordinatorLayout = findViewById(R.id.coordinatorLayout);
         res = getResources();
-        session = new SessionManager(getActivity());
-        database = new DatabaseHandler(getActivity());
-        mShimmerViewContainer = bossmaleo.findViewById(R.id.shimmer_view_container);
+        toolbar =  findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(res.getString(R.string.history));
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        context = this;
+        res = getResources();
+        session = new SessionManager(this);
+        database = new DatabaseHandler(this);
+        mShimmerViewContainer = findViewById(R.id.shimmer_view_container);
         //progressBar = (ProgressBar) bossmaleo.findViewById(R.id.progressbar);
-        coordinatorLayout =  bossmaleo.findViewById(R.id.coordinatorLayout);
-        recyclerView = bossmaleo.findViewById(R.id.my_recycler_view);
-        swipeRefreshLayout =  bossmaleo.findViewById(R.id.swipe_refresh_layout);
+        coordinatorLayout =  findViewById(R.id.coordinatorLayout);
+        recyclerView = findViewById(R.id.my_recycler_view);
+        swipeRefreshLayout =  findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        allUsersAdapter = new ConversationspublicAdapter(getActivity(),data);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        allUsersAdapter = new ConversationspublicAdapter(this,data);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(allUsersAdapter);
-        ConnexionProblematique();
-
-        recyclerView.addOnItemTouchListener(new Conversationspublic.RecyclerTouchListener(getActivity(), recyclerView, new Conversationspublic.ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
-        }));
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), Sharepublicconversation.class);
-                startActivity(intent);
-            }
-        });
-
-        return bossmaleo;
+        ConnexionHistorique();
     }
 
-    public static interface ClickListener {
-        public void onClick(View view, int position);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent i = new Intent();
+                setResult(RESULT_OK, i);
+                finish();
+                return true;
 
-        public void onLongClick(View view, int position);
+
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 
-    static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
-
-        private GestureDetector gestureDetector;
-        private Conversationspublic.ClickListener clickListener;
-
-        public RecyclerTouchListener(Context context, final RecyclerView recyclerView, final Conversationspublic.ClickListener clickListener) {
-            this.clickListener = clickListener;
-            gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-                @Override
-                public boolean onSingleTapUp(MotionEvent e) {
-                    return true;
-                }
-
-                @Override
-                public void onLongPress(MotionEvent e) {
-                    View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
-                    if (child != null && clickListener != null) {
-                        clickListener.onLongClick(child, recyclerView.getChildPosition(child));
-                    }
-                }
-            });
-        }
-
-        @Override
-        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-
-            View child = rv.findChildViewUnder(e.getX(), e.getY());
-            if (child != null && clickListener != null && gestureDetector.onTouchEvent(e)) {
-                clickListener.onClick(child, rv.getChildPosition(child));
-            }
-            return false;
-        }
-
-        @Override
-        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-        }
-
-        @Override
-        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-        }
-
-
-    }
-
-
-    private void ConnexionProblematique()
+    private void ConnexionHistorique()
     {
         //progressBar.setVisibility(View.VISIBLE);
         //TestProgressBar();
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, Const.dns+"/WazzabyApi/public/api/displayPublicMessage?id_problematique="+String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB()),
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, Const.dns+"/WazzabyApi/public/api/HistoriqueMessagePublic?id_problematique="+String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB())
+                +"&id_user="+String.valueOf(session.getUserDetail().get(SessionManager.Key_ID)),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -232,7 +172,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            ConnexionProblematique();
+                                            ConnexionHistorique();
                                         }
                                     });
 
@@ -245,7 +185,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            ConnexionProblematique();
+                                            ConnexionHistorique();
                                         }
                                     });
 
@@ -258,7 +198,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            ConnexionProblematique();
+                                            ConnexionHistorique();
                                         }
                                     });
 
@@ -271,7 +211,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            ConnexionProblematique();
+                                            ConnexionHistorique();
                                         }
                                     });
 
@@ -284,7 +224,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            ConnexionProblematique();
+                                            ConnexionHistorique();
                                         }
                                     });
 
@@ -297,7 +237,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            ConnexionProblematique();
+                                            ConnexionHistorique();
                                         }
                                     });
                             snackbar.show();
@@ -309,7 +249,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            ConnexionProblematique();
+                                            ConnexionHistorique();
                                         }
                                     });
 
@@ -328,30 +268,23 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
 
         };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
 
-    public interface FragmentDrawerListener {
-        void onDrawerItemSelected(View view, int position);
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override
     public void onRefresh() {
-        Toast.makeText(getContext(),"Le machin vient de subir un refresh scarla!!!", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),"Le machin vient de subir un refresh scarla!!!", Toast.LENGTH_LONG).show();
         swipeRefreshLayout.setRefreshing(false);
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mShimmerViewContainer.startShimmer();
-    }
-
-    @Override
-    public void onPause() {
-        mShimmerViewContainer.stopShimmer();
-        super.onPause();
-    }
-
 }

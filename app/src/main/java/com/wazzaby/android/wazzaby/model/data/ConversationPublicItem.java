@@ -19,9 +19,20 @@ public class ConversationPublicItem {
     private Context context;
     private String etat_photo_status;
     private String status_photo;
+    private int anonymous;
+    private boolean visibility;
+    private int countjaime;
+    private int countjaimepas;
+    private int id_recepteur;
+    private int checkmention;
+    private int id_checkmention;
+    private int id_photo;
+
 
     public ConversationPublicItem(Context context,int ID_EME,int ID,String Contenu,String nameMembreProb,String datetime,String commentnumber
-            ,String ImageID,int IconComment,String etat_photo_status,String status_photo)
+            ,String ImageID,int IconComment,String etat_photo_status,String status_photo
+            ,int anonymous,boolean visibility,int countjaime,int countjaimepas,int id_recepteur,int checkmention
+            ,int id_checkmention,int id_photo)
     {
         this.Contenu = Contenu;
         this.nameMembreProb = nameMembreProb;
@@ -34,6 +45,14 @@ public class ConversationPublicItem {
         this.context = context;
         this.etat_photo_status = etat_photo_status;
         this.status_photo = status_photo;
+        this.anonymous = anonymous;
+        this.visibility = visibility;
+        this.countjaime = countjaime;
+        this.countjaimepas = countjaimepas;
+        this.id_recepteur = id_recepteur;
+        this.checkmention = checkmention;
+        this.id_checkmention = id_checkmention;
+        this.id_photo = id_photo;
     }
 
     public Context getContext1() {
@@ -123,5 +142,77 @@ public class ConversationPublicItem {
 
     public void setStatus_photo(String status_photo) {
         this.status_photo = status_photo;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public int getAnonymous() {
+        return anonymous;
+    }
+
+    public int getCountjaime() {
+        return countjaime;
+    }
+
+    public int getCountjaimepas() {
+        return countjaimepas;
+    }
+
+    public int getId_checkmention() {
+        return id_checkmention;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    public int getId_photo() {
+        return id_photo;
+    }
+
+    public boolean isVisibility() {
+        return visibility;
+    }
+
+    public int getId_recepteur() {
+        return id_recepteur;
+    }
+
+    public int getCheckmention() {
+        return checkmention;
+    }
+
+    public void setAnonymous(int anonymous) {
+        this.anonymous = anonymous;
+    }
+
+    public void setCheckmention(int checkmention) {
+        this.checkmention = checkmention;
+    }
+
+    public void setCountjaime(int countjaime) {
+        this.countjaime = countjaime;
+    }
+
+    public void setCountjaimepas(int countjaimepas) {
+        this.countjaimepas = countjaimepas;
+    }
+
+    public void setId_checkmention(int id_checkmention) {
+        this.id_checkmention = id_checkmention;
+    }
+
+    public void setId_photo(int id_photo) {
+        this.id_photo = id_photo;
+    }
+
+    public void setId_recepteur(int id_recepteur) {
+        this.id_recepteur = id_recepteur;
+    }
+
+    public void setVisibility(boolean visibility) {
+        this.visibility = visibility;
     }
 }

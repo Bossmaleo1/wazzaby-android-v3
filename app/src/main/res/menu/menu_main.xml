@@ -7,6 +7,10 @@
         android:title="@string/profil" />
 
     <item
+        android:id="@+id/history"
+        android:title="@string/history" />
+
+    <item
         android:id="@+id/param"
         android:title="@string/param" />
 

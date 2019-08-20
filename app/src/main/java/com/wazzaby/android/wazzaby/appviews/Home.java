@@ -131,6 +131,10 @@ public class Home extends AppCompatActivity implements FragmentDrawer.FragmentDr
                 Intent i2 = new Intent(getApplicationContext(), ProfilUser.class);
                 startActivity(i2);
                 return true;
+            case R.id.history:
+                Intent i3 = new Intent(getApplicationContext(),Historique.class);
+                startActivity(i3);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

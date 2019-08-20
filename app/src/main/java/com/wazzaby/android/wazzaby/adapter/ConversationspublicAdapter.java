@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.PopupMenu;
-import androidx.emoji.widget.EmojiTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -59,7 +58,7 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
         final ConversationPublicItem current = data.get(position);
         holder.title.setText(current.getNameMembreProb());
         holder.title1.setText(current.getDatetime());
-        holder.contenu.setText(current.getContenu());//current.getContenu()
+        holder.contenu.setText(current.getContenu());
         holder.commentnumber.setText(current.getCommentnumber());
         if(!current.getImageID().equals("null")) {
             Uri uri = Uri.parse(Const.dns+"/uploads/photo_de_profil/" + current.getImageID());
@@ -75,9 +74,6 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
                 Intent intent = new Intent(context, AfficheCommentairePublic.class);
                 intent.putExtra("nom",current.getID());
                 context.startActivity(intent);
-                //context.startActivities(intent);
-                //startActivity(intent);
-                //Toast.makeText(context,"Voici l'ID de ce comment : "+current.getID(),Toast.LENGTH_LONG).show();
             }
         });
 
@@ -107,18 +103,6 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
             holder.photo_du_poste_background.setImageResource(R.drawable.baseline_insert_photo_black_48);
             Uri uri = Uri.parse(current.getStatus_photo());
             holder.photo_du_poste_background.setImageURI(uri);
-            //le code xxl pour setter l'image dans le background de mon relativelayout
-            /*Glide.with(context).load(current.getStatus_photo()).asBitmap().into(new SimpleTarget<Bitmap>(200, 200) {
-                @Override
-                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                    Drawable drawable = new BitmapDrawable(context.getResources(), resource);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        holder.photo_du_poste.setMinimumWidth(1024);
-                        holder.photo_du_poste.setMinimumHeight(768);
-                        holder.photo_du_poste.setBackground(drawable);
-                    }
-                }
-            });*/
         }else if(current.getEtat_photo_status().equals("none")) {
             holder.photo_du_poste.setVisibility(View.GONE);
         }

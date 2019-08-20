@@ -77,6 +77,7 @@
     <string name="add_comment">Ajouter</string>
     <string name="cancel_comment">Annuler</string>
     <string name="your_comment">Votre Commentaire</string>
+    <string name="history">Historique</string>
 
 
 </resources>
