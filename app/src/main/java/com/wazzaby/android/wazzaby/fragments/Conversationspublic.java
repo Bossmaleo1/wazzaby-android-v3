@@ -32,6 +32,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.wazzaby.android.wazzaby.R;
@@ -41,6 +42,7 @@ import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
 import com.wazzaby.android.wazzaby.model.data.ConversationPublicItem;
+import com.wazzaby.android.wazzaby.model.data.Profil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,10 +56,9 @@ import java.util.Map;
 public class Conversationspublic extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     public static RecyclerView recyclerView;
-    private ConversationspublicAdapter allUsersAdapter;
+    public static ConversationspublicAdapter allUsersAdapter;
     private FloatingActionButton fab;
     private CoordinatorLayout coordinatorLayout;
-    //private ProgressBar progressBar;
     private JSONObject object;
     private Snackbar snackbar;
     private Resources res;
@@ -67,6 +68,9 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
     private List<ConversationPublicItem> data = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
     private ShimmerFrameLayout mShimmerViewContainer;
+    private MaterialCardView materialcardview;
+    private Profil user;
+    private static int anonymous;
 
     public Conversationspublic() {
         // Required empty public constructor
@@ -87,11 +91,13 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
         res = getResources();
         session = new SessionManager(getActivity());
         database = new DatabaseHandler(getActivity());
+        user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
         mShimmerViewContainer = bossmaleo.findViewById(R.id.shimmer_view_container);
         //progressBar = (ProgressBar) bossmaleo.findViewById(R.id.progressbar);
         coordinatorLayout =  bossmaleo.findViewById(R.id.coordinatorLayout);
         recyclerView = bossmaleo.findViewById(R.id.my_recycler_view);
         swipeRefreshLayout =  bossmaleo.findViewById(R.id.swipe_refresh_layout);
+        materialcardview = bossmaleo.findViewById(R.id.materialcardview);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -99,7 +105,17 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(allUsersAdapter);
-        ConnexionProblematique();
+        ConnexionConversationsPublic();
+
+        materialcardview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                materialcardview.setVisibility(View.GONE);
+                mShimmerViewContainer.startShimmer();
+                mShimmerViewContainer.setVisibility(View.VISIBLE);
+                ConnexionConversationsPublic();
+            }
+        });
 
         recyclerView.addOnItemTouchListener(new Conversationspublic.RecyclerTouchListener(getActivity(), recyclerView, new Conversationspublic.ClickListener() {
             @Override
@@ -174,10 +190,9 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
     }
 
 
-    private void ConnexionProblematique()
+    private void ConnexionConversationsPublic()
     {
-        //progressBar.setVisibility(View.VISIBLE);
-        //TestProgressBar();
+
         StringRequest stringRequest = new StringRequest(Request.Method.GET, Const.dns+"/WazzabyApi/public/api/displayPublicMessage?id_problematique="+String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB()),
                 new Response.Listener<String>() {
                     @Override
@@ -227,102 +242,30 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
 
                         if(error instanceof ServerError)
                         {
-                            snackbar = Snackbar
-                                    .make(coordinatorLayout, res.getString(R.string.error_volley_servererror), Snackbar.LENGTH_LONG)
-                                    .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            ConnexionProblematique();
-                                        }
-                                    });
-
-                            snackbar.show();
-                            //progressBar.setVisibility(View.GONE);
                         }else if(error instanceof NetworkError)
                         {
-                            snackbar = Snackbar
-                                    .make(coordinatorLayout, res.getString(R.string.error_volley_servererror), Snackbar.LENGTH_LONG)
-                                    .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            ConnexionProblematique();
-                                        }
-                                    });
-
-                            snackbar.show();
-                            //progressBar.setVisibility(View.GONE);
                         }else if(error instanceof AuthFailureError)
                         {
-                            snackbar = Snackbar
-                                    .make(coordinatorLayout, res.getString(R.string.error_volley_servererror), Snackbar.LENGTH_LONG)
-                                    .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            ConnexionProblematique();
-                                        }
-                                    });
-
-                            snackbar.show();
-                            //progressBar.setVisibility(View.GONE);
                         }else if(error instanceof ParseError)
                         {
-                            snackbar = Snackbar
-                                    .make(coordinatorLayout, res.getString(R.string.error_volley_servererror), Snackbar.LENGTH_LONG)
-                                    .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            ConnexionProblematique();
-                                        }
-                                    });
-
-                            snackbar.show();
-                            //progressBar.setVisibility(View.GONE);
                         }else if(error instanceof NoConnectionError)
                         {
-                            snackbar = Snackbar
-                                    .make(coordinatorLayout, res.getString(R.string.error_volley_noconnectionerror), Snackbar.LENGTH_LONG)
-                                    .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            ConnexionProblematique();
-                                        }
-                                    });
-
-                            snackbar.show();
-                            //progressBar.setVisibility(View.GONE);
                         }else if(error instanceof TimeoutError)
                         {
-                            snackbar = Snackbar
-                                    .make(coordinatorLayout, res.getString(R.string.error_volley_timeouterror), Snackbar.LENGTH_LONG)
-                                    .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            ConnexionProblematique();
-                                        }
-                                    });
-                            snackbar.show();
-                            //progressBar.setVisibility(View.GONE);
                         }else
                         {
-                            snackbar = Snackbar
-                                    .make(coordinatorLayout, res.getString(R.string.error_volley_error), Snackbar.LENGTH_LONG)
-                                    .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            ConnexionProblematique();
-                                        }
-                                    });
 
-                            snackbar.show();
-                            //progressBar.setVisibility(View.GONE);
                         }
+
+                        mShimmerViewContainer.stopShimmer();
+                        mShimmerViewContainer.setVisibility(View.GONE);
+                        materialcardview.setVisibility(View.VISIBLE);
+                        Toast.makeText(getActivity(),"Une erreur reseau vient de se produire veuillez reessayer !!",Toast.LENGTH_LONG).show();
                     }
                 }){
             @Override
             protected Map<String,String> getParams(){
                 Map<String,String> params = new HashMap<String, String>();
-                /*params.put("IDProb",String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB()));
-                params.put("web","0");*/
                 return params;
             }
 
@@ -352,6 +295,14 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
     public void onPause() {
         mShimmerViewContainer.stopShimmer();
         super.onPause();
+    }
+
+    public void ConnexionInsertNotification(int users_id, String libelle, int id_type,int id_recepteur,int anonymous)
+    {
+        String message = "Votre message public vient de faire reagir ".concat(user.getPRENOM()+" "+user.getNOM());
+        String url_notification = Const.dns.concat("/WazzabyApi/public/api/InsertNotification?users_id=").concat(String.valueOf(session.getUserDetail().get(SessionManager.Key_ID)))
+               .concat("&libelle=").concat(message).concat("&id_type=").concat(String.valueOf(id_type))
+                .concat("&etat=0").concat("&id_recepteur=").concat(String.valueOf(id_recepteur)).concat("&anonymous=").concat(String.valueOf(anonymous));
     }
 
 }

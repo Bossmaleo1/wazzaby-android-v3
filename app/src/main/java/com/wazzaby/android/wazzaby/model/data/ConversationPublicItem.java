@@ -55,9 +55,7 @@ public class ConversationPublicItem {
         this.id_photo = id_photo;
     }
 
-    public Context getContext1() {
-        return context;
-    }
+    public Context getContext1() { return context; }
 
     public void setContext1(Context context) {
         this.context = context;

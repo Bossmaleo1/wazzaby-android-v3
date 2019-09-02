@@ -52,7 +52,6 @@ public class Historique extends AppCompatActivity implements SwipeRefreshLayout.
     private Toolbar toolbar;
     private CoordinatorLayout coordinatorLayout;
     private Resources res;
-    //private ProgressBar progressBar;
     private JSONObject object;
     private Snackbar snackbar;
     private Context context;
@@ -76,7 +75,6 @@ public class Historique extends AppCompatActivity implements SwipeRefreshLayout.
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         context = this;
-        res = getResources();
         session = new SessionManager(this);
         database = new DatabaseHandler(this);
         mShimmerViewContainer = findViewById(R.id.shimmer_view_container);
@@ -115,14 +113,10 @@ public class Historique extends AppCompatActivity implements SwipeRefreshLayout.
 
     private void ConnexionHistorique()
     {
-        //progressBar.setVisibility(View.VISIBLE);
-        //TestProgressBar();
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, Const.dns+"/WazzabyApi/public/api/HistoriqueMessagePublic?id_problematique="+String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB())
-                +"&id_user="+String.valueOf(session.getUserDetail().get(SessionManager.Key_ID)),
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, Const.dns+"/WazzabyApi/public/api/HistoriqueMessagePublic?id_problematique="+String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB())+"&id_user="+String.valueOf(session.getUserDetail().get(SessionManager.Key_ID)),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
                         JSONArray reponse = null;
                         try {
                             reponse = new JSONArray(response);
@@ -130,7 +124,6 @@ public class Historique extends AppCompatActivity implements SwipeRefreshLayout.
                             {
                                 object = reponse.getJSONObject(i);
                                 String count = null;
-                                String status_photo = null;
                                 if(object.getString("countcomment").equals("0") || object.getString("countcomment").equals("1"))
                                 {
                                     count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
@@ -139,11 +132,12 @@ public class Historique extends AppCompatActivity implements SwipeRefreshLayout.
                                     count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
                                 }
 
+
                                 ConversationPublicItem conversationPublicItem = new ConversationPublicItem(context,object.getInt("user_id"),object.getInt("id")
                                         ,object.getString("status_text_content"),object.getString("name"),object.getString("updated")
                                         ,count,object.getString("user_photo"),R.drawable.baseline_add_comment_black_24
                                         ,object.getString("etat_photo_status"),object.getString("status_photo")
-                                        ,object.getInt("anonymous"),object.getBoolean("visibility"),object.getInt("countjaime"),object.getInt("countjaimepas")
+                                        ,0,object.getBoolean("visibility"),object.getInt("countjaime"),object.getInt("countjaimepas")
                                         ,object.getInt("id_recepteur"),object.getInt("checkmention"),object.getInt("id_checkmention"),object.getInt("id_photo"));
                                 data.add(conversationPublicItem);
                             }

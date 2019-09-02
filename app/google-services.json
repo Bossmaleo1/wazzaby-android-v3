@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "866565717537",
+    "firebase_url": "https://wazzaby-64a5a.firebaseio.com",
+    "project_id": "wazzaby-64a5a",
+    "storage_bucket": "wazzaby-64a5a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:866565717537:android:be1a55b5482b6445",
+        "android_client_info": {
+          "package_name": "com.wazzaby.android.wazzaby"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "866565717537-7rm5rq1ck6thun5v8bg8bv19lojncar2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqG6IO07YYu_URU-LOewO_JqvPHl0x4wU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "866565717537-7rm5rq1ck6thun5v8bg8bv19lojncar2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
