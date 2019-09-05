@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,7 +61,7 @@ public class Notifications extends Fragment {
     private List<NotificationItem> data = new ArrayList<>();
     private NotificationAdapter allUsersAdapter;
     private ProgressBar progressBar;
-    private MaterialCardView materialCardView;
+    private LinearLayout materialCardView;
     private RecyclerView recyclerView;
     private TextView error_message;
 
@@ -81,7 +82,7 @@ public class Notifications extends Fragment {
         progressBar = bossmaleo.findViewById(R.id.progressbar);
         materialCardView = bossmaleo.findViewById(R.id.materialcardview);
         recyclerView = bossmaleo.findViewById(R.id.my_recycler_view);
-        error_message = bossmaleo.findViewById(R.id.error_message);
+        error_message = bossmaleo.findViewById(R.id.text_error_message);
 
         database = new DatabaseHandler(getActivity());
         session = new SessionManager(getActivity());

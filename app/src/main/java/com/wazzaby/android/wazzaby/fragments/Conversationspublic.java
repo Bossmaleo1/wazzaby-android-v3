@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -68,7 +69,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
     private List<ConversationPublicItem> data = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
     private ShimmerFrameLayout mShimmerViewContainer;
-    private MaterialCardView materialcardview;
+    private LinearLayout materialcardview;
     private Profil user;
     private static int anonymous;
 
@@ -193,7 +194,9 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
     private void ConnexionConversationsPublic()
     {
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, Const.dns+"/WazzabyApi/public/api/displayPublicMessage?id_problematique="+String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB()),
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, Const.dns+"/WazzabyApi/public/api/displayPublicMessage?id_problematique="
+                +String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB())
+                +"&id_user="+String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID()),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -221,6 +224,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                                         ,object.getInt("anonymous"),object.getBoolean("visibility"),object.getInt("countjaime"),object.getInt("countjaimepas")
                                         ,object.getInt("id_recepteur"),object.getInt("checkmention"),object.getInt("id_checkmention"),object.getInt("id_photo"));
                                 data.add(conversationPublicItem);
+                                //Toast.makeText(getActivity(),String.valueOf(object.getInt("anonymous")),Toast.LENGTH_LONG).show();
                             }
 
 

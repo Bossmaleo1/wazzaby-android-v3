@@ -103,7 +103,7 @@ public class Accueil extends Fragment {
         session = new SessionManager(getActivity());
         res = getResources();
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+        /*mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String message = intent.getStringExtra("message");
@@ -129,7 +129,7 @@ public class Accueil extends Fragment {
                         Connexion();
                         //Toast.makeText(getActivity(),Keypush,Toast.LENGTH_LONG).show();
                     }
-                });
+                });*/
 
         ConnexionCountNotification();
 

@@ -46,6 +46,7 @@ import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
 import com.wazzaby.android.wazzaby.model.data.ConversationPublicItem;
+import com.wazzaby.android.wazzaby.model.data.Profil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,6 +72,8 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
     private Resources res;
     private Drawable iconjaime;
     private Drawable iconjaimepas;
+    private Profil user;
+
 
 
     public ConversationspublicAdapter(Context context,List<ConversationPublicItem> data)
@@ -81,6 +84,7 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
         this.data = data;
         this.session = new SessionManager(context);
         this.database = new DatabaseHandler(context);
+        user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
     }
 
     public void delete(int position)
@@ -109,26 +113,37 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
         iconjaime = res.getDrawable(R.drawable.baseline_thumb_up_alt_black_24);
         iconjaimepas = res.getDrawable(R.drawable.baseline_thumb_down_alt_black_24);
 
+
         //Gestion de la coloration
         if (current.getCheckmention() == 1){
             this.booljaime = true;
-            //holder.icon_jaime.setImageTintMode(res.getResourceName(R.color.colorPrimary));
             iconjaime.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
+            holder.icon_jaime.setImageDrawable(iconjaime);
+            holder.icon_jaimepas.setImageDrawable(iconjaimepas);
+            holder.nombre_de_jaime.setText(String.valueOf(current.getCountjaime()));
+            holder.nombre_de_jaimepas.setText(String.valueOf(current.getCountjaimepas()));
+            holder.nombre_de_jaime.setTextColor(Color.parseColor("#188dc8"));
+            holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#E0E0E0"));
         } else if (current.getCheckmention() == 2){
             this.booljaimepas = true;
             iconjaimepas.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
+            holder.icon_jaime.setImageDrawable(iconjaime);
+            holder.icon_jaimepas.setImageDrawable(iconjaimepas);
+            holder.nombre_de_jaime.setText(String.valueOf(current.getCountjaime()));
+            holder.nombre_de_jaimepas.setText(String.valueOf(current.getCountjaimepas()));
+            holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#188dc8"));
+            holder.nombre_de_jaime.setTextColor(Color.parseColor("#E0E0E0"));
         } else if (current.getCheckmention() == 0){
             this.booljaime = false;
             this.booljaimepas = false;
-            //iconjaimepas.mutate().setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_IN);
-            iconjaime.mutate().setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_IN);
+            iconjaime.mutate().setColorFilter(Color.parseColor("#9E9E9E"), PorterDuff.Mode.SRC_IN);
+            holder.icon_jaime.setImageDrawable(iconjaime);
+            holder.icon_jaimepas.setImageDrawable(iconjaimepas);
+            holder.nombre_de_jaime.setText(String.valueOf(current.getCountjaime()));
+            holder.nombre_de_jaimepas.setText(String.valueOf(current.getCountjaimepas()));
+            holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#E0E0E0"));
+            holder.nombre_de_jaime.setTextColor(Color.parseColor("#E0E0E0"));
         }
-
-
-
-
-        holder.icon_jaime.setImageDrawable(iconjaime);
-        holder.icon_jaimepas.setImageDrawable(iconjaimepas);
 
         holder.title.setText(current.getNameMembreProb());
         holder.title1.setText(current.getDatetime());
@@ -147,6 +162,8 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
             public void onClick(View v) {
                 Intent intent = new Intent(context, AfficheCommentairePublic.class);
                 intent.putExtra("nom",current.getID());
+                intent.putExtra("anonymous",current.getAnonymous());
+                intent.putExtra("id_recepteur",current.getId_recepteur());
                 context.startActivity(intent);
             }
         });
@@ -228,12 +245,115 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
         holder.icon_jaime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*int nombre_de_jaime = current.getCountjaime();
-                nombre_de_jaime++;
-                holder.nombre_de_jaime.setText(String.valueOf(nombre_de_jaime));*/
-                if (current.getCheckmention() == 1) {
-
+                int anonymous;
+                String message;
+                if (user.getETAT().equals('1')) {
+                    anonymous = 1;
+                }else {
+                    anonymous = 0;
                 }
+
+                message = "Votre message public vient de faire reagir "
+                        .concat(user.getPRENOM())
+                        .concat(" ")
+                        .concat(user.getNOM());
+                String url_notification = Const.dns.concat("/WazzabyApi/public/api/InsertNotification?users_id=")
+                        .concat(String.valueOf(user.getID()))
+                        .concat("&libelle=").concat(message)
+                        .concat("&id_type=").concat(String.valueOf(current.getID()))
+                        .concat("&etat=0").concat("&id_recepteur=").concat(String.valueOf(current.getId_recepteur()))
+                        .concat("&anonymous=").concat(String.valueOf(anonymous));
+
+                if(current.getCheckmention() == 1) {
+                    String url = Const.dns.concat("/WazzabyApi/public/api/MentionsUpdate?id_etat=0").concat("&id_mention=")
+                            .concat(String.valueOf(current.getId_checkmention()));
+                    Connexion_InsertNotification(url);
+                    booljaime = false;
+                    int jaime = current.getCountjaime();
+                    jaime--;
+                    holder.nombre_de_jaime.setText(String.valueOf(jaime));
+                    current.setCheckmention(0);
+                    holder.nombre_de_jaime.setTextColor(Color.parseColor("#E0E0E0"));
+                    iconjaime.mutate().setColorFilter(Color.parseColor("#E0E0E0"), PorterDuff.Mode.SRC_IN);
+                    holder.icon_jaime.setImageDrawable(iconjaime);
+                    iconjaime.mutate().setColorFilter(Color.parseColor("#E0E0E0"), PorterDuff.Mode.SRC_IN);
+                    iconjaimepas.mutate().setColorFilter(Color.parseColor("#E0E0E0"), PorterDuff.Mode.SRC_IN);
+                    holder.icon_jaime.setImageDrawable(iconjaime);
+                    holder.icon_jaimepas.setImageDrawable(iconjaimepas);
+                } else if (current.getCheckmention() == 0 && current.getId_checkmention() != 0) {
+                    String url = Const.dns.concat("/WazzabyApi/public/api/MentionsUpdate?id_etat=1")
+                            .concat("&id_mention=").concat(String.valueOf(current.getId_checkmention()));
+                    Connexion_InsertNotification(url);
+                    booljaime = true;
+                    booljaimepas = false;
+                    holder.nombre_de_jaime.setTextColor(Color.parseColor("#188dc8"));
+                    holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#E0E0E0"));
+                    iconjaime.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
+                    iconjaimepas.mutate().setColorFilter(Color.parseColor("#E0E0E0"), PorterDuff.Mode.SRC_IN);
+                    holder.icon_jaime.setImageDrawable(iconjaime);
+                    holder.icon_jaimepas.setImageDrawable(iconjaimepas);
+                    int jaime = current.getCountjaimepas();
+                    jaime++;
+                    current.setCountjaime(jaime);
+                    holder.nombre_de_jaime.setText(String.valueOf(jaime));
+                    current.setCheckmention(1);
+                    if(current.getId_recepteur() != user.getID()) {
+                        Connexion_InsertNotification(url_notification);
+                    }
+                } else if (current.getId_checkmention() == 0 && current.getCheckmention() == 0) {
+                    String url = Const.dns.concat("/WazzabyApi/public/api/Mentions?id_user=")
+                            .concat(String.valueOf(user.getID())).concat("&id_libelle=").concat(String.valueOf(current.getID()))
+                            .concat("&id_etat=1").concat("&mention=1");
+                    Connexion_InsertNotification(url);
+                    booljaime = true;
+                    booljaimepas = true;
+                    holder.nombre_de_jaime.setTextColor(Color.parseColor("#188dc8"));
+                    holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#188dc8"));
+                    iconjaime.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
+                    iconjaimepas.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
+                    holder.icon_jaime.setImageDrawable(iconjaime);
+                    holder.icon_jaimepas.setImageDrawable(iconjaimepas);
+
+                    int jaime = current.getCountjaime();
+                    jaime++;
+                    current.setCountjaime(jaime);
+                    holder.nombre_de_jaime.setText(String.valueOf(jaime));
+                    int jaimepas = current.getCountjaimepas();
+                    jaimepas--;
+                    current.setCountjaimepas(jaimepas);
+                    holder.nombre_de_jaimepas.setText(String.valueOf(jaimepas));
+                    current.setCheckmention(1);
+                    if (current.getId_recepteur() != user.getID()) {
+                        Connexion_InsertNotification(url_notification);
+                    }
+                }else if (current.getCheckmention() == 2) {
+                    String url = Const.dns.concat("/WazzabyApi/public/api/MentionsUpdate?id_etat=1")
+                            .concat("&id_mention=")
+                            .concat(String.valueOf(current.getId_checkmention()));
+                    Connexion_InsertNotification(url);
+                    booljaimepas = false;
+                    booljaime = true;
+
+                    holder.nombre_de_jaime.setTextColor(Color.parseColor("#188dc8"));
+                    holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#E0E0E0"));
+                    iconjaime.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
+                    iconjaimepas.mutate().setColorFilter(Color.parseColor("#E0E0E0"), PorterDuff.Mode.SRC_IN);
+                    holder.icon_jaime.setImageDrawable(iconjaime);
+                    holder.icon_jaimepas.setImageDrawable(iconjaimepas);
+                    int jaime = current.getCountjaime();
+                    jaime++;
+                    int jaimepas = current.getCountjaimepas();
+                    jaimepas++;
+                    current.setCountjaime(jaime);
+                    current.setCountjaimepas(jaimepas);
+                    holder.nombre_de_jaime.setText(String.valueOf(jaime));
+                    holder.nombre_de_jaimepas.setText(String.valueOf(jaimepas));
+                    current.setCheckmention(1);
+                    if (current.getId_recepteur() != user.getID()) {
+                        Connexion_InsertNotification(url_notification);
+                    }
+                }
+
             }
         });
 
@@ -241,9 +361,101 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
         holder.icon_jaimepas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*int nombre_de_jaimepas = current.getCountjaimepas();
-                nombre_de_jaimepas++;
-                holder.nombre_de_jaimepas.setText(String.valueOf(nombre_de_jaimepas));*/
+                String message =  "Votre message public vient de faire reagir "
+                        .concat(user.getPRENOM())
+                        .concat(" ")
+                        .concat(user.getNOM());
+                int anonymous;
+                if(user.getETAT().equals("1"))
+                {
+                    anonymous = 1;
+                } else {
+                    anonymous = 0;
+                }
+
+                String url_notification = Const.dns.concat("/WazzabyApi/public/api/InsertNotification?users_id=")
+                        .concat(String.valueOf(user.getID()))
+                        .concat("&libelle=").concat(message)
+                        .concat("&id_type=").concat(String.valueOf(current.getID()))
+                        .concat("&etat=0").concat("&id_recepteur=").concat(String.valueOf(current.getId_recepteur()))
+                        .concat("&anonymous=").concat(String.valueOf(anonymous));
+                if (current.getCheckmention() == 2){
+                    String url = Const.dns.concat("/WazzabyApi/public/api/MentionsUpdate?id_etat=0").concat("&id_mention=")
+                            .concat(String.valueOf(current.getId_checkmention()));
+                    Connexion_InsertNotification(url);
+                    booljaimepas = false;
+                    holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#E0E0E0"));
+                    int jaimepas = current.getCountjaimepas();
+                    jaimepas--;
+                    holder.nombre_de_jaimepas.setText(String.valueOf(jaimepas));
+                    current.setCheckmention(0);
+                    iconjaimepas.mutate().setColorFilter(Color.parseColor("#E0E0E0"), PorterDuff.Mode.SRC_IN);
+                    holder.icon_jaimepas.setImageDrawable(iconjaimepas);
+                }else if (current.getCheckmention() == 0 && current.getId_checkmention() != 0) {
+                    String url = Const.dns.concat("/WazzabyApi/public/api/MentionsUpdate?id_etat=2")
+                            .concat("&id_mention=").concat(String.valueOf(current.getId_checkmention()));
+                    Connexion_InsertNotification(url);
+                    booljaime = false;
+                    booljaimepas = true;
+                    int jaimepas = current.getCountjaimepas();
+                    jaimepas++;
+                    holder.nombre_de_jaimepas.setText(String.valueOf(jaimepas));
+                    current.setCheckmention(2);
+                    if(current.getId_recepteur() != user.getID()) {
+                        Connexion_InsertNotification(url_notification);
+                    }
+                    holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#188dc8"));
+                    holder.nombre_de_jaime.setTextColor(Color.parseColor("#E0E0E0"));
+                    iconjaime.mutate().setColorFilter(Color.parseColor("#E0E0E0"), PorterDuff.Mode.SRC_IN);
+                    iconjaimepas.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
+                    holder.icon_jaime.setImageDrawable(iconjaime);
+                    holder.icon_jaimepas.setImageDrawable(iconjaimepas);
+                }else if (current.getId_checkmention() == 0 && current.getCheckmention() == 0) {
+                    String url = Const.dns.concat("/WazzabyApi/public/api/Mentions?id_user=").concat(String.valueOf(user.getID()))
+                            .concat("&id_libelle=").concat(String.valueOf(current.getID()))
+                            .concat("&id_etat=2").concat("&mention=2");
+                    Connexion_InsertNotification(url);
+                    booljaime = false;
+                    booljaimepas = true;
+                    int jaimepas = current.getCountjaimepas();
+                    jaimepas++;
+                    current.setCountjaimepas(jaimepas);
+                    holder.nombre_de_jaimepas.setText(String.valueOf(jaimepas));
+                    current.setCheckmention(2);
+                    Connexion_InsertNotification(url_notification);
+                    holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#188dc8"));
+                    holder.nombre_de_jaime.setTextColor(Color.parseColor("#E0E0E0"));
+                    iconjaime.mutate().setColorFilter(Color.parseColor("#E0E0E0"), PorterDuff.Mode.SRC_IN);
+                    iconjaimepas.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
+                    holder.icon_jaime.setImageDrawable(iconjaime);
+                    holder.icon_jaimepas.setImageDrawable(iconjaimepas);
+
+                }else if (current.getCheckmention() == 1) {
+                    String url = Const.dns.concat("/WazzabyApi/public/api/MentionsUpdate?id_etat=2")
+                            .concat("&id_mention=").concat(String.valueOf(current.getId_checkmention()));
+                    Connexion_InsertNotification(url);
+                    booljaimepas = true;
+                    booljaime = false;
+                    holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#188dc8"));
+                    holder.nombre_de_jaime.setTextColor(Color.parseColor("#E0E0E0"));
+                    int jaime = current.getCountjaime();
+                    jaime--;
+                    int jaimepas = current.getCountjaimepas();
+                    jaimepas++;
+                    holder.nombre_de_jaime.setText(String.valueOf(jaime));
+                    holder.nombre_de_jaimepas.setText(String.valueOf(jaimepas));
+                    current.setCountjaime(jaimepas);
+                    current.setCountjaimepas(jaime);
+                    current.setCheckmention(2);
+                    if (current.getId_recepteur() != user.getID()) {
+                        Connexion_InsertNotification(url_notification);
+                    }
+                    iconjaime.mutate().setColorFilter(Color.parseColor("#E0E0E0"), PorterDuff.Mode.SRC_IN);
+                    iconjaimepas.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
+                    holder.icon_jaime.setImageDrawable(iconjaime);
+                    holder.icon_jaimepas.setImageDrawable(iconjaimepas);
+                }
+
             }
         });
     }
@@ -270,7 +482,6 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
         LinearLayout commentblock;
         ImageView menuderoulant;
         RelativeLayout photo_du_poste;
-        ImageView monbackground;
         SimpleDraweeView photo_du_poste_background;
         ImageView icon_jaime;
         ImageView icon_jaimepas;
@@ -373,6 +584,31 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
                         }else if(error instanceof TimeoutError)
                         {
                         }else{}
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(stringRequest);
+    }
+
+    public void Connexion_InsertNotification(String url_notification) {
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_notification,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
                     }
                 }){
             @Override

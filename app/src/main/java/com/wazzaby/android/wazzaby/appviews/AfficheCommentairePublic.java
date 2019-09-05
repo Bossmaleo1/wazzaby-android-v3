@@ -13,7 +13,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
@@ -35,10 +37,10 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.snackbar.Snackbar;
 import com.wazzaby.android.wazzaby.R;
 import com.wazzaby.android.wazzaby.adapter.displaycommentaryadapter;
-import com.wazzaby.android.wazzaby.fragments.Problematique;
 import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
@@ -71,6 +73,8 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
     private String Libelle = null;
     private ImageView submitcomment;
     private EditText editcomment;
+    private LinearLayout block_affichage_error;
+    private TextView Error_text_message;
 
 
     @Override
@@ -84,6 +88,8 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
         progressBar = findViewById(R.id.progressbar);
         submitcomment = findViewById(R.id.submitcomment);
         editcomment = findViewById(R.id.editcomment);
+        block_affichage_error = findViewById(R.id.materialcardview);
+        Error_text_message = findViewById(R.id.text_error_message);
         intent = getIntent();
         context = this;
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
@@ -101,6 +107,14 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(allUsersAdapter);
         this.Connexion();
+        block_affichage_error.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                block_affichage_error.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+                Connexion();
+            }
+        });
 
         recyclerView.addOnItemTouchListener(new AfficheCommentairePublic.RecyclerTouchListener(getApplicationContext(), recyclerView, new AfficheCommentairePublic.ClickListener() {
             @Override
@@ -131,6 +145,7 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
                     displaycommentary commentary = new displaycommentary("http://wazzaby.com/uploads/photo_de_profil/" + user.getPHOTO(), context, R.drawable.ic_done_black_18dp
                             , "A l'instant", R.color.greencolor, 0, editcomment.getText().toString(),
                             user.getPRENOM() + " " + user.getNOM());
+                    block_affichage_error.setVisibility(View.GONE);
                     /*Ligne de code permettant de
                     * faire une insertion du message en tete
                     * */
@@ -248,6 +263,11 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
 
                             }
 
+                            if (reponse.length() == 0) {
+                                Error_text_message.setText(" Aucun commentaire");
+                                block_affichage_error.setVisibility(View.VISIBLE);
+                            }
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -351,6 +371,9 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
                             snackbar.show();
                             progressBar.setVisibility(View.GONE);
                         }
+
+                        Error_text_message.setText(" Erreur reseaux, veuillez reessayer svp !");
+                        block_affichage_error.setVisibility(View.VISIBLE);
                     }
                 }){
             @Override
@@ -368,7 +391,8 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
 
     private void SENDCommentary()
     {
-        String url = Const.dns+"/WazzabyApi/public/api/addComment?id_user="+String.valueOf(user.getID())+"&id_messagepublic="+String.valueOf(intent.getIntExtra("nom",0))+"&libelle_comment="+Libelle;
+        String url = Const.dns+"/WazzabyApi/public/api/addComment?id_user="+String.valueOf(user.getID())+"&id_messagepublic="
+                +String.valueOf(intent.getIntExtra("nom",0))+"&libelle_comment="+Libelle+"&anonymous="+String.valueOf(intent.getIntExtra("anonymous",0));
         progressBar.setVisibility(View.VISIBLE);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -382,6 +406,49 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(context,"Une erreure s'est produite votre commentaire n'a pas ete ajoute",Toast.LENGTH_LONG).show();
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+
+        if (!String.valueOf(intent.getIntExtra("id_recepteur",0)).equals(user.getID())) {
+            Connexion_Insert_Notification();
+        }
+    }
+
+    public void Connexion_Insert_Notification() {
+        String message;
+        if (user.getETAT().equals('1')) {
+            message = "Votre message public vient d'etre commenter par un Utilisateur Anonyme";
+        } else {
+            message = "Votre message public vient d'etre commenter par "
+                .concat(user.getPRENOM()).concat(" ")
+                .concat(user.getNOM());
+        }
+        String url_notification = Const.dns.concat("/WazzabyApi/public/api/InsertNotification?users_id=")
+                .concat(String.valueOf(user.getID()))
+                .concat("&libelle=").concat(message)
+                .concat("&id_type=").concat(String.valueOf(intent.getIntExtra("nom",0))).concat("&etat=0")
+                .concat("&id_recepteur=").concat(String.valueOf(intent.getIntExtra("id_recepteur",0)))
+                .concat("&anonymous=").concat(String.valueOf(intent.getIntExtra("anonymous",0)));
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_notification,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
                     }
                 }){
             @Override

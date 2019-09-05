@@ -39,6 +39,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.textfield.TextInputEditText;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -49,6 +50,7 @@ import com.wazzaby.android.wazzaby.connInscript.AndroidMultiPartEntity;
 import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
+import com.wazzaby.android.wazzaby.model.data.Profil;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -86,11 +88,10 @@ public class Sharepublicconversation extends AppCompatActivity {
     public static final int REQUEST_IMAGE_CAPTURE = 0;
     public static String fileName;
     private static final String TAG = Sharepublicconversation.class.getSimpleName();
-    EditText emojiconEditText;
-    View rootView;
+    private EditText emojiconEditText;
+    private View rootView;
     private ImageView image_view;
-    private ImageView icon_cancel_image_view;
-    File sourceFile;
+    private File sourceFile;
     private String name_file;
     private String extension;
     private String id_messagepublic;
@@ -99,6 +100,8 @@ public class Sharepublicconversation extends AppCompatActivity {
     private JSONObject data;
     private String etat;
     private boolean status = false;
+    private Profil user;
+    private TextInputEditText text_input_layout_textArea_information;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,11 +125,21 @@ public class Sharepublicconversation extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         database = new DatabaseHandler(this);
         session = new SessionManager(getApplicationContext());
+        user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
 
         rootView = findViewById(R.id.root_view);
         emojiconEditText =  findViewById(R.id.textArea_information);
-        icon_cancel_image_view = findViewById(R.id.image_cancel);
+        text_input_layout_textArea_information = findViewById(R.id.text_input_layout_textArea_information);
+        //icon_cancel_image_view = findViewById(R.id.image_cancel);
         image_view = findViewById(R.id.image_view);
+        image_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                image_view.setVisibility(View.GONE);
+                image_cancel.setVisibility(View.GONE);
+                status = false;
+            }
+        });
 
     }
 
@@ -161,16 +174,18 @@ public class Sharepublicconversation extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.send :
-                LIBELLE = editText.getText().toString();
-                pDialog = new ProgressDialog(Sharepublicconversation.this);
-                pDialog.setMessage(res.getString(R.string.chargement));
-                pDialog.setIndeterminate(false);
-                pDialog.setCancelable(false);
-                pDialog.show();
-                if(status) {
-                    Connexion();
-                }else {
-                    RequeteFinale();
+                if(validate() == true) {
+                    LIBELLE = editText.getText().toString();
+                    pDialog = new ProgressDialog(Sharepublicconversation.this);
+                    pDialog.setMessage(res.getString(R.string.chargement));
+                    pDialog.setIndeterminate(false);
+                    pDialog.setCancelable(false);
+                    pDialog.show();
+                    if (status) {
+                        Connexion();
+                    } else {
+                        RequeteFinale();
+                    }
                 }
                 return true;
             case R.id.add_picture:
@@ -227,7 +242,18 @@ public class Sharepublicconversation extends AppCompatActivity {
 
     private void Connexion()
     {
-        String urlrecuperefile = Const.dns.concat("/WazzabyApi/public/api/photomessagepublic?file_extension=").concat(extension).concat("&id_user=").concat(String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID())).concat("&id_problematique=").concat(String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB()));
+        int anonymous;
+        if(user.getETAT().equals('1')){
+            anonymous = 1;
+        }   else {
+            anonymous = 0;
+        }
+        String urlrecuperefile = Const.dns.concat("/WazzabyApi/public/api/photomessagepublic?file_extension=").concat(extension)
+                .concat("&id_user=")
+                .concat(String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID()))
+                .concat("&id_problematique=")
+                .concat(String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB()))
+                .concat("&anonymous=").concat(String.valueOf(anonymous));
         //String  url = Const.dns.concat("/WazzabyApi/public/api/SaveMessagePublic?etat=").concat(this.etat).concat("&libelle=").concat(LIBELLE).concat("&id_problematique=").concat(String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB()).concat('&ID=').concat(String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID())).concat("&id_message_public=").concat(String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, urlrecuperefile,
                 new Response.Listener<String>() {
@@ -279,9 +305,6 @@ public class Sharepublicconversation extends AppCompatActivity {
             @Override
             protected Map<String,String> getParams(){
                 Map<String,String> params = new HashMap<String, String>();
-                //params.put("ID_EME",);
-                //params.put("IDProb",String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB()));
-                //params.put("LIBELLE",LIBELLE);
                 return params;
             }
 
@@ -381,21 +404,18 @@ public class Sharepublicconversation extends AppCompatActivity {
             case REQUEST_IMAGE_CAPTURE:
                 if (resultCode == RESULT_OK) {
                     Uri imageUri = getCacheImagePath(fileName);
-                    //sourceFile = new File(imageUri.getPath());
                     status = true;
-                    //Toast.makeText(Sharepublicconversation.this,fileName,Toast.LENGTH_LONG).show();
                     extension = "jpg";
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
                         image_post.setImageBitmap(bitmap);
-                        icon_cancel_image_view.setVisibility(View.VISIBLE);
+                        image_cancel.setVisibility(View.VISIBLE);
                         image_view.setVisibility(View.VISIBLE);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 } else {
                     Toast.makeText(Sharepublicconversation.this,"Echec !!",Toast.LENGTH_LONG).show();
-                    //setResultCancelled();
                 }
                 break;
             case REQUEST_GALLERY_IMAGE:
@@ -404,21 +424,16 @@ public class Sharepublicconversation extends AppCompatActivity {
                     extension = "jpg";
                     sourceFile = new File(getPathGallery(imageUri));
                     status = true;
-                    Toast.makeText(Sharepublicconversation.this,getPathGallery(imageUri),Toast.LENGTH_LONG).show();
+                    //Toast.makeText(Sharepublicconversation.this,getPathGallery(imageUri),Toast.LENGTH_LONG).show();
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                        //bitmapboss = bitmap;
                         image_post.setImageBitmap(bitmap);
-                        icon_cancel_image_view.setVisibility(View.VISIBLE);
+                        image_cancel.setVisibility(View.VISIBLE);
                         image_view.setVisibility(View.VISIBLE);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
-                    //Toast.makeText(Sharepublicconversation.this,"Echec !!",Toast.LENGTH_LONG).show();
                 } else {
-                    //setResultCancelled();
-
                     Toast.makeText(Sharepublicconversation.this,"Echec !!",Toast.LENGTH_LONG).show();
                 }
                 break;
@@ -436,20 +451,17 @@ public class Sharepublicconversation extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             // setting progress bar to zero
-            //progressBar.setProgress(0);
             super.onPreExecute();
         }
 
         @Override
         protected void onProgressUpdate(Integer... progress) {
             // Making progress bar visible
-            //progressBar.setVisibility(View.VISIBLE);
 
             // updating progress bar value
-            //progressBar.setProgress(progress[0]);
 
             // updating percentage value
-            //pDialog.dismiss();
+
         }
 
         @Override
@@ -506,9 +518,7 @@ public class Sharepublicconversation extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            //Toast.makeText(ImagePickerActivity.this, "Votre Photo de profil s'est mise a jour avec succes !", Toast.LENGTH_SHORT).show();
-            /*String url = Const.dns.concat("/WazzabyApi/public/api/updatelibelleuserphoto?id_user=").concat(String.valueOf(user.getID())).concat("&libelle_photo=").concat("photo_".concat(String.valueOf(user.getID())).concat(".jpg"));
-            Connexion(url);*/
+
             super.onPostExecute(result);
             etat = "0";
             RequeteFinale();
@@ -533,11 +543,28 @@ public class Sharepublicconversation extends AppCompatActivity {
 
     private void RequeteFinale()
     {
+        int anonymous;
+        if (user.getETAT().equals('1')) {
+          anonymous = 1;
+        } else {
+          anonymous = 0;
+        }
         String urlrequetefinale;
-        if(status) {
-            urlrequetefinale = Const.dns.concat("/WazzabyApi/public/api/SaveMessagePublic?etat=").concat(this.etat).concat("&libelle=").concat(LIBELLE).concat("&id_problematique=").concat(String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB())).concat("&ID=").concat(String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID())).concat("&id_message_public=").concat(this.id_messagepublic);
+        if (status == true) {
+            urlrequetefinale = Const.dns.concat("/WazzabyApi/public/api/SaveMessagePublic?etat=")
+                    .concat(this.etat).concat("&libelle=")
+                    .concat(LIBELLE)
+                    .concat("&id_problematique=").concat(String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB()))
+                    .concat("&ID=").concat(String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID()))
+                    .concat("&id_message_public=").concat(this.id_messagepublic)
+                    .concat("&anonymous=").concat(String.valueOf(anonymous));
         }else {
-            urlrequetefinale = Const.dns.concat("/WazzabyApi/public/api/SaveMessagePublic?etat=").concat(this.etat).concat("&libelle=").concat(LIBELLE).concat("&id_problematique=").concat(String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB())).concat("&ID=").concat(String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID()));
+            urlrequetefinale = Const.dns.concat("/WazzabyApi/public/api/SaveMessagePublic?etat=")
+                    .concat(this.etat).concat("&libelle=")
+                    .concat(LIBELLE).concat("&id_problematique=")
+                    .concat(String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB()))
+                    .concat("&ID=").concat(String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID()))
+                    .concat("&anonymous=").concat(String.valueOf(anonymous));
         }
         StringRequest stringRequest = new StringRequest(Request.Method.GET, urlrequetefinale,
                 new Response.Listener<String>() {
@@ -590,9 +617,6 @@ public class Sharepublicconversation extends AppCompatActivity {
             @Override
             protected Map<String,String> getParams(){
                 Map<String,String> params = new HashMap<String, String>();
-                //params.put("ID_EME",);
-                //params.put("IDProb",String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB()));
-                //params.put("LIBELLE",LIBELLE);
                 return params;
             }
 
@@ -617,6 +641,22 @@ public class Sharepublicconversation extends AppCompatActivity {
         String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
         cursor.close();
         return path;
+    }
+
+    public boolean validate() {
+        boolean valid = true;
+
+        String _champ_libelle = editText.getText().toString();
+
+        if(_champ_libelle.isEmpty()) {
+            text_input_layout_textArea_information.setError("Veuillez renseigner votre message public !");
+            valid = false;
+        } else {
+            text_input_layout_textArea_information.setError(null);
+        }
+
+
+        return valid;
     }
 
 }
