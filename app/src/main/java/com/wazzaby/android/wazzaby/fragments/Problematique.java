@@ -66,6 +66,7 @@ public class Problematique extends Fragment {
     private EditText searchview;
     private String max_request="0";
     private LinearLayout search_block;
+    private LinearLayout materialcardview;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,7 @@ public class Problematique extends Fragment {
         progressBar =  rootView.findViewById(R.id.progressbar);
         coordinatorLayout =  rootView.findViewById(R.id.coordinatorLayout);
         search_block = rootView.findViewById(R.id.search_block);
+        materialcardview = rootView.findViewById(R.id.materialcardview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         res = getResources();
         database = new DatabaseHandler(getActivity());
@@ -114,6 +116,16 @@ public class Problematique extends Fragment {
 
             }
         }));
+
+        materialcardview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                materialcardview.setVisibility(View.GONE);
+                ConnexionProblematique();
+            }
+        });
+
+
         // Inflate the layout for this fragment
         return rootView;
     }
@@ -158,6 +170,8 @@ public class Problematique extends Fragment {
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
+
+                                            materialcardview.setVisibility(View.GONE);
                                             ConnexionProblematique();
                                         }
                                     });
@@ -171,6 +185,8 @@ public class Problematique extends Fragment {
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
+
+                                            materialcardview.setVisibility(View.GONE);
                                             ConnexionProblematique();
                                         }
                                     });
@@ -184,6 +200,8 @@ public class Problematique extends Fragment {
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
+
+                                            materialcardview.setVisibility(View.GONE);
                                             ConnexionProblematique();
                                         }
                                     });
@@ -197,6 +215,8 @@ public class Problematique extends Fragment {
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
+
+                                            materialcardview.setVisibility(View.GONE);
                                             ConnexionProblematique();
                                         }
                                     });
@@ -210,6 +230,8 @@ public class Problematique extends Fragment {
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
+
+                                            materialcardview.setVisibility(View.GONE);
                                             ConnexionProblematique();
                                         }
                                     });
@@ -223,6 +245,8 @@ public class Problematique extends Fragment {
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
+
+                                            materialcardview.setVisibility(View.GONE);
                                             ConnexionProblematique();
                                         }
                                     });
@@ -235,6 +259,8 @@ public class Problematique extends Fragment {
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
+
+                                            materialcardview.setVisibility(View.GONE);
                                             ConnexionProblematique();
                                         }
                                     });
@@ -242,6 +268,8 @@ public class Problematique extends Fragment {
                             snackbar.show();
                             progressBar.setVisibility(View.GONE);
                         }
+
+                        materialcardview.setVisibility(View.VISIBLE);
                     }
                 }){
             @Override

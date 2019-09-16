@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -29,6 +30,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.snackbar.Snackbar;
 import com.wazzaby.android.wazzaby.R;
 import com.wazzaby.android.wazzaby.adapter.ConversationspublicAdapter;
 import com.wazzaby.android.wazzaby.adapter.NotificationAdapter;
@@ -63,7 +65,9 @@ public class Notifications extends Fragment {
     private ProgressBar progressBar;
     private LinearLayout materialCardView;
     private RecyclerView recyclerView;
+    private Snackbar snackbar;
     private TextView error_message;
+    private CoordinatorLayout coordinatorLayout;
 
     public Notifications() {
         // Required empty public constructor
@@ -83,6 +87,7 @@ public class Notifications extends Fragment {
         materialCardView = bossmaleo.findViewById(R.id.materialcardview);
         recyclerView = bossmaleo.findViewById(R.id.my_recycler_view);
         error_message = bossmaleo.findViewById(R.id.text_error_message);
+        coordinatorLayout =  bossmaleo.findViewById(R.id.coordinatorLayout);
 
         database = new DatabaseHandler(getActivity());
         session = new SessionManager(getActivity());
@@ -172,6 +177,19 @@ public class Notifications extends Fragment {
                         materialCardView.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(View.GONE);
                         Toast.makeText(getActivity(),"Une erreur reseau vient de se produire veuillez reessayer !!",Toast.LENGTH_LONG).show();
+                        snackbar = Snackbar
+                                .make(coordinatorLayout, res.getString(R.string.error_volley_timeouterror), Snackbar.LENGTH_LONG)
+                                .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                        materialCardView.setVisibility(View.GONE);
+                                        progressBar.setVisibility(View.GONE);
+                                        ConnexionNotification();
+                                    }
+                                });
+                        snackbar.show();
+                        progressBar.setVisibility(View.GONE);
                     }
                 }){
             @Override

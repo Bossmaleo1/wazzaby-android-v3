@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -39,7 +38,6 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.textfield.TextInputEditText;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -83,12 +81,12 @@ public class Sharepublicconversation extends AppCompatActivity {
     private EditText editText;
     private ImageView image_cancel;
     private ImageView image_post;
-    private LinearLayout imageblock;
+    //private LinearLayout imageblock;
     public static final int REQUEST_GALLERY_IMAGE = 1;
     public static final int REQUEST_IMAGE_CAPTURE = 0;
     public static String fileName;
     private static final String TAG = Sharepublicconversation.class.getSimpleName();
-    private EditText emojiconEditText;
+    //private EditText emojiconEditText;
     private View rootView;
     private ImageView image_view;
     private File sourceFile;
@@ -97,11 +95,11 @@ public class Sharepublicconversation extends AppCompatActivity {
     private String id_messagepublic;
     private String ID_photo;
     private JSONObject reponse;
-    private JSONObject data;
+    //private JSONObject data;
     private String etat;
     private boolean status = false;
     private Profil user;
-    private TextInputEditText text_input_layout_textArea_information;
+    private com.google.android.material.textfield.TextInputLayout block;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,10 +110,10 @@ public class Sharepublicconversation extends AppCompatActivity {
         editText = findViewById(R.id.textArea_information);
         image_cancel = findViewById(R.id.image_cancel);
         image_post = findViewById(R.id.image_view);
-        imageblock = findViewById(R.id.imageblock);
+       // imageblock = findViewById(R.id.imageblock);
+        block = findViewById(R.id.block_edittext);
         this.etat = "1";
         this.status = false;
-        //view1 = findViewById(R.id.view1);
         setSupportActionBar(toolbar);
         Drawable maleoIcon = res.getDrawable(R.drawable.ic_close_black_24dp);
         maleoIcon.mutate().setColorFilter(Color.rgb(255, 255, 255), PorterDuff.Mode.SRC_IN);
@@ -128,8 +126,7 @@ public class Sharepublicconversation extends AppCompatActivity {
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
 
         rootView = findViewById(R.id.root_view);
-        emojiconEditText =  findViewById(R.id.textArea_information);
-        text_input_layout_textArea_information = findViewById(R.id.text_input_layout_textArea_information);
+        //emojiconEditText =  findViewById(R.id.textArea_information);
         //icon_cancel_image_view = findViewById(R.id.image_cancel);
         image_view = findViewById(R.id.image_view);
         image_cancel.setOnClickListener(new View.OnClickListener() {
@@ -649,10 +646,11 @@ public class Sharepublicconversation extends AppCompatActivity {
         String _champ_libelle = editText.getText().toString();
 
         if(_champ_libelle.isEmpty()) {
-            text_input_layout_textArea_information.setError("Veuillez renseigner votre message public !");
+            block.setError("Veuillez renseigner votre message public !");
+            Toast.makeText(getApplicationContext(),"Veuillez renseigner votre message public !",Toast.LENGTH_LONG).show();
             valid = false;
         } else {
-            text_input_layout_textArea_information.setError(null);
+            block.setError(null);
         }
 
 

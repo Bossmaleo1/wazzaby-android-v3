@@ -58,7 +58,7 @@
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/text_input_layout_textArea_information"
+                android:id="@+id/block_edittext"
                 android:layout_below="@+id/imageblock"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.wazzaby.android.wazzaby">
 
-    <dist:module dist:instant="true" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -110,6 +109,15 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
+
+
+
+        <receiver android:name=".broadcast.MyReceiver" >
+            <intent-filter>
+                <action android:name="com.wazzaby.android.wazzaby.broadcast" >
+                </action>
+            </intent-filter>
+        </receiver>
 
     </application>
 

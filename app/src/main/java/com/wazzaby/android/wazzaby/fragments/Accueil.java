@@ -40,6 +40,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.wazzaby.android.wazzaby.R;
+import com.wazzaby.android.wazzaby.broadcast.MyReceiver;
 import com.wazzaby.android.wazzaby.model.Config;
 import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
@@ -66,12 +67,13 @@ public class Accueil extends Fragment {
     private Drawable Icon_recherche;
     private Drawable Icon_annonce;
     private JSONObject reponse;
-    private static int mCartItemCount = 0;
+    public static int mCartItemCount = 0;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private String Keypush = null;
     private SessionManager session;
     private DatabaseHandler database;
     private Profil user;
+    public static BadgeDrawable badge;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -103,15 +105,23 @@ public class Accueil extends Fragment {
         session = new SessionManager(getActivity());
         res = getResources();
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
-        /*mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+
+        /*IntentFilter filter = new IntentFilter("com.wazzaby.android.wazzaby.broadcast");
+
+        MyReceiver receiver = new MyReceiver(navigation,mCartItemCount);
+        registerReceiver(receiver, filter);*/
+
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String message = intent.getStringExtra("message");
                 Toast.makeText(getActivity(), "Push notification: " + message, Toast.LENGTH_LONG).show();
                 mCartItemCount++;
-                BadgeDrawable badge = navigation.showBadge(R.id.notification);
+                badge = navigation.showBadge(R.id.notification);
                 badge.setNumber(mCartItemCount);
                 badge.setBadgeTextColor(Color.WHITE);
+
+                Toast.makeText(getContext(),message,Toast.LENGTH_LONG).show();
             }
         };
 
@@ -127,9 +137,9 @@ public class Accueil extends Fragment {
                         Log.d(TAG, token);
                         Keypush = token;
                         Connexion();
-                        //Toast.makeText(getActivity(),Keypush,Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(),Keypush,Toast.LENGTH_LONG).show();
                     }
-                });*/
+                });
 
         ConnexionCountNotification();
 

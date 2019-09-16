@@ -5,9 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,15 +30,14 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.badge.BadgeDrawable;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.wazzaby.android.wazzaby.R;
+import com.wazzaby.android.wazzaby.broadcast.MyReceiver;
 import com.wazzaby.android.wazzaby.connInscript.MainActivity;
 import com.wazzaby.android.wazzaby.fragments.Accueil;
 import com.wazzaby.android.wazzaby.fragments.FragmentDrawer;
 import com.wazzaby.android.wazzaby.fragments.Problematique;
-import com.wazzaby.android.wazzaby.model.Config;
 import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
@@ -50,27 +46,21 @@ import com.wazzaby.android.wazzaby.model.data.Profil;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.facebook.imagepipeline.nativecode.NativeJpegTranscoder.TAG;
-
-
 public class Home extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener{
 
     private LayoutInflater inflater;
     private SessionManager session;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-    private LocationManager locationManager;
-    private Location location;
 
     private FragmentDrawer drawerFragment;
-    //private CoordinatorLayout coordinatorLayout;
     private Toolbar toolbar;
     private Resources res;
     private DatabaseHandler database;
     private Profil user;
     private static final String TAG = Home.class.getSimpleName();
     private String Keypush = null;
-    private final int REQUEST_LOCATION = 200;
-    private boolean ok = true;
+    public static Context context;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +79,10 @@ public class Home extends AppCompatActivity implements FragmentDrawer.FragmentDr
         drawerFragment.setDrawerListener(this);
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
         getSupportActionBar().setTitle(user.getLibelle_prob());
+        context = getApplicationContext();
         // display the first navigation drawer view on app launch
         displayView(0);
+        intent = getIntent();
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
@@ -104,7 +96,8 @@ public class Home extends AppCompatActivity implements FragmentDrawer.FragmentDr
                         Keypush = token;
                         Connexion();
                         // Log and toast
-                        String msg = token;
+                        //String msg = token;
+                        //Toast.makeText(getApplicationContext(),Keypush,Toast.LENGTH_LONG).show();
                         //Keypush = ms
                         //Toast.makeText(Home.this, msg, Toast.LENGTH_SHORT).show();
                      }
@@ -114,12 +107,19 @@ public class Home extends AppCompatActivity implements FragmentDrawer.FragmentDr
             @Override
             public void onReceive(Context context, Intent intent) {
                String message = intent.getStringExtra("message");
+                Toast.makeText(getApplicationContext(),message,Toast.LENGTH_LONG).show();
                //mCartItemCount++;
                 //BadgeDrawable badge = navigation.showBadge(R.id.notification);
                 //badge.setNumber(mCartItemCount);
                 //badge.setBadgeTextColor(Color.WHITE);
             }
         };
+
+        IntentFilter filter = new IntentFilter("com.wazzaby.android.wazzaby.broadcast");
+
+        MyReceiver receiver = new MyReceiver();
+        registerReceiver(receiver, filter);
+
     }
 
     @Override
@@ -198,9 +198,6 @@ public class Home extends AppCompatActivity implements FragmentDrawer.FragmentDr
     @Override
     protected void onResume() {
         super.onResume();
-        // register GCM registration complete receiver
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(Config.REGISTRATION_COMPLETE));
     }
 
     @Override
@@ -224,6 +221,7 @@ public class Home extends AppCompatActivity implements FragmentDrawer.FragmentDr
                     public void onResponse(String response) {
                         //database
                         database.UpdateKeyPush(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID(),Keypush);
+                        //Toast.makeText(getApplicationContext(),"Keypush modifier avec succès !!!",Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() {

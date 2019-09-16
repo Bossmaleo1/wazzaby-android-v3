@@ -65,6 +65,7 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
+        android:visibility="gone"
         style="@style/Widget.MaterialComponents.FloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -72,6 +73,44 @@
         android:layout_margin="@dimen/fab_margin"
         android:tint="@android:color/white"
         android:src="@drawable/ic_mode_edit_black_24dp" />
+
+    <LinearLayout
+        android:id="@+id/materialcardview"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="10dp"
+        android:background="@drawable/background_error_message"
+        android:padding="10dp"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/baseline_block_black_24"
+                android:tint="@android:color/holo_red_dark"
+                />
+
+            <TextView
+                android:id="@+id/text_error_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textColor="@android:color/holo_red_dark"
+                android:text=" Erreur reseaux, veuillez reessayer svp !"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

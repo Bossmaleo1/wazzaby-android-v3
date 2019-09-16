@@ -1,5 +1,6 @@
 package com.wazzaby.android.wazzaby.fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -10,10 +11,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,7 +36,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.wazzaby.android.wazzaby.R;
@@ -69,9 +71,11 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
     private List<ConversationPublicItem> data = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
     private ShimmerFrameLayout mShimmerViewContainer;
-    private LinearLayout materialcardview;
+    private LinearLayout materialCardView;
     private Profil user;
+    private TextView text_error_message;
     private static int anonymous;
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     public Conversationspublic() {
         // Required empty public constructor
@@ -94,11 +98,12 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
         database = new DatabaseHandler(getActivity());
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
         mShimmerViewContainer = bossmaleo.findViewById(R.id.shimmer_view_container);
+        text_error_message = bossmaleo.findViewById(R.id.text_error_message);
         //progressBar = (ProgressBar) bossmaleo.findViewById(R.id.progressbar);
         coordinatorLayout =  bossmaleo.findViewById(R.id.coordinatorLayout);
         recyclerView = bossmaleo.findViewById(R.id.my_recycler_view);
         swipeRefreshLayout =  bossmaleo.findViewById(R.id.swipe_refresh_layout);
-        materialcardview = bossmaleo.findViewById(R.id.materialcardview);
+        materialCardView = bossmaleo.findViewById(R.id.materialcardview);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -106,17 +111,35 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(allUsersAdapter);
+
+
         ConnexionConversationsPublic();
 
-        materialcardview.setOnClickListener(new View.OnClickListener() {
+        materialCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                materialcardview.setVisibility(View.GONE);
+                materialCardView.setVisibility(View.GONE);
                 mShimmerViewContainer.startShimmer();
                 mShimmerViewContainer.setVisibility(View.VISIBLE);
                 ConnexionConversationsPublic();
+                //Toast.makeText(getActivity(),"Test !!!",Toast.LENGTH_LONG).show();
             }
         });
+
+
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String message = intent.getStringExtra("message");
+                Toast.makeText(getActivity(),message,Toast.LENGTH_LONG).show();
+                //mCartItemCount++;
+                //BadgeDrawable badge = navigation.showBadge(R.id.notification);
+                //badge.setNumber(mCartItemCount);
+                //badge.setBadgeTextColor(Color.WHITE);
+            }
+        };
+
+
 
         recyclerView.addOnItemTouchListener(new Conversationspublic.RecyclerTouchListener(getActivity(), recyclerView, new Conversationspublic.ClickListener() {
             @Override
@@ -201,9 +224,14 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                     @Override
                     public void onResponse(String response) {
 
+                        fab.setVisibility(View.VISIBLE);
                         JSONArray reponse = null;
                         try {
                             reponse = new JSONArray(response);
+                            if(reponse.length()==0){
+                                text_error_message.setText("Aucune conversation publique pour cette problématique");
+                                materialCardView.setVisibility(View.VISIBLE);
+                            }
                             for(int i = 0;i<reponse.length();i++)
                             {
                                 object = reponse.getJSONObject(i);
@@ -222,9 +250,10 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                                         ,count,object.getString("user_photo"),R.drawable.baseline_add_comment_black_24
                                         ,object.getString("etat_photo_status"),object.getString("status_photo")
                                         ,object.getInt("anonymous"),object.getBoolean("visibility"),object.getInt("countjaime"),object.getInt("countjaimepas")
-                                        ,object.getInt("id_recepteur"),object.getInt("checkmention"),object.getInt("id_checkmention"),object.getInt("id_photo"));
+                                        ,object.getInt("id_recepteur"),object.getInt("checkmention"),object.getInt("id_checkmention"),object.getInt("id_photo")
+                                        ,"mettre la pushkey ici");
+                                //object.getString("pushkey_recepteur")
                                 data.add(conversationPublicItem);
-                                //Toast.makeText(getActivity(),String.valueOf(object.getInt("anonymous")),Toast.LENGTH_LONG).show();
                             }
 
 
@@ -263,8 +292,22 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
 
                         mShimmerViewContainer.stopShimmer();
                         mShimmerViewContainer.setVisibility(View.GONE);
-                        materialcardview.setVisibility(View.VISIBLE);
-                        Toast.makeText(getActivity(),"Une erreur reseau vient de se produire veuillez reessayer !!",Toast.LENGTH_LONG).show();
+                        materialCardView.setVisibility(View.VISIBLE);
+                        //Toast.makeText(getActivity(),"Une erreur reseau vient de se produire veuillez reessayer !!",Toast.LENGTH_LONG).show();
+                        snackbar = Snackbar
+                                .make(coordinatorLayout, "Une erreur reseau vient de se produire veuillez reessayer !!", Snackbar.LENGTH_LONG)
+                                .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        materialCardView.setVisibility(View.GONE);
+                                        mShimmerViewContainer.startShimmer();
+                                        mShimmerViewContainer.setVisibility(View.VISIBLE);
+                                        ConnexionConversationsPublic();
+                                    }
+                                });
+
+                        snackbar.show();
+                        fab.setVisibility(View.GONE);
                     }
                 }){
             @Override
@@ -283,22 +326,28 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
         void onDrawerItemSelected(View view, int position);
     }
 
+
+
+
     @Override
     public void onRefresh() {
         Toast.makeText(getContext(),"Le machin vient de subir un refresh scarla!!!", Toast.LENGTH_LONG).show();
         swipeRefreshLayout.setRefreshing(false);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRegistrationBroadcastReceiver);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         mShimmerViewContainer.startShimmer();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRegistrationBroadcastReceiver);
     }
 
     @Override
     public void onPause() {
         mShimmerViewContainer.stopShimmer();
         super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRegistrationBroadcastReceiver);
     }
 
     public void ConnexionInsertNotification(int users_id, String libelle, int id_type,int id_recepteur,int anonymous)

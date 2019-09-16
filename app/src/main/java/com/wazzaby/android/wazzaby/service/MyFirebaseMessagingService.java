@@ -1,8 +1,7 @@
 package com.wazzaby.android.wazzaby.service;
 
-import android.app.ActivityManager;
 import android.app.NotificationManager;
-import android.content.ComponentName;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,14 +10,12 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
-
 import androidx.core.app.NotificationCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.wazzaby.android.wazzaby.R;
-import com.wazzaby.android.wazzaby.model.Config;
+import com.wazzaby.android.wazzaby.appviews.Historique;
+import com.wazzaby.android.wazzaby.appviews.Home;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -42,26 +39,49 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
+
+        // Create an explicit intent for an Activity in your app
+        Intent intentlaunchernotification = new Intent(this, Home.class);
+        intentlaunchernotification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intentlaunchernotification, 0);
+
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "channel_id")
                 .setContentTitle(remoteMessage.getNotification().getTitle())
                 .setContentText(remoteMessage.getNotification().getBody())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setStyle(new NotificationCompat.BigTextStyle())
                 .setSmallIcon(R.drawable.wazaby)
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setContentIntent(pendingIntent)
                 .setColor(Color.parseColor("#188dc8"))
                 .setAutoCancel(true);
+
+
         //Color.parseColor("#188dc8")
 
-        Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
-        pushNotification.putExtra("message", "Hello boss!!");
-        LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
+        /*Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
+        pushNotification.putExtra("message", remoteMessage.getData().toString());
+        LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);*/
+        //Toast.makeText(Home.context,"Test malin du bossmaleo !!",Toast.LENGTH_LONG).show();
+        Intent intent = new Intent();
+        intent.setAction("com.wazzaby.android.wazzaby.broadcast");
+        intent.putExtra("message",remoteMessage.getNotification().getBody());
+        sendBroadcast(intent);
+        //LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
+
+        //int mCartItemCount = 10;
+        //Accueil.badge = Accueil.navigation.showBadge(R.id.notification);
+        /*Accueil.badge.setNumber(mCartItemCount);
+        Accueil.badge.setBadgeTextColor(Color.WHITE);*/
+
+        //startActivity(pushNotification);
         Log.e(TAG, "Data Payload: " + remoteMessage.getData().toString());
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0, notificationBuilder.build());
+        playNotificationSound();
     }
 
     public void playNotificationSound() {
@@ -74,5 +94,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             e.printStackTrace();
         }
     }
+
+
 
 }
