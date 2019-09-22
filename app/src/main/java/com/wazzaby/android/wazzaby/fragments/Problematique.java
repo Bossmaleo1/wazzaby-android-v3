@@ -145,7 +145,7 @@ public class Problematique extends Fragment {
                             {
                                 object = reponse.getJSONObject(i);
                                 max_request = String.valueOf(object.getInt("ID"));
-                                data.add(new Categorie_prob(object.getInt("ID"), object.getString("Libelle")));
+                                data.add(new Categorie_prob(object.getInt("ID"), object.getString("Libelle"),object.getString("Lang")));
                             }
 
 
@@ -358,7 +358,7 @@ public class Problematique extends Fragment {
                             {
                                 object = reponse.getJSONObject(i);
                                 max_request = String.valueOf(object.getInt("ID"));
-                                data.add(new Categorie_prob(object.getInt("ID"), object.getString("LIBELLE")));
+                                data.add(new Categorie_prob(object.getInt("ID"), object.getString("LIBELLE"),object.getString("Lang")));
                             }
 
 

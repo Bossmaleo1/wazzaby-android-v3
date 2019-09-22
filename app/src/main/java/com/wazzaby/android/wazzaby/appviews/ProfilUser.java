@@ -37,6 +37,7 @@ public class ProfilUser extends AppCompatActivity {
     private SimpleDraweeView draweeView;
     private TextView edit_name;
     private TextView edit_problematique;
+    private RelativeLayout problematique_block;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,18 @@ public class ProfilUser extends AppCompatActivity {
         {
             pictureuser.setImageResource(R.drawable.ic_profile_colorier);
         }
+
+        //shall wd get the problematique block
+        problematique_block = findViewById(R.id.problematique_block);
+        //shall we get the click event
+        problematique_block.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(),Problematique.class);
+                startActivity(intent);
+
+            }
+        });
 
     }
 

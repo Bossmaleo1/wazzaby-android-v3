@@ -40,7 +40,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.wazzaby.android.wazzaby.R;
 import com.wazzaby.android.wazzaby.appviews.AfficheCommentairePublic;
-import com.wazzaby.android.wazzaby.connInscript.Connexion;
 import com.wazzaby.android.wazzaby.fragments.Conversationspublic;
 import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
@@ -48,7 +47,6 @@ import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
 import com.wazzaby.android.wazzaby.model.data.ConversationPublicItem;
 import com.wazzaby.android.wazzaby.model.data.Profil;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 

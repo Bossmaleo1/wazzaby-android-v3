@@ -17,12 +17,21 @@
         android:paddingLeft="10dp"
         >
 
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_subject_black_24dp"
+            android:tint="@color/colorPrimary"
+            />
+
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
             android:textStyle="bold"
+            android:layout_toRightOf="@id/icon"
             />
 
     </RelativeLayout>

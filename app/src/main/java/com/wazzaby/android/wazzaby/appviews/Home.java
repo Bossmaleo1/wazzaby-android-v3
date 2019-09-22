@@ -95,25 +95,15 @@ public class Home extends AppCompatActivity implements FragmentDrawer.FragmentDr
                         Log.d(TAG, token);
                         Keypush = token;
                         Connexion();
-                        // Log and toast
-                        //String msg = token;
-                        //Toast.makeText(getApplicationContext(),Keypush,Toast.LENGTH_LONG).show();
-                        //Keypush = ms
-                        //Toast.makeText(Home.this, msg, Toast.LENGTH_SHORT).show();
                      }
                 });
 
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+        /*mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                String message = intent.getStringExtra("message");
-                Toast.makeText(getApplicationContext(),message,Toast.LENGTH_LONG).show();
-               //mCartItemCount++;
-                //BadgeDrawable badge = navigation.showBadge(R.id.notification);
-                //badge.setNumber(mCartItemCount);
-                //badge.setBadgeTextColor(Color.WHITE);
             }
-        };
+        };*/
 
         IntentFilter filter = new IntentFilter("com.wazzaby.android.wazzaby.broadcast");
 

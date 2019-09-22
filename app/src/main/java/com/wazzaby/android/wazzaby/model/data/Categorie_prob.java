@@ -8,16 +8,18 @@ public class Categorie_prob {
 
     private int ID;
     private String Libelle;
+    private String Lang;
 
     public Categorie_prob()
     {
 
     }
 
-    public Categorie_prob(int id,String libelle)
+    public Categorie_prob(int id,String libelle,String lang)
     {
         this.ID = id;
         this.Libelle = libelle;
+        this.Lang = lang;
     }
 
     public void setID(int ID) {
@@ -34,5 +36,13 @@ public class Categorie_prob {
 
     public void setLibelle(String libelle) {
         Libelle = libelle;
+    }
+
+    public String getLang() {
+        return Lang;
+    }
+
+    public void setLang(String lang) {
+        Lang = lang;
     }
 }

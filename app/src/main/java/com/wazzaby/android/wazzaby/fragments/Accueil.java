@@ -137,7 +137,6 @@ public class Accueil extends Fragment {
                         Log.d(TAG, token);
                         Keypush = token;
                         Connexion();
-                        Toast.makeText(getActivity(),Keypush,Toast.LENGTH_LONG).show();
                     }
                 });
 

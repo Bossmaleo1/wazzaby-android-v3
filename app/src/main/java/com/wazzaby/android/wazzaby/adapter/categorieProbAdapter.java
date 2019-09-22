@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,6 +46,7 @@ public class categorieProbAdapter  extends RecyclerView.Adapter<categorieProbAda
     public void onBindViewHolder(categorieProbAdapter.MyViewHolder holder, int position) {
         Categorie_prob current = data.get(position);
         holder.title.setText(current.getLibelle());
+        holder.icon.setImageResource(R.drawable.ic_subject_black_24dp);
     }
 
     @Override
@@ -55,11 +57,13 @@ public class categorieProbAdapter  extends RecyclerView.Adapter<categorieProbAda
     class MyViewHolder extends RecyclerView.ViewHolder
     {
         TextView title;
+        ImageView icon;
 
         public MyViewHolder(View itemView)
         {
             super(itemView);
             title = itemView.findViewById(R.id.title);
+            icon = itemView.findViewById(R.id.icon);
         }
     }
 

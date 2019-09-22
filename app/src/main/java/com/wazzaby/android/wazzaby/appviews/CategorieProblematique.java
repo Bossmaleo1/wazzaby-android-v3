@@ -147,7 +147,7 @@ public class CategorieProblematique extends AppCompatActivity {
                             for(int i = 0;i<reponse.length();i++)
                             {
                                 object = reponse.getJSONObject(i);
-                                data.add(new Categorie_prob(object.getInt("ID"), object.getString("Libelle")));
+                                data.add(new Categorie_prob(object.getInt("ID"), object.getString("Libelle"),object.getString("Lang")));
                             }
 
 

@@ -251,7 +251,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                                         ,object.getString("etat_photo_status"),object.getString("status_photo")
                                         ,object.getInt("anonymous"),object.getBoolean("visibility"),object.getInt("countjaime"),object.getInt("countjaimepas")
                                         ,object.getInt("id_recepteur"),object.getInt("checkmention"),object.getInt("id_checkmention"),object.getInt("id_photo")
-                                        ,"mettre la pushkey ici");
+                                        ,object.getString("pushkey_recepteur"));
                                 //object.getString("pushkey_recepteur")
                                 data.add(conversationPublicItem);
                             }
