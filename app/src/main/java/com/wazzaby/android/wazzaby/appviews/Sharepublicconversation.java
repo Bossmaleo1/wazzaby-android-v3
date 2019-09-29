@@ -72,7 +72,7 @@ import static androidx.core.content.FileProvider.getUriForFile;
 
 public class Sharepublicconversation extends AppCompatActivity {
 
-    private Toolbar toolbar;
+    //private Toolbar toolbar;
     private Resources res;
     private ProgressDialog pDialog;
     private DatabaseHandler database;
@@ -106,7 +106,7 @@ public class Sharepublicconversation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sharepublicconversation);
         res = getResources();
-        toolbar =  findViewById(R.id.toolbar);
+        //toolbar =  findViewById(R.id.toolbar);
         editText = findViewById(R.id.textArea_information);
         image_cancel = findViewById(R.id.image_cancel);
         image_post = findViewById(R.id.image_view);
@@ -114,13 +114,13 @@ public class Sharepublicconversation extends AppCompatActivity {
         block = findViewById(R.id.block_edittext);
         this.etat = "1";
         this.status = false;
-        setSupportActionBar(toolbar);
-        Drawable maleoIcon = res.getDrawable(R.drawable.ic_close_black_24dp);
-        maleoIcon.mutate().setColorFilter(Color.rgb(255, 255, 255), PorterDuff.Mode.SRC_IN);
-        getSupportActionBar().setTitle("");
-        this.getSupportActionBar().setHomeAsUpIndicator(maleoIcon);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //setSupportActionBar(toolbar);
+        //Drawable maleoIcon = res.getDrawable(R.drawable.ic_close_black_24dp);
+        //maleoIcon.mutate().setColorFilter(Color.parseColor("#188dc8") ,PorterDuff.Mode.SRC_IN);
+        //getSupportActionBar().setTitle("");
+        //this.getSupportActionBar().setHomeAsUpIndicator(maleoIcon);
+        //getSupportActionBar().setDisplayShowHomeEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         database = new DatabaseHandler(this);
         session = new SessionManager(getApplicationContext());
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));

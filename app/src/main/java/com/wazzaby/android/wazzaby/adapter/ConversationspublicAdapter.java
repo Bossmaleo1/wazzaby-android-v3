@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.emoji.widget.EmojiTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
@@ -149,6 +150,7 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
         holder.title.setText(current.getNameMembreProb());
         holder.title1.setText(current.getDatetime());
         holder.contenu.setText(current.getContenu());
+        holder.contenu.setTextColor(0xff000000);
         holder.commentnumber.setText(current.getCommentnumber());
         if(!current.getImageID().equals("null")) {
             Uri uri = Uri.parse(Const.dns+"/uploads/photo_de_profil/" + current.getImageID());
@@ -516,7 +518,7 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
     {
         TextView title;
         TextView title1;
-        TextView contenu;
+        EmojiTextView contenu;
         TextView commentnumber;
         SimpleDraweeView picture;
         ImageView commenticon;

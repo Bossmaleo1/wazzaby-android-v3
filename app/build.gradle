@@ -35,10 +35,13 @@ dependencies {
     implementation "org.apache.httpcomponents:httpmime:4.2.3"
     implementation "com.karumi:dexter:5.0.0"
     implementation 'androidx.emoji:emoji:1.0.0'
+    implementation 'androidx.emoji:emoji-bundled:1.0.0'
+    implementation 'androidx.emoji:emoji-appcompat:1.0.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.google.firebase:firebase-core:17.1.0'
     implementation 'com.google.firebase:firebase-messaging:20.0.0'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

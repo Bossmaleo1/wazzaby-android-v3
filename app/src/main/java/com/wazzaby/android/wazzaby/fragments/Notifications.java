@@ -28,20 +28,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.badge.BadgeDrawable;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.snackbar.Snackbar;
 import com.wazzaby.android.wazzaby.R;
-import com.wazzaby.android.wazzaby.adapter.ConversationspublicAdapter;
 import com.wazzaby.android.wazzaby.adapter.NotificationAdapter;
-import com.wazzaby.android.wazzaby.adapter.displaycommentaryadapter;
 import com.wazzaby.android.wazzaby.appviews.NotificationsDetails;
 import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
 import com.wazzaby.android.wazzaby.model.data.NotificationItem;
 import com.wazzaby.android.wazzaby.model.data.Profil;
-import com.wazzaby.android.wazzaby.model.data.displaycommentary;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -176,7 +171,6 @@ public class Notifications extends Fragment {
                         error_message.setText(" Erreur reseaux, veuillez reessayer svp !");
                         materialCardView.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(getActivity(),"Une erreur reseau vient de se produire veuillez reessayer !!",Toast.LENGTH_LONG).show();
                         snackbar = Snackbar
                                 .make(coordinatorLayout, res.getString(R.string.error_volley_timeouterror), Snackbar.LENGTH_LONG)
                                 .setAction(res.getString(R.string.try_again), new View.OnClickListener() {

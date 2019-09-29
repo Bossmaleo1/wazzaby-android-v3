@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinatorLayout"
+    android:layout_marginBottom="60dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -33,7 +34,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/baseline_block_black_24"
-                    android:tint="@android:color/holo_red_dark"
+                    android:tint="@color/colorPrimary"
                     />
 
                 <TextView
@@ -41,7 +42,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:textColor="@android:color/holo_red_dark"
+                    android:textColor="@color/colorPrimary"
                     android:text=" Erreur reseaux, veuillez reessayer svp !"/>
 
             </LinearLayout>
