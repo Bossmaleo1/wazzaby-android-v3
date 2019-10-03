@@ -94,8 +94,21 @@ public class Accueil extends Fragment {
 
         Icon_recherche.mutate().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
         recherche_title_text.setSpan(new ForegroundColorSpan(res.getColor(R.color.colorPrimary)),0,recherche_title_text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        //Icon_recherche.setColorFilter(getResources().getColor(R.color.primarygraydark), PorterDuff.Mode.SRC_IN);
+
+        //Shall we make gray color on our other icon and text title
+        Icon_annonce.setColorFilter(getResources().getColor(R.color.gray_strong), PorterDuff.Mode.SRC_IN);
+        Icon_notification.setColorFilter(getResources().getColor(R.color.gray_strong), PorterDuff.Mode.SRC_IN);
+
+        //here we are set our icon and text title to update it
         menu.findItem(R.id.conversationpublic).setIcon(Icon_recherche);
         menu.findItem(R.id.conversationpublic).setTitle(recherche_title_text);
+
+        menu.findItem(R.id.conversationprivee).setIcon(Icon_annonce);
+        menu.findItem(R.id.conversationprivee).setTitle(annonce_title_text);
+
+        menu.findItem(R.id.notification).setIcon(Icon_notification);
+        menu.findItem(R.id.notification).setTitle(notification_title_text);
 
         loadFragment(new Conversationspublic());
         BadgeDrawable badge2 = navigation.showBadge(R.id.conversationprivee);
@@ -161,6 +174,9 @@ public class Accueil extends Fragment {
                     recherche_title_text = new SpannableString("Chat Public");
                     notification_title_text = new SpannableString("Notifications");
 
+                    Icon_notification.setColorFilter(getResources().getColor(R.color.gray_strong), PorterDuff.Mode.SRC_IN);
+                    Icon_annonce.setColorFilter(getResources().getColor(R.color.gray_strong), PorterDuff.Mode.SRC_IN);
+
                     Icon_recherche.mutate().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
                     recherche_title_text.setSpan(new ForegroundColorSpan(res.getColor(R.color.colorPrimary)),0,recherche_title_text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     menu.findItem(R.id.conversationpublic).setIcon(Icon_recherche);
@@ -180,6 +196,9 @@ public class Accueil extends Fragment {
                     annonce_title_text = new SpannableString("Chat Privee");
                     recherche_title_text = new SpannableString("Chat Public");
                     notification_title_text = new SpannableString("Notifications");
+
+                    Icon_notification.setColorFilter(getResources().getColor(R.color.gray_strong), PorterDuff.Mode.SRC_IN);
+                    Icon_recherche.setColorFilter(getResources().getColor(R.color.gray_strong), PorterDuff.Mode.SRC_IN);
 
                     Icon_annonce.mutate().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
                     annonce_title_text.setSpan(new ForegroundColorSpan(res.getColor(R.color.colorPrimary)),0,annonce_title_text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -202,6 +221,10 @@ public class Accueil extends Fragment {
                     annonce_title_text = new SpannableString("Chat Privee");
                     recherche_title_text = new SpannableString("Chat Public");
                     notification_title_text = new SpannableString("Notifications");
+
+                    Icon_annonce.setColorFilter(getResources().getColor(R.color.gray_strong), PorterDuff.Mode.SRC_IN);
+                    Icon_recherche.setColorFilter(getResources().getColor(R.color.gray_strong), PorterDuff.Mode.SRC_IN);
+
 
                     Icon_notification.mutate().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
                     notification_title_text.setSpan(new ForegroundColorSpan(res.getColor(R.color.colorPrimary)),0,notification_title_text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

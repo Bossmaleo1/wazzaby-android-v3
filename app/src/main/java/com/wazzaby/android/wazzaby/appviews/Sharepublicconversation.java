@@ -1,7 +1,9 @@
 package com.wazzaby.android.wazzaby.appviews;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -64,6 +66,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,6 +103,11 @@ public class Sharepublicconversation extends AppCompatActivity {
     private boolean status = false;
     private Profil user;
     private com.google.android.material.textfield.TextInputLayout block;
+    private ImageView close_activity;
+    private ImageView send_messagepublic;
+    private ImageView add_picture;
+    private  ImageView insert_picture;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +146,93 @@ public class Sharepublicconversation extends AppCompatActivity {
             }
         });
 
+        close_activity = findViewById(R.id.close_activity);
+        send_messagepublic = findViewById(R.id.send);
+        add_picture = findViewById(R.id.add_picture);
+        insert_picture = findViewById(R.id.insert_picture);
+        context = this;
+
+
+        close_activity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent();
+                setResult(RESULT_OK, i);
+                finish();
+            }
+        });
+
+        send_messagepublic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(validate() == true) {
+                    LIBELLE = editText.getText().toString();
+                    pDialog = new ProgressDialog(Sharepublicconversation.this);
+                    pDialog.setMessage(res.getString(R.string.chargement));
+                    pDialog.setIndeterminate(false);
+                    pDialog.setCancelable(false);
+                    pDialog.show();
+                    if (status) {
+                        Connexion();
+                    } else {
+                        RequeteFinale();
+                    }
+                }
+            }
+        });
+
+        add_picture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Dexter.withActivity(Sharepublicconversation.this)
+                        .withPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        .withListener(new MultiplePermissionsListener() {
+                            @Override
+                            public void onPermissionsChecked(MultiplePermissionsReport report) {
+                                if (report.areAllPermissionsGranted()) {
+                                    takeCameraImage();
+                                    //GalleryTakeImagePickerOptions();
+                                }
+
+                                if (report.isAnyPermissionPermanentlyDenied()) {
+                                    showSettingsDialog();
+                                }
+                            }
+
+                            @Override
+                            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                                token.continuePermissionRequest();
+                            }
+                        }).check();
+            }
+        });
+
+        insert_picture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Dexter.withActivity(Sharepublicconversation.this)
+                        .withPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        .withListener(new MultiplePermissionsListener() {
+                            @Override
+                            public void onPermissionsChecked(MultiplePermissionsReport report) {
+                                if (report.areAllPermissionsGranted()) {
+                                    chooseImageFromGallery();
+                                    //GalleryTakeImagePickerOptions();
+                                }
+
+                                if (report.isAnyPermissionPermanentlyDenied()) {
+                                    showSettingsDialog();
+                                }
+                            }
+
+                            @Override
+                            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                                token.continuePermissionRequest();
+                            }
+                        }).check();
+            }
+        });
+
     }
 
     @Override
@@ -158,84 +253,6 @@ public class Sharepublicconversation extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // User chose the "Settings" item, show the app settings UI...
-                /*Intent i = new Intent(getApplicationContext(),Home.class);
-                startActivity(i);
-                finish();*/
-                Intent i = new Intent();
-                setResult(RESULT_OK, i);
-                finish();
-                return true;
-            case R.id.send :
-                if(validate() == true) {
-                    LIBELLE = editText.getText().toString();
-                    pDialog = new ProgressDialog(Sharepublicconversation.this);
-                    pDialog.setMessage(res.getString(R.string.chargement));
-                    pDialog.setIndeterminate(false);
-                    pDialog.setCancelable(false);
-                    pDialog.show();
-                    if (status) {
-                        Connexion();
-                    } else {
-                        RequeteFinale();
-                    }
-                }
-                return true;
-            case R.id.add_picture:
-                Dexter.withActivity(this)
-                        .withPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        .withListener(new MultiplePermissionsListener() {
-                            @Override
-                            public void onPermissionsChecked(MultiplePermissionsReport report) {
-                                if (report.areAllPermissionsGranted()) {
-                                    takeCameraImage();
-                                    //GalleryTakeImagePickerOptions();
-                                }
-
-                                if (report.isAnyPermissionPermanentlyDenied()) {
-                                    showSettingsDialog();
-                                }
-                            }
-
-                            @Override
-                            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
-                                token.continuePermissionRequest();
-                            }
-                        }).check();
-                return true;
-            case R.id.insert_picture:
-                Dexter.withActivity(this)
-                        .withPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        .withListener(new MultiplePermissionsListener() {
-                            @Override
-                            public void onPermissionsChecked(MultiplePermissionsReport report) {
-                                if (report.areAllPermissionsGranted()) {
-                                    chooseImageFromGallery();
-                                    //GalleryTakeImagePickerOptions();
-                                }
-
-                                if (report.isAnyPermissionPermanentlyDenied()) {
-                                    showSettingsDialog();
-                                }
-                            }
-
-                            @Override
-                            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
-                                token.continuePermissionRequest();
-                            }
-                        }).check();
-                return true;
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-
-        }
-    }
 
     private void Connexion()
     {
@@ -259,6 +276,7 @@ public class Sharepublicconversation extends AppCompatActivity {
                         //pDialog.dismiss();
                         showJSON(response);
                         new UploadFileToServer().execute();
+                        Toast.makeText(getApplicationContext(),"C'est Uploader !!",Toast.LENGTH_LONG).show();
                         // RequeteFinale();
                     }
                 },
@@ -473,7 +491,12 @@ public class Sharepublicconversation extends AppCompatActivity {
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost(Const.dns.concat("/uploads/uploadScript.php"));
 
+
+
             try {
+
+                URL urlObj = new URL(Const.dns.concat("/uploads/uploadScript.php"));
+
                 AndroidMultiPartEntity entity = new AndroidMultiPartEntity(
                         new AndroidMultiPartEntity.ProgressListener() {
 
@@ -486,17 +509,15 @@ public class Sharepublicconversation extends AppCompatActivity {
                 // Adding file data to http body
                 entity.addPart("photostatus", new FileBody(sourceFile));
 
-                // Extra parameters if you want to pass to server
                 entity.addPart("name_file", new StringBody(name_file));
                 httppost.setEntity(entity);
 
-                // Making server call
+
                 HttpResponse response = httpclient.execute(httppost);
                 HttpEntity r_entity = response.getEntity();
 
                 int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode == 200) {
-                    // Server response
                     responseString = EntityUtils.toString(r_entity);
                 } else {
                     responseString = "Error occurred! Http Status Code: "

@@ -45,6 +45,7 @@ import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
 import com.wazzaby.android.wazzaby.model.data.ConversationPublicItem;
+import com.wazzaby.android.wazzaby.model.data.NotificationItem;
 import com.wazzaby.android.wazzaby.model.data.Profil;
 
 import org.json.JSONArray;
@@ -76,6 +77,14 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
     private TextView text_error_message;
     private static int anonymous;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private String dateitem;
+    private int countitem;
+
+
+    /* this attribute it used to help use to stop
+    * our lazzy loading */
+    private int compteur = 0;
+    private int max_compteur = 0;
 
     public Conversationspublic() {
         // Required empty public constructor
@@ -227,21 +236,23 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                         fab.setVisibility(View.VISIBLE);
                         JSONArray reponse = null;
                         try {
+
                             reponse = new JSONArray(response);
-                            if(reponse.length()==0){
+
+                            if(reponse.length()==0) {
                                 text_error_message.setText("Aucune conversation publique pour cette problématique");
                                 materialCardView.setVisibility(View.VISIBLE);
                             }
+
                             for(int i = 0;i<reponse.length();i++)
                             {
                                 object = reponse.getJSONObject(i);
                                 String count = null;
                                 String status_photo = null;
-                                if(object.getString("countcomment").equals("0") || object.getString("countcomment").equals("1"))
-                                {
+
+                                if(object.getString("countcomment").equals("0") || object.getString("countcomment").equals("1")) {
                                     count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
-                                }else
-                                {
+                                }else {
                                     count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
                                 }
 
@@ -251,10 +262,29 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                                         ,object.getString("etat_photo_status"),object.getString("status_photo")
                                         ,object.getInt("anonymous"),object.getBoolean("visibility"),object.getInt("countjaime"),object.getInt("countjaimepas")
                                         ,object.getInt("id_recepteur"),object.getInt("checkmention"),object.getInt("id_checkmention"),object.getInt("id_photo")
-                                        ,object.getString("pushkey_recepteur"));
+                                        ,object.getString("pushkey_recepteur"),0);
+
+
+
+                                if(i == 2) {
+                                    conversationPublicItem.setState_shimmer(1);
+                                }
+
                                 //object.getString("pushkey_recepteur")
                                 data.add(conversationPublicItem);
                             }
+
+                            dateitem = reponse.getJSONObject(2).getJSONObject("date").getString("date");
+                            countitem = reponse.getJSONObject(2).getInt("countmessagepublicitem");
+                            float nombre_de_transition = (countitem/3);
+                            max_compteur = Math.round(nombre_de_transition);
+
+
+                            ConnexionItemMessagePublic(Integer.valueOf(user.getIDPROB()),user.getID(),dateitem);
+
+                            //Toast.makeText(getActivity(),String.valueOf(partieentiere),Toast.LENGTH_LONG).show();
+
+                            //ConnexionItemMessagePublic(int id_problematique,int id_user,String date)
 
 
 
@@ -350,12 +380,114 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRegistrationBroadcastReceiver);
     }
 
-    public void ConnexionInsertNotification(int users_id, String libelle, int id_type,int id_recepteur,int anonymous)
+    /*public void ConnexionInsertNotification(int users_id, String libelle, int id_type,int id_recepteur,int anonymous)
     {
         String message = "Votre message public vient de faire reagir ".concat(user.getPRENOM()+" "+user.getNOM());
         String url_notification = Const.dns.concat("/WazzabyApi/public/api/InsertNotification?users_id=").concat(String.valueOf(session.getUserDetail().get(SessionManager.Key_ID)))
                .concat("&libelle=").concat(message).concat("&id_type=").concat(String.valueOf(id_type))
                 .concat("&etat=0").concat("&id_recepteur=").concat(String.valueOf(id_recepteur)).concat("&anonymous=").concat(String.valueOf(anonymous));
+    }*/
+
+    public void ConnexionItemMessagePublic(int id_problematique, int id_user, final String date) {
+
+        String url_lazy_loading = Const.dns.concat("/WazzabyApi/public/api/displayMessagePublicItem?id_problematique=")
+                .concat(String.valueOf(id_problematique)).concat("&id_user=")
+                .concat(String.valueOf(id_user))
+                .concat("&date=").concat(String.valueOf(date));
+
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_lazy_loading,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        JSONArray reponse = null;
+                        compteur++;
+
+                        try{
+
+                            reponse = new JSONArray(response);
+
+                            for (int i = 0;i<reponse.length();i++) {
+
+                                object = reponse.getJSONObject(i);
+                                String count = null;
+                                if(object.getString("countcomment").equals("0") || object.getString("countcomment").equals("1"))
+                                {
+                                    count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
+                                }else
+                                {
+                                    count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
+                                }
+
+                                ConversationPublicItem conversationPublicItem = new ConversationPublicItem(context,object.getInt("user_id"),object.getInt("id")
+                                        ,object.getString("status_text_content"),object.getString("name"),object.getString("updated")
+                                        ,count,object.getString("user_photo"),R.drawable.baseline_add_comment_black_24
+                                        ,object.getString("etat_photo_status"),object.getString("status_photo")
+                                        ,object.getInt("anonymous"),object.getBoolean("visibility"),object.getInt("countjaime"),object.getInt("countjaimepas")
+                                        ,object.getInt("id_recepteur"),object.getInt("checkmention"),object.getInt("id_checkmention"),object.getInt("id_photo")
+                                        ,object.getString("pushkey_recepteur"),0);
+
+                                if(compteur>1) {
+                                    int item = ((compteur-1)*3)-1;
+                                    data.get(item).setState_shimmer(0);
+                                }
+
+
+                                if(i == 2) {
+                                    conversationPublicItem.setState_shimmer(1);
+                                }
+
+
+
+                                data.add(conversationPublicItem);
+                            }
+
+                            //dateitem = reponse.getJSONObject(2).getJSONObject("date").getString("date");
+                            //countitem = reponse.getJSONObject(2).getInt("countmessagepublicitem");
+                            int temp_countitem = Integer.valueOf(countitem - reponse.length());
+                            if(temp_countitem >max_compteur) {
+                                dateitem = reponse.getJSONObject(2).getJSONObject("date").getString("date");
+                            } else if (temp_countitem == 2) {
+                                dateitem = reponse.getJSONObject(1).getJSONObject("date").getString("date");
+                            } else if (temp_countitem == 1) {
+                                dateitem = reponse.getJSONObject(0).getJSONObject("date").getString("date");
+                            } /*else if (temp_countitem == 3) {
+                                dateitem = reponse.getJSONObject(2).getJSONObject("date").getString("date");
+                            }*/
+
+                            if (compteur <= max_compteur) {
+                                ConnexionItemMessagePublic(Integer.valueOf(user.getIDPROB()), user.getID(), dateitem);
+                            }
+
+                        }catch(JSONException e){
+                            e.printStackTrace();
+                        }
+
+
+
+                        allUsersAdapter.notifyDataSetChanged();
+
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
+
+
     }
 
 }

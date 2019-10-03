@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:shimmer="http://schemas.android.com/tools"
     android:id="@+id/user_first_name"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -13,6 +14,7 @@
         >
 
         <RelativeLayout
+            android:id="@+id/block_shimmer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/background_menu_message_public"
@@ -278,8 +280,40 @@
 
 
 
+
+
             </RelativeLayout>
 
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/block_shimmer"
+            android:background="@drawable/background_menu_message_public"
+            android:layout_marginTop="5dp"
+            >
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/shimmer_view_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="60dp"
+                    shimmer:duration="800">
+
+                        <!-- Adding 3 rows of placeholders -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <include layout="@layout/recipe_placeholder_item" />
+
+                        </LinearLayout>
+
+                </com.facebook.shimmer.ShimmerFrameLayout>
         </RelativeLayout>
 
     </RelativeLayout>

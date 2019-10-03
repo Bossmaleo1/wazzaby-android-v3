@@ -3,7 +3,6 @@ package com.wazzaby.android.wazzaby.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -11,10 +10,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -28,6 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.wazzaby.android.wazzaby.R;
 import com.wazzaby.android.wazzaby.adapter.NotificationAdapter;
@@ -57,12 +55,16 @@ public class Notifications extends Fragment {
     private JSONObject object;
     private List<NotificationItem> data = new ArrayList<>();
     private NotificationAdapter allUsersAdapter;
-    private ProgressBar progressBar;
+    //private ProgressBar progressBar;
     private LinearLayout materialCardView;
     private RecyclerView recyclerView;
     private Snackbar snackbar;
     private TextView error_message;
     private CoordinatorLayout coordinatorLayout;
+    private ShimmerFrameLayout mShimmerViewContainer;
+    private String date;
+    private int Countnotification;
+    private RelativeLayout notification_main_shimmer;
 
     public Notifications() {
         // Required empty public constructor
@@ -78,11 +80,12 @@ public class Notifications extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View bossmaleo = inflater.inflate(R.layout.notifications, container, false);
-        progressBar = bossmaleo.findViewById(R.id.progressbar);
+        //progressBar = bossmaleo.findViewById(R.id.progressbar);
         materialCardView = bossmaleo.findViewById(R.id.materialcardview);
         recyclerView = bossmaleo.findViewById(R.id.my_recycler_view);
         error_message = bossmaleo.findViewById(R.id.text_error_message);
         coordinatorLayout =  bossmaleo.findViewById(R.id.coordinatorLayout);
+        notification_main_shimmer = bossmaleo.findViewById(R.id.notification_main_shimmer);
 
         database = new DatabaseHandler(getActivity());
         session = new SessionManager(getActivity());
@@ -91,6 +94,8 @@ public class Notifications extends Fragment {
         url = Const.dns.concat("/WazzabyApi/public/api/displayNotification?id_recepteur=")
                 .concat(String.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
 
+
+        mShimmerViewContainer = bossmaleo.findViewById(R.id.shimmer_view_container);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         allUsersAdapter = new NotificationAdapter(getActivity(),data);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
@@ -116,7 +121,7 @@ public class Notifications extends Fragment {
             @Override
             public void onClick(View view) {
                 materialCardView.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
+                //progressBar.setVisibility(View.VISIBLE);
                 ConnexionNotification();
             }
         });
@@ -126,35 +131,41 @@ public class Notifications extends Fragment {
 
     public void ConnexionNotification() {
 
-        progressBar.setVisibility(View.VISIBLE);
+        //progressBar.setVisibility(View.VISIBLE);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        progressBar.setVisibility(View.GONE);
+                        //progressBar.setVisibility(View.GONE);
                         try {
                             JSONArray reponse = new JSONArray(response);
 
                             if (reponse.length() == 0) {
-                                progressBar.setVisibility(View.GONE);
+                                //progressBar.setVisibility(View.GONE);
                                 error_message.setText(" Vous avez aucune notification");
                                 materialCardView.setVisibility(View.VISIBLE);
-                            }
+                                //progressBar.setVisibility(View.GONE);
+                            } else {
 
-                            for(int i = 0;i<reponse.length();i++)
-                            {
-                                object = reponse.getJSONObject(i);
+                                for (int i = 0; i < reponse.length(); i++) {
+                                    object = reponse.getJSONObject(i);
 
-                                NotificationItem notificationItem
-                                        = new NotificationItem (
-                                        object.getInt("id_messagepublic"),object.getString("updated_messagepublic"),object.getString("libelle"),object.getString("updated"),
-                                        object.getInt("etat"),object.getInt("id_type"),object.getInt("expediteur_id"),object.getInt("notification_id"),object.getInt("id_libelle"),
-                                        object.getString("name_messagepublic"),object.getString("nom"),object.getString("prenom"),object.getString("photo"),object.getInt("countjaime"),
-                                        object.getInt("countjaimepas"),object.getInt("checkmention"),object.getInt("id_checkmention"),object.getString("user_photo_messagepublic")
-                                        ,object.getString("status_text_content_messagepublic"),object.getString("etat_photo_status_messagepublic"),
-                                        object.getString("status_photo_messagepublic"));
-                                data.add(notificationItem);
-                                progressBar.setVisibility(View.GONE);
+                                    NotificationItem notificationItem
+                                            = new NotificationItem(
+                                            object.getInt("id_messagepublic"), object.getString("updated_messagepublic"), object.getString("libelle"), object.getString("updated"),
+                                            object.getInt("etat"), object.getInt("id_type"), object.getInt("expediteur_id"), object.getInt("notification_id"), object.getInt("id_libelle"),
+                                            object.getString("name_messagepublic"), object.getString("nom"), object.getString("prenom"), object.getString("photo"), object.getInt("countjaime"),
+                                            object.getInt("countjaimepas"), object.getInt("checkmention"), object.getInt("id_checkmention"), object.getString("user_photo_messagepublic")
+                                            , object.getString("status_text_content_messagepublic"), object.getString("etat_photo_status_messagepublic"),
+                                            object.getString("status_photo_messagepublic"));
+                                    data.add(notificationItem);
+                                    //progressBar.setVisibility(View.GONE);
+                                }
+
+                                date = reponse.getJSONObject(2).getJSONObject("date").getString("date");
+                                Countnotification = reponse.getJSONObject(2).getInt("countnotification");
+                                ConnexionItemNotification();
+                                //Toast.makeText(getActivity(),String.valueOf(Countnotification),Toast.LENGTH_LONG).show();
                             }
 
                         }catch (JSONException e){
@@ -170,7 +181,10 @@ public class Notifications extends Fragment {
                     public void onErrorResponse(VolleyError error) {
                         error_message.setText(" Erreur reseaux, veuillez reessayer svp !");
                         materialCardView.setVisibility(View.VISIBLE);
-                        progressBar.setVisibility(View.GONE);
+                        mShimmerViewContainer.stopShimmer();
+                        mShimmerViewContainer.setVisibility(View.GONE);
+                        notification_main_shimmer.setVisibility(View.GONE);
+                        //progressBar.setVisibility(View.GONE);
                         snackbar = Snackbar
                                 .make(coordinatorLayout, res.getString(R.string.error_volley_timeouterror), Snackbar.LENGTH_LONG)
                                 .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
@@ -178,12 +192,12 @@ public class Notifications extends Fragment {
                                     public void onClick(View view) {
 
                                         materialCardView.setVisibility(View.GONE);
-                                        progressBar.setVisibility(View.GONE);
+                                        //progressBar.setVisibility(View.GONE);
                                         ConnexionNotification();
                                     }
                                 });
                         snackbar.show();
-                        progressBar.setVisibility(View.GONE);
+                        //progressBar.setVisibility(View.GONE);
                     }
                 }){
             @Override
@@ -246,6 +260,97 @@ public class Notifications extends Fragment {
         }
 
 
+    }
+
+
+    //this web api help use to make our lazzy loading
+    private void ConnexionItemNotification() {
+        String url_lazy_loading = Const.dns.concat("/WazzabyApi/public/api/displayNotificationItem?id_recepteur=")
+                .concat(String.valueOf(session.getUserDetail().get(SessionManager.Key_ID)))
+                .concat("&date=").concat(String.valueOf(date));
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_lazy_loading,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //progressBar.setVisibility(View.GONE);
+                        try {
+                            JSONArray reponse = new JSONArray(response);
+
+                            /*if (reponse.length() == 0) {
+
+                                error_message.setText(" Vous avez aucune notification");
+                                materialCardView.setVisibility(View.VISIBLE);
+                            } else {*/
+
+                                for (int i = 0; i < reponse.length(); i++) {
+                                    object = reponse.getJSONObject(i);
+
+                                    NotificationItem notificationItem
+                                            = new NotificationItem(
+                                            object.getInt("id_messagepublic"), object.getString("updated_messagepublic"), object.getString("libelle"), object.getString("updated"),
+                                            object.getInt("etat"), object.getInt("id_type"), object.getInt("expediteur_id"), object.getInt("notification_id"), object.getInt("id_libelle"),
+                                            object.getString("name_messagepublic"), object.getString("nom"), object.getString("prenom"), object.getString("photo"), object.getInt("countjaime"),
+                                            object.getInt("countjaimepas"), object.getInt("checkmention"), object.getInt("id_checkmention"), object.getString("user_photo_messagepublic")
+                                            , object.getString("status_text_content_messagepublic"), object.getString("etat_photo_status_messagepublic"),
+                                            object.getString("status_photo_messagepublic"));
+                                    data.add(notificationItem);
+                                    //progressBar.setVisibility(View.GONE);
+                                }
+
+                                date = reponse.getJSONObject(2).getString("date");
+                                Countnotification = reponse.getJSONObject(2).getInt("countnotification");
+                            //}
+
+                        }catch (JSONException e){
+                            e.printStackTrace();
+                        }
+
+                        allUsersAdapter.notifyDataSetChanged();
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error_message.setText(" Erreur reseaux, veuillez reessayer svp !");
+                        materialCardView.setVisibility(View.VISIBLE);
+                        //progressBar.setVisibility(View.GONE);
+                        snackbar = Snackbar
+                                .make(coordinatorLayout, res.getString(R.string.error_volley_timeouterror), Snackbar.LENGTH_LONG)
+                                .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                        materialCardView.setVisibility(View.GONE);
+                                        //progressBar.setVisibility(View.GONE);
+                                        ConnexionNotification();
+                                    }
+                                });
+                        snackbar.show();
+                        //progressBar.setVisibility(View.GONE);
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mShimmerViewContainer.startShimmer();
+    }
+
+    @Override
+    public void onPause() {
+        mShimmerViewContainer.stopShimmer();
+        super.onPause();
     }
 
 

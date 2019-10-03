@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.wazzaby.android.wazzaby.R;
-import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.data.NotificationItem;
 
 import java.util.Collections;

@@ -28,12 +28,13 @@ public class ConversationPublicItem {
     private int id_checkmention;
     private int id_photo;
     private String pushkey_recepteur;
+    private int state_shimmer;
 
 
     public ConversationPublicItem(Context context,int ID_EME,int ID,String Contenu,String nameMembreProb,String datetime,String commentnumber
             ,String ImageID,int IconComment,String etat_photo_status,String status_photo
             ,int anonymous,boolean visibility,int countjaime,int countjaimepas,int id_recepteur,int checkmention
-            ,int id_checkmention,int id_photo,String pushkey_recepteur)
+            ,int id_checkmention,int id_photo,String pushkey_recepteur, int state_shimmer)
     {
         this.Contenu = Contenu;
         this.nameMembreProb = nameMembreProb;
@@ -55,6 +56,7 @@ public class ConversationPublicItem {
         this.id_checkmention = id_checkmention;
         this.id_photo = id_photo;
         this.pushkey_recepteur = pushkey_recepteur;
+        this.state_shimmer = state_shimmer;
     }
 
     public Context getContext1() { return context; }
@@ -222,5 +224,13 @@ public class ConversationPublicItem {
 
     public void setPushkey_recepteur(String pushkey_recepteur) {
         this.pushkey_recepteur = pushkey_recepteur;
+    }
+
+    public int getState_shimmer() {
+        return state_shimmer;
+    }
+
+    public void setState_shimmer(int state_shimmer) {
+        this.state_shimmer = state_shimmer;
     }
 }

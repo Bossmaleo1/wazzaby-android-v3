@@ -38,6 +38,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.wazzaby.android.wazzaby.R;
 import com.wazzaby.android.wazzaby.appviews.AfficheCommentairePublic;
@@ -499,8 +500,18 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
                     }
                 }
 
+
             }
         });
+
+        if (data.get(position).getState_shimmer() == 1) {
+            holder.block_shimmer.setVisibility(View.VISIBLE);
+            holder.mShimmerViewContainer.setVisibility(View.VISIBLE);
+            holder.mShimmerViewContainer.startShimmer();
+        } else if (data.get(position).getState_shimmer() == 0) {
+            holder.block_shimmer.setVisibility(View.VISIBLE);
+            holder.mShimmerViewContainer.setVisibility(View.GONE);
+        }
     }
 
 
@@ -532,6 +543,8 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
         TextView nombre_de_jaimepas;
         LinearLayout like_block;
         LinearLayout dislike_block;
+        RelativeLayout block_shimmer;
+        ShimmerFrameLayout mShimmerViewContainer;
 
         public MyViewHolder(View itemView)
         {
@@ -552,6 +565,8 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
             nombre_de_jaimepas = itemView.findViewById(R.id.nombre_de_jaimepas);
             like_block = itemView.findViewById(R.id.like_block);
             dislike_block = itemView.findViewById(R.id.dislike_block);
+            block_shimmer = itemView.findViewById(R.id.block_shimmer);
+            mShimmerViewContainer = itemView.findViewById(R.id.shimmer_view_container);
 
         }
     }

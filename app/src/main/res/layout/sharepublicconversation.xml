@@ -67,7 +67,7 @@
                 >
 
                 <ImageView
-                    android:id="@+id/material_icon_button"
+                    android:id="@+id/close_activity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:tint="@color/colorPrimary"
@@ -81,18 +81,15 @@
                         android:layout_alignParentRight="true"
                         >
 
-                        <androidx.emoji.widget.EmojiButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
 
 
-                        <ImageView
+                        <!--ImageView
                             android:id="@+id/emoji"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:tint="@color/colorPrimary"
                             android:layout_margin="5dp"
-                            android:src="@drawable/baseline_emoji_emotions_black_24"/>
+                            android:src="@drawable/baseline_emoji_emotions_black_24"/-->
 
 
                         <ImageView
