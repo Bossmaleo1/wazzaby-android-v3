@@ -6,11 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.wazzaby.android.wazzaby.R;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
@@ -58,11 +60,19 @@ public class displaycommentaryadapter extends RecyclerView.Adapter<displaycommen
         holder.date.setText(current.getDATETIME());
         Uri uri = Uri.parse(current.getPHOTO());
         holder.icon.setImageURI(uri);
-        /*Glide.with(current.getContext1())
-                .load(current.getPHOTO())
-                .into(holder.icon);*/
+
         holder.icononline.setImageResource(current.getIcononline());
         holder.icononline.setColorFilter(context.getResources().getColor(current.getColor1()));
+
+        if (data.get(position).getState_shimmer() == 1) {
+            holder.block_shimmer.setVisibility(View.VISIBLE);
+            holder.mShimmerViewContainer.setVisibility(View.VISIBLE);
+            holder.mShimmerViewContainer.startShimmer();
+        } else if (data.get(position).getState_shimmer() == 0) {
+            holder.block_shimmer.setVisibility(View.VISIBLE);
+            holder.notre_shimmer.setVisibility(View.GONE);
+            holder.mShimmerViewContainer.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -77,6 +87,9 @@ public class displaycommentaryadapter extends RecyclerView.Adapter<displaycommen
         ImageView icononline;
         TextView date;
         TextView title1;
+        RelativeLayout block_shimmer;
+        ShimmerFrameLayout mShimmerViewContainer;
+        RelativeLayout notre_shimmer;
 
         public MyViewHolder(View itemView)
         {
@@ -86,6 +99,9 @@ public class displaycommentaryadapter extends RecyclerView.Adapter<displaycommen
             icon = itemView.findViewById(R.id.icon);
             icononline = itemView.findViewById(R.id.icononline);
             date =  itemView.findViewById(R.id.date);
+            block_shimmer = itemView.findViewById(R.id.block_shimmer);
+            mShimmerViewContainer = itemView.findViewById(R.id.shimmer_view_container);
+            notre_shimmer = itemView.findViewById(R.id.notre_shimmer);
         }
     }
 

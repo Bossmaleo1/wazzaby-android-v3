@@ -235,7 +235,7 @@ public class NotificationsDetails extends AppCompatActivity {
                 if(!editcomment.getText().toString().isEmpty()) {
                     displaycommentary commentary = new displaycommentary("http://wazzaby.com/uploads/photo_de_profil/" + user.getPHOTO(), context, R.drawable.ic_done_black_18dp
                             , "A l'instant", R.color.greencolor, 0, editcomment.getText().toString(),
-                            user.getPRENOM() + " " + user.getNOM());
+                            user.getPRENOM() + " " + user.getNOM(),0);
 
                     block_affichage_error.setVisibility(View.GONE);
                     /*Ligne de code permettant de
@@ -323,7 +323,7 @@ public class NotificationsDetails extends AppCompatActivity {
                                 object = reponse.getJSONObject(i);
                                 displaycommentary commentary = new displaycommentary(object.getString("user_photo"),context,R.drawable.ic_done_all_black_18dp
                                         ,object.getString("updated"),R.color.greencolor,2,object.getString("status_text_content"),
-                                        object.getString("name"));
+                                        object.getString("name"),0);
                                 data.add(commentary);
 
                             }

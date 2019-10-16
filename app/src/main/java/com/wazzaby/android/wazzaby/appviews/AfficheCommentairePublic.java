@@ -76,6 +76,12 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
     private LinearLayout block_affichage_error;
     private TextView Error_text_message;
 
+    private int countcommentitem;
+    private String dateitem;
+    private int commentitem_id;
+    private String libelleitem;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +112,7 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(allUsersAdapter);
+
         this.Connexion();
         block_affichage_error.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,7 +151,7 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
                 if(!editcomment.getText().toString().isEmpty()) {
                     displaycommentary commentary = new displaycommentary("http://wazzaby.com/uploads/photo_de_profil/" + user.getPHOTO(), context, R.drawable.ic_done_black_18dp
                             , "A l'instant", R.color.greencolor, 0, editcomment.getText().toString(),
-                            user.getPRENOM() + " " + user.getNOM());
+                            user.getPRENOM() + " " + user.getNOM(),0);
                     block_affichage_error.setVisibility(View.GONE);
                     /*Ligne de code permettant de
                     * faire une insertion du message en tete
@@ -253,15 +260,23 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
                     public void onResponse(String response) {
                         try {
                             JSONArray reponse = new JSONArray(response);
-                            for(int i = 0;i<reponse.length();i++)
-                            {
-                                object = reponse.getJSONObject(i);
+                            /*for(int i = 0;i<reponse.length();i++)
+                            {*/
+
+                            if  (reponse.length()>0) {
+                                object = reponse.getJSONObject(0);
                                 displaycommentary commentary = new displaycommentary(object.getString("user_photo"),context,R.drawable.ic_done_all_black_18dp
                                         ,object.getString("updated"),R.color.greencolor,2,object.getString("status_text_content"),
-                                        object.getString("name"));
+                                        object.getString("name"),0);
                                 data.add(commentary);
 
+                                countcommentitem = object.getInt("countcomment");
+                                dateitem = object.getJSONObject("date").getString("date");
+                                commentitem_id = object.getInt("id");
+                                libelleitem = object.getString("status_text_content");
+                                ConnexionCommentItem();
                             }
+
 
                             if (reponse.length() == 0) {
                                 Error_text_message.setText(" Aucun commentaire");
@@ -400,6 +415,11 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
                     public void onResponse(String response) {
                         data.get((data.size()-1)).setIcononline(R.drawable.ic_done_all_black_18dp);
                         allUsersAdapter.notifyDataSetChanged();
+
+                        if (!String.valueOf(intent.getIntExtra("id_recepteur",0)).equals(String.valueOf(user.getID()))) {
+
+                            Connexion_Insert_Notification();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -419,9 +439,6 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
 
-        if (!String.valueOf(intent.getIntExtra("id_recepteur",0)).equals(user.getID())) {
-            Connexion_Insert_Notification();
-        }
     }
 
     public void Connexion_Insert_Notification() {
@@ -461,5 +478,98 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
+    }
+
+
+    public void ConnexionCommentItem() {
+
+        String url_displaycommentitem = Const.dns
+                .concat("/WazzabyApi/public/api/displayCommentItem?id_messagepublic=")
+                .concat(String.valueOf(intent.getIntExtra("nom",0)))
+                .concat("&date=").concat(dateitem)
+                .concat("&libelle=").concat(libelleitem)
+                .concat("&comment_id=").concat(String.valueOf(commentitem_id));
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_displaycommentitem,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+
+                            JSONArray reponse = new JSONArray(response);
+
+                            if (reponse.length()==1) {
+
+                                int tempcountitem = Integer.valueOf(countcommentitem - data.size());
+
+                                if(tempcountitem >= 1) {
+
+                                    object = reponse.getJSONObject(0);
+                                    displaycommentary commentary = new displaycommentary(object.getString("user_photo"), context, R.drawable.ic_done_all_black_18dp
+                                            , object.getString("updated"), R.color.greencolor, 2, object.getString("status_text_content"),
+                                            object.getString("name"),1);
+
+                                    //countcommentitem = object.getInt("countcomment");
+                                    dateitem = object.getJSONObject("date").getString("date");
+                                    commentitem_id = object.getInt("id");
+                                    libelleitem = object.getString("status_text_content");
+
+                                    //shall we test if our data array is not empty
+                                    if(data.size()>0) {
+                                        //we block our previous shimmer the shimmer of our last item
+                                        data.get((data.size()-1)).setState_shimmer(0);
+                                    }
+                                    data.add(commentary);
+
+
+
+                                    ConnexionCommentItem();
+                                }
+
+                                if (tempcountitem == 1) {
+                                    data.get((data.size() - 1)).setState_shimmer(0);
+                                }
+
+
+                            }
+
+                        }catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        allUsersAdapter.notifyDataSetChanged();
+                            /*for(int i = 0;i<reponse.length();i++)
+                            {*/
+
+                        /*if  (reponse.length()>0) {
+                            object = reponse.getJSONObject(0);
+                            displaycommentary commentary = new displaycommentary(object.getString("user_photo"),context,R.drawable.ic_done_all_black_18dp
+                                    ,object.getString("updated"),R.color.greencolor,2,object.getString("status_text_content"),
+                                    object.getString("name"));
+                            data.add(commentary);
+
+                            countcommentitem = object.getInt("countcomment");
+                            dateitem = object.getJSONObject("date").getString("date");
+                            commentitem_id = object.getInt("id");
+                            libelleitem = object.getString("status_text_content");
+                        }*/
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+
     }
 }

@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -64,6 +66,7 @@ public class Notifications extends Fragment {
     private ShimmerFrameLayout mShimmerViewContainer;
     private String date;
     private int Countnotification;
+    private int notification_id;
     private RelativeLayout notification_main_shimmer;
 
     public Notifications() {
@@ -137,9 +140,9 @@ public class Notifications extends Fragment {
                     @Override
                     public void onResponse(String response) {
                         //progressBar.setVisibility(View.GONE);
+
                         try {
                             JSONArray reponse = new JSONArray(response);
-
                             if (reponse.length() == 0) {
                                 //progressBar.setVisibility(View.GONE);
                                 error_message.setText(" Vous avez aucune notification");
@@ -147,8 +150,10 @@ public class Notifications extends Fragment {
                                 //progressBar.setVisibility(View.GONE);
                             } else {
 
-                                for (int i = 0; i < reponse.length(); i++) {
-                                    object = reponse.getJSONObject(i);
+                                //for (int i = 0; i < reponse.length(); i++) {
+                                    object = reponse.getJSONObject(0);
+
+
 
                                     NotificationItem notificationItem
                                             = new NotificationItem(
@@ -160,12 +165,12 @@ public class Notifications extends Fragment {
                                             object.getString("status_photo_messagepublic"));
                                     data.add(notificationItem);
                                     //progressBar.setVisibility(View.GONE);
-                                }
+                                //}
 
-                                date = reponse.getJSONObject(2).getJSONObject("date").getString("date");
-                                Countnotification = reponse.getJSONObject(2).getInt("countnotification");
+                                date = reponse.getJSONObject(0).getJSONObject("date").getString("date");
+                                Countnotification = reponse.getJSONObject(0).getInt("countnotification");
+                                notification_id = reponse.getJSONObject(0).getInt("notification_id");
                                 ConnexionItemNotification();
-                                //Toast.makeText(getActivity(),String.valueOf(Countnotification),Toast.LENGTH_LONG).show();
                             }
 
                         }catch (JSONException e){
@@ -267,45 +272,41 @@ public class Notifications extends Fragment {
     private void ConnexionItemNotification() {
         String url_lazy_loading = Const.dns.concat("/WazzabyApi/public/api/displayNotificationItem?id_recepteur=")
                 .concat(String.valueOf(session.getUserDetail().get(SessionManager.Key_ID)))
-                .concat("&date=").concat(String.valueOf(date));
+                .concat("&date=").concat(String.valueOf(date))
+                .concat("&notification_id=").concat(String.valueOf(notification_id));
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url_lazy_loading,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //progressBar.setVisibility(View.GONE);
+
                         try {
+
                             JSONArray reponse = new JSONArray(response);
 
-                            /*if (reponse.length() == 0) {
 
-                                error_message.setText(" Vous avez aucune notification");
-                                materialCardView.setVisibility(View.VISIBLE);
-                            } else {*/
+                            object = reponse.getJSONObject(0);
+                            int tempcountitemp = Integer.valueOf(Countnotification - data.size());
 
-                                for (int i = 0; i < reponse.length(); i++) {
-                                    object = reponse.getJSONObject(i);
+                            if (tempcountitemp >= 1) {
+                                NotificationItem notificationItem
+                                        = new NotificationItem(
+                                        object.getInt("id_messagepublic"), object.getString("updated_messagepublic"), object.getString("libelle"), object.getString("updated"),
+                                        object.getInt("etat"), object.getInt("id_type"), object.getInt("expediteur_id"), object.getInt("notification_id"), object.getInt("id_libelle"),
+                                        object.getString("name_messagepublic"), object.getString("nom"), object.getString("prenom"), object.getString("photo"), object.getInt("countjaime"),
+                                        object.getInt("countjaimepas"), object.getInt("checkmention"), object.getInt("id_checkmention"), object.getString("user_photo_messagepublic")
+                                        , object.getString("status_text_content_messagepublic"), object.getString("etat_photo_status_messagepublic"),
+                                        object.getString("status_photo_messagepublic"));
+                                data.add(notificationItem);
+                                date = reponse.getJSONObject(0).getJSONObject("date").getString("date");
+                                notification_id = reponse.getJSONObject(0).getInt("notification_id");
+                                ConnexionItemNotification();
+                            }
 
-                                    NotificationItem notificationItem
-                                            = new NotificationItem(
-                                            object.getInt("id_messagepublic"), object.getString("updated_messagepublic"), object.getString("libelle"), object.getString("updated"),
-                                            object.getInt("etat"), object.getInt("id_type"), object.getInt("expediteur_id"), object.getInt("notification_id"), object.getInt("id_libelle"),
-                                            object.getString("name_messagepublic"), object.getString("nom"), object.getString("prenom"), object.getString("photo"), object.getInt("countjaime"),
-                                            object.getInt("countjaimepas"), object.getInt("checkmention"), object.getInt("id_checkmention"), object.getString("user_photo_messagepublic")
-                                            , object.getString("status_text_content_messagepublic"), object.getString("etat_photo_status_messagepublic"),
-                                            object.getString("status_photo_messagepublic"));
-                                    data.add(notificationItem);
-                                    //progressBar.setVisibility(View.GONE);
-                                }
-
-                                date = reponse.getJSONObject(2).getString("date");
-                                Countnotification = reponse.getJSONObject(2).getInt("countnotification");
-                            //}
-
-                        }catch (JSONException e){
+                        }catch (JSONException e) {
                             e.printStackTrace();
                         }
 
-                        allUsersAdapter.notifyDataSetChanged();
+                            allUsersAdapter.notifyDataSetChanged();
 
                     }
                 },

@@ -21,9 +21,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -45,6 +48,18 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.vanniktech.emoji.EmojiEditText;
+import com.vanniktech.emoji.EmojiManager;
+import com.vanniktech.emoji.EmojiPopup;
+import com.vanniktech.emoji.EmojiTextView;
+import com.vanniktech.emoji.google.GoogleEmojiProvider;
+import com.vanniktech.emoji.ios.IosEmojiProvider;
+import com.vanniktech.emoji.listeners.OnEmojiBackspaceClickListener;
+import com.vanniktech.emoji.listeners.OnEmojiPopupDismissListener;
+import com.vanniktech.emoji.listeners.OnEmojiPopupShownListener;
+import com.vanniktech.emoji.listeners.OnSoftKeyboardCloseListener;
+import com.vanniktech.emoji.listeners.OnSoftKeyboardOpenListener;
+import com.vanniktech.emoji.twitter.TwitterEmojiProvider;
 import com.wazzaby.android.wazzaby.R;
 import com.wazzaby.android.wazzaby.connInscript.AndroidMultiPartEntity;
 import com.wazzaby.android.wazzaby.model.Const;
@@ -108,6 +123,10 @@ public class Sharepublicconversation extends AppCompatActivity {
     private ImageView add_picture;
     private  ImageView insert_picture;
     private Context context;
+    //private EmojiEditText emojiEditText;
+    private ImageView add_emoji;
+    private RelativeLayout rootviewemoji;
+    private boolean visibility_emoji = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +141,10 @@ public class Sharepublicconversation extends AppCompatActivity {
         block = findViewById(R.id.block_edittext);
         this.etat = "1";
         this.status = false;
+        //the emoji showing condition
+        visibility_emoji = true;
+        add_emoji = findViewById(R.id.add_emoji);
+        rootviewemoji = findViewById(R.id.myemojiview);
         //setSupportActionBar(toolbar);
         //Drawable maleoIcon = res.getDrawable(R.drawable.ic_close_black_24dp);
         //maleoIcon.mutate().setColorFilter(Color.parseColor("#188dc8") ,PorterDuff.Mode.SRC_IN);
@@ -129,6 +152,22 @@ public class Sharepublicconversation extends AppCompatActivity {
         //this.getSupportActionBar().setHomeAsUpIndicator(maleoIcon);
         //getSupportActionBar().setDisplayShowHomeEnabled(true);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        /*emojiEditText = findViewById(R.id.emojiEditText);
+        emojiEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final EmojiPopup emojiPopup = EmojiPopup.Builder.fromRootView(rootView).build(emojiEditText);
+                emojiPopup.toggle();
+            }
+        });*/
+
+
+       /* emojiEditText = findViewById(R.id.emojiEditText);
+        final EmojiPopup emojiPopup = EmojiPopup.Builder.fromRootView(rootView).build(emojiEditText);
+        emojiPopup.toggle();
+        emojiPopup.dismiss(); */
+
         database = new DatabaseHandler(this);
         session = new SessionManager(getApplicationContext());
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
@@ -232,6 +271,48 @@ public class Sharepublicconversation extends AppCompatActivity {
                         }).check();
             }
         });
+
+        add_emoji.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final EmojiPopup emojiPopup;
+                emojiPopup = EmojiPopup.Builder.fromRootView(rootviewemoji)
+                        .setOnEmojiPopupShownListener(new OnEmojiPopupShownListener() {
+                    @Override
+                    public void onEmojiPopupShown() {
+                            Toast.makeText(getApplicationContext(),"Emojikeyboard is showing !!",Toast.LENGTH_LONG).show();
+                    }
+                }).setOnSoftKeyboardCloseListener(new OnSoftKeyboardCloseListener() {
+                            @Override
+                            public void onKeyboardClose() {
+                                Toast.makeText(getApplicationContext(),"Close keyboard declenché !!",Toast.LENGTH_LONG);
+                            }
+                        }).setOnEmojiPopupDismissListener(new OnEmojiPopupDismissListener() {
+                            @Override
+                            public void onEmojiPopupDismiss() {
+                                Toast.makeText(getApplicationContext(),"Dismiss event !!",Toast.LENGTH_LONG);
+                            }
+                        }).setOnSoftKeyboardOpenListener(new OnSoftKeyboardOpenListener() {
+                            @Override
+                            public void onKeyboardOpen(final int keyBoardHeight) {
+                                Toast.makeText(getApplicationContext(),"Board is opening !!",Toast.LENGTH_LONG);
+                            }
+                        }).setOnEmojiBackspaceClickListener(new OnEmojiBackspaceClickListener() {
+                            @Override
+                            public void onEmojiBackspaceClick(View v) {
+                                Toast.makeText(getApplicationContext(),"BackSpace !!",Toast.LENGTH_LONG);
+                            }
+
+                        })
+                        .build(editText);
+                if(visibility_emoji) {
+                    emojiPopup.toggle();
+                }
+
+                visibility_emoji = false;
+            }
+        });
+
 
     }
 
@@ -676,6 +757,12 @@ public class Sharepublicconversation extends AppCompatActivity {
 
 
         return valid;
+    }
+
+    @Override
+    public void onBackPressed() {
+        visibility_emoji = true;
+        Toast.makeText(getApplicationContext(),"The fucking back button is pressing !!",Toast.LENGTH_LONG).show();
     }
 
 }

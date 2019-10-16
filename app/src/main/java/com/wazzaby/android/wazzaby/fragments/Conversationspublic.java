@@ -45,7 +45,6 @@ import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
 import com.wazzaby.android.wazzaby.model.data.ConversationPublicItem;
-import com.wazzaby.android.wazzaby.model.data.NotificationItem;
 import com.wazzaby.android.wazzaby.model.data.Profil;
 
 import org.json.JSONArray;
@@ -77,14 +76,19 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
     private TextView text_error_message;
     private static int anonymous;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
+
+    //shall we declare our item attribut
     private String dateitem;
     private int countitem;
+    private String libelleitem;
+    private String anonymeitem;
+    private int publicconvertitem_id;
 
 
     /* this attribute it used to help use to stop
     * our lazzy loading */
-    private int compteur = 0;
-    private int max_compteur = 0;
+
+    //private boolean swipetest = true;
 
     public Conversationspublic() {
         // Required empty public constructor
@@ -244,47 +248,45 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                                 materialCardView.setVisibility(View.VISIBLE);
                             }
 
-                            for(int i = 0;i<reponse.length();i++)
-                            {
-                                object = reponse.getJSONObject(i);
-                                String count = null;
-                                String status_photo = null;
+                           // Toast.makeText(getActivity(),"  "+response,Toast.LENGTH_LONG).show();
 
-                                if(object.getString("countcomment").equals("0") || object.getString("countcomment").equals("1")) {
-                                    count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
-                                }else {
-                                    count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
-                                }
+                            object = reponse.getJSONObject(0);
+                            String count = null;
+                            String status_photo = null;
 
-                                ConversationPublicItem conversationPublicItem = new ConversationPublicItem(context,object.getInt("user_id"),object.getInt("id")
+                            if(object.getString("countcomment").equals("0") || object.getString("countcomment").equals("1")) {
+                               count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
+                            }else {
+                               count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
+                            }
+
+                            ConversationPublicItem conversationPublicItem = new ConversationPublicItem(context,object.getInt("user_id"),object.getInt("id")
                                         ,object.getString("status_text_content"),object.getString("name"),object.getString("updated")
                                         ,count,object.getString("user_photo"),R.drawable.baseline_add_comment_black_24
                                         ,object.getString("etat_photo_status"),object.getString("status_photo")
                                         ,object.getInt("anonymous"),object.getBoolean("visibility"),object.getInt("countjaime"),object.getInt("countjaimepas")
                                         ,object.getInt("id_recepteur"),object.getInt("checkmention"),object.getInt("id_checkmention"),object.getInt("id_photo")
                                         ,object.getString("pushkey_recepteur"),0);
+                            //shall we set our shimmer to 1 to display our progressbar
+                            //conversationPublicItem.setState_shimmer(1);
+                            data.add(conversationPublicItem);
+
+                            dateitem = reponse.getJSONObject(0).getJSONObject("date").getString("date");
+                            countitem = reponse.getJSONObject(0).getInt("countmessagepublicitem");
+                            libelleitem = reponse.getJSONObject(0).getString("status_text_content");
+                            anonymeitem = reponse.getJSONObject(0).getString("anonymous");
+                            publicconvertitem_id = reponse.getJSONObject(0).getInt("id");
 
 
 
-                                if(i == 2) {
-                                    conversationPublicItem.setState_shimmer(1);
-                                }
 
-                                //object.getString("pushkey_recepteur")
-                                data.add(conversationPublicItem);
-                            }
+                            //ConnexionItemMessagePublic(Integer.valueOf(user.getIDPROB()),user.getID(),dateitem);
+                            ConnexionItemMessagePublic(Integer.valueOf(user.getIDPROB()), user.getID(),
+                                    reponse.getJSONObject(0).getJSONObject("date").getString("date"),
+                                    reponse.getJSONObject(0).getInt("id")
+                                    ,reponse.getJSONObject(0).getString("status_text_content")
+                                    ,reponse.getJSONObject(0).getString("anonymous"));
 
-                            dateitem = reponse.getJSONObject(2).getJSONObject("date").getString("date");
-                            countitem = reponse.getJSONObject(2).getInt("countmessagepublicitem");
-                            float nombre_de_transition = (countitem/3);
-                            max_compteur = Math.round(nombre_de_transition);
-
-
-                            ConnexionItemMessagePublic(Integer.valueOf(user.getIDPROB()),user.getID(),dateitem);
-
-                            //Toast.makeText(getActivity(),String.valueOf(partieentiere),Toast.LENGTH_LONG).show();
-
-                            //ConnexionItemMessagePublic(int id_problematique,int id_user,String date)
 
 
 
@@ -361,9 +363,13 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
 
     @Override
     public void onRefresh() {
-        Toast.makeText(getContext(),"Le machin vient de subir un refresh scarla!!!", Toast.LENGTH_LONG).show();
+        /*Toast.makeText(getContext(),"Le machin vient de subir un refresh scarla!!!", Toast.LENGTH_LONG).show();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRegistrationBroadcastReceiver);*/
         swipeRefreshLayout.setRefreshing(false);
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRegistrationBroadcastReceiver);
+        data.clear();
+        allUsersAdapter.notifyDataSetChanged();
+        mShimmerViewContainer.setVisibility(View.VISIBLE);
+        ConnexionConversationsPublic();
     }
 
     @Override
@@ -380,20 +386,17 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRegistrationBroadcastReceiver);
     }
 
-    /*public void ConnexionInsertNotification(int users_id, String libelle, int id_type,int id_recepteur,int anonymous)
-    {
-        String message = "Votre message public vient de faire reagir ".concat(user.getPRENOM()+" "+user.getNOM());
-        String url_notification = Const.dns.concat("/WazzabyApi/public/api/InsertNotification?users_id=").concat(String.valueOf(session.getUserDetail().get(SessionManager.Key_ID)))
-               .concat("&libelle=").concat(message).concat("&id_type=").concat(String.valueOf(id_type))
-                .concat("&etat=0").concat("&id_recepteur=").concat(String.valueOf(id_recepteur)).concat("&anonymous=").concat(String.valueOf(anonymous));
-    }*/
 
-    public void ConnexionItemMessagePublic(int id_problematique, int id_user, final String date) {
+    public void ConnexionItemMessagePublic(int id_problematique, int id_user,  String date, int publicconvertitem_idnew, String libelle,  String anonyme) {
 
         String url_lazy_loading = Const.dns.concat("/WazzabyApi/public/api/displayMessagePublicItem?id_problematique=")
                 .concat(String.valueOf(id_problematique)).concat("&id_user=")
                 .concat(String.valueOf(id_user))
-                .concat("&date=").concat(String.valueOf(date));
+                .concat("&date=")
+                .concat(String.valueOf(date))
+                .concat("&publicconvert_id=").concat(String.valueOf(publicconvertitem_idnew))
+                .concat("&libelle=").concat(libelle)
+                .concat("&anonyme=").concat(anonyme);
 
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url_lazy_loading,
@@ -402,21 +405,22 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                     public void onResponse(String response) {
 
                         JSONArray reponse = null;
-                        compteur++;
 
                         try{
 
                             reponse = new JSONArray(response);
+                            int temp_countitem = Integer.valueOf(countitem - data.size());
 
-                            for (int i = 0;i<reponse.length();i++) {
+                            //Toast.makeText(getActivity(),"  "+response,Toast.LENGTH_LONG).show();
 
-                                object = reponse.getJSONObject(i);
+                            if(temp_countitem >= 1) {
+
+                                object = reponse.getJSONObject(0);
                                 String count = null;
                                 if(object.getString("countcomment").equals("0") || object.getString("countcomment").equals("1"))
                                 {
                                     count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
-                                }else
-                                {
+                                } else {
                                     count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
                                 }
 
@@ -428,37 +432,34 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                                         ,object.getInt("id_recepteur"),object.getInt("checkmention"),object.getInt("id_checkmention"),object.getInt("id_photo")
                                         ,object.getString("pushkey_recepteur"),0);
 
-                                if(compteur>1) {
-                                    int item = ((compteur-1)*3)-1;
-                                    data.get(item).setState_shimmer(0);
-                                }
-
-
-                                if(i == 2) {
-                                    conversationPublicItem.setState_shimmer(1);
-                                }
-
-
-
-                                data.add(conversationPublicItem);
-                            }
-
-                            //dateitem = reponse.getJSONObject(2).getJSONObject("date").getString("date");
-                            //countitem = reponse.getJSONObject(2).getInt("countmessagepublicitem");
-                            int temp_countitem = Integer.valueOf(countitem - reponse.length());
-                            if(temp_countitem >max_compteur) {
-                                dateitem = reponse.getJSONObject(2).getJSONObject("date").getString("date");
-                            } else if (temp_countitem == 2) {
-                                dateitem = reponse.getJSONObject(1).getJSONObject("date").getString("date");
-                            } else if (temp_countitem == 1) {
+                                libelleitem = object.getString("status_text_content");
+                                anonymeitem = object.getString("anonymous");
+                                publicconvertitem_id = object.getInt("id");
                                 dateitem = reponse.getJSONObject(0).getJSONObject("date").getString("date");
-                            } /*else if (temp_countitem == 3) {
-                                dateitem = reponse.getJSONObject(2).getJSONObject("date").getString("date");
-                            }*/
 
-                            if (compteur <= max_compteur) {
-                                ConnexionItemMessagePublic(Integer.valueOf(user.getIDPROB()), user.getID(), dateitem);
+                                //shall we test if our data array is not empty
+                                if(data.size()>0) {
+                                    //we block our previous shimmer the shimmer of our last item
+                                    data.get((data.size()-1)).setState_shimmer(0);
+                                }
+
+                                //we set our current shimmer to display the shimmer in our item
+                                conversationPublicItem.setState_shimmer(1);
+                                //we add and launch our item loading if the user don't launch the refresh event
+                                //if (swipetest) {
+                                 data.add(conversationPublicItem);
+                                 ConnexionItemMessagePublic(Integer.valueOf(user.getIDPROB()), user.getID(), dateitem,publicconvertitem_id,libelleitem,anonymeitem);
+                                //}
+
                             }
+
+
+                            if (temp_countitem == 1) {
+                                data.get((data.size() - 1)).setState_shimmer(0);
+                            }
+
+
+
 
                         }catch(JSONException e){
                             e.printStackTrace();
@@ -474,7 +475,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        Toast.makeText(getActivity(),"Une erreur réseau vient de se produire !!",Toast.LENGTH_LONG).show();
                     }
                 }){
             @Override

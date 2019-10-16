@@ -16,8 +16,9 @@ public class displaycommentary {
     private int ID;
     private String NOM;
     private String DATETIME;
+    private int state_shimmer;
 
-    public displaycommentary(String PHOTO, Context context1, int icononline, String title,int color1,int id,String datetime,String nom) {
+    public displaycommentary(String PHOTO, Context context1, int icononline, String title,int color1,int id,String datetime,String nom,int state_shimmer) {
         this.PHOTO = PHOTO;
         this.context1 = context1;
         this.icononline = icononline;
@@ -26,6 +27,7 @@ public class displaycommentary {
         this.ID = id;
         this.DATETIME = datetime;
         this.NOM = nom;
+        this.state_shimmer = state_shimmer;
     }
 
     public int getColor1() {
@@ -90,5 +92,13 @@ public class displaycommentary {
 
     public void setNOM(String NOM) {
         this.NOM = NOM;
+    }
+
+    public void setState_shimmer(int state_shimmer) {
+        this.state_shimmer = state_shimmer;
+    }
+
+    public int getState_shimmer() {
+        return state_shimmer;
     }
 }

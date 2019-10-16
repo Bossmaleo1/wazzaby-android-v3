@@ -92,6 +92,8 @@
                             android:src="@drawable/baseline_emoji_emotions_black_24"/-->
 
 
+
+
                         <ImageView
                              android:id="@+id/add_picture"
                              android:layout_width="wrap_content"
@@ -125,11 +127,11 @@
                 android:id="@+id/block_edittext"
                 android:layout_below="@+id/optionbutton"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:hint="Votre publication">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <com.vanniktech.emoji.EmojiEditText
                     android:id="@+id/textArea_information"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -137,9 +139,33 @@
                     android:inputType="textMultiLine"
                     android:overScrollMode="always"
                     android:scrollbarStyle="insideInset"
+                    android:lines="10"
+                    android:maxLines="11"
                     android:scrollbars="vertical"
                     android:scrollHorizontally="true" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageView
+                android:id="@+id/add_emoji"
+                android:layout_below="@+id/block_edittext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:tint="@color/colorPrimary"
+                android:layout_margin="5dp"
+                android:src="@drawable/ic_insert_emoticon_black_24dp"/>
+
+            <RelativeLayout
+                android:id="@+id/myemojiview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/add_emoji"
+                >
+
+            </RelativeLayout>
+
+
+
 
         </RelativeLayout>
 

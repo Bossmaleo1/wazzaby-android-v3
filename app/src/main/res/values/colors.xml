@@ -15,6 +15,7 @@
     <color name="chef">#777</color>
     <color name="timestamp">#777</color>
     <color name="graydark">#212121</color>
-
     <color name="gray_strong">#616161</color>
+
+    <color name="background_gray">#F5F5F5</color>
 </resources>

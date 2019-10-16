@@ -37,6 +37,7 @@ import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
 import com.wazzaby.android.wazzaby.model.data.ConversationPublicItem;
+import com.wazzaby.android.wazzaby.model.data.NotificationItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,6 +63,11 @@ public class Historique extends AppCompatActivity implements SwipeRefreshLayout.
     private ShimmerFrameLayout mShimmerViewContainer;
     public static RecyclerView recyclerView;
     private ConversationspublicAdapter allUsersAdapter;
+
+    private String dateitem;
+    private int countitem;
+    private int publicconvert_id;
+    private String libelleitem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,34 +126,32 @@ public class Historique extends AppCompatActivity implements SwipeRefreshLayout.
                         JSONArray reponse = null;
                         try {
                             reponse = new JSONArray(response);
-                            for(int i = 0;i<reponse.length();i++)
+                            object = reponse.getJSONObject(0);
+                            String count = null;
+                            if(object.getString("countcomment").equals("0") || object.getString("countcomment").equals("1"))
                             {
-                                object = reponse.getJSONObject(i);
-                                String count = null;
-                                if(object.getString("countcomment").equals("0") || object.getString("countcomment").equals("1"))
-                                {
                                     count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
-                                }else
-                                {
+                            }else {
                                     count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
-                                }
+                            }
 
 
-                                ConversationPublicItem conversationPublicItem = new ConversationPublicItem(context,object.getInt("user_id"),object.getInt("id")
+                            ConversationPublicItem conversationPublicItem = new ConversationPublicItem(context,object.getInt("user_id"),object.getInt("id")
                                         ,object.getString("status_text_content"),object.getString("name"),object.getString("updated")
                                         ,count,object.getString("user_photo"),R.drawable.baseline_add_comment_black_24
                                         ,object.getString("etat_photo_status"),object.getString("status_photo")
                                         ,0,object.getBoolean("visibility"),object.getInt("countjaime"),object.getInt("countjaimepas")
                                         ,object.getInt("id_recepteur"),object.getInt("checkmention"),object.getInt("id_checkmention"),object.getInt("id_photo"),"mettre la pushkey ici",0);
+                            dateitem = object.getJSONObject("date").getString("date");
+                            countitem = object.getInt("countmessagepublichistorique");
+                            publicconvert_id = object.getInt("id");
+                            libelleitem = object.getString("status_text_content");
 
-                                if(i == 2) {
+                           /*- if(i == 2) {
                                     conversationPublicItem.setState_shimmer(1);
-                                }
-                                data.add(conversationPublicItem);
-                            }
-
-
-
+                            }*/
+                             data.add(conversationPublicItem);
+                            ConnexionHistoriqueItem();
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -270,6 +274,105 @@ public class Historique extends AppCompatActivity implements SwipeRefreshLayout.
         requestQueue.add(stringRequest);
     }
 
+
+    public void ConnexionHistoriqueItem() {
+        String url_lazy_loading = Const.dns.concat("/WazzabyApi/public/api/HistoriqueMessagePublicItem?id_problematique=")
+                .concat(String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB()))
+                .concat("&id_user=").concat(String.valueOf(session.getUserDetail().get(SessionManager.Key_ID)))
+                .concat("&publicconvert_id=").concat(String.valueOf(publicconvert_id))
+                .concat("&date=").concat(String.valueOf(dateitem))
+                .concat("&libelle=").concat(String.valueOf(libelleitem));
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_lazy_loading,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        try {
+
+                            JSONArray reponse = new JSONArray(response);
+                            object = reponse.getJSONObject(0);
+                            int temp_countitem = Integer.valueOf(countitem - data.size());
+                            if (temp_countitem >= 1) {
+                                String count = null;
+                                if(object.getString("countcomment").equals("0") || object.getString("countcomment").equals("1"))
+                                {
+                                    count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
+                                }else {
+                                    count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
+                                }
+
+                                ConversationPublicItem conversationPublicItem = new ConversationPublicItem(context,object.getInt("user_id"),object.getInt("id")
+                                        ,object.getString("status_text_content"),object.getString("name"),object.getString("updated")
+                                        ,count,object.getString("user_photo"),R.drawable.baseline_add_comment_black_24
+                                        ,object.getString("etat_photo_status"),object.getString("status_photo")
+                                        ,0,object.getBoolean("visibility"),object.getInt("countjaime"),object.getInt("countjaimepas")
+                                        ,object.getInt("id_recepteur"),object.getInt("checkmention"),object.getInt("id_checkmention"),object.getInt("id_photo"),"mettre la pushkey ici",0);
+
+                                dateitem = object.getJSONObject("date").getString("date");
+                                publicconvert_id = object.getInt("id");
+                                libelleitem = object.getString("status_text_content");
+                                //shall we test if our data array is not empty
+                                if(data.size()>0) {
+                                    //we block our previous shimmer the shimmer of our last item
+                                    data.get((data.size()-1)).setState_shimmer(0);
+                                }
+
+                                //we set our current shimmer to display the shimmer in our item
+                                conversationPublicItem.setState_shimmer(1);
+
+
+                                data.add(conversationPublicItem);
+                                ConnexionHistoriqueItem();
+                            }
+
+                            if (temp_countitem == 1) {
+                                data.get((data.size() - 1)).setState_shimmer(0);
+                            }
+
+
+
+
+
+                        }catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        allUsersAdapter.notifyDataSetChanged();
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        /*error_message.setText(" Erreur reseaux, veuillez reessayer svp !");
+                        materialCardView.setVisibility(View.VISIBLE);
+                        snackbar = Snackbar
+                                .make(coordinatorLayout, res.getString(R.string.error_volley_timeouterror), Snackbar.LENGTH_LONG)
+                                .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                        materialCardView.setVisibility(View.GONE);
+                                        //progressBar.setVisibility(View.GONE);
+                                        ConnexionNotification();
+                                    }
+                                });
+                        snackbar.show();*/
+                        //progressBar.setVisibility(View.GONE);
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(stringRequest);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -282,7 +385,12 @@ public class Historique extends AppCompatActivity implements SwipeRefreshLayout.
 
     @Override
     public void onRefresh() {
-        Toast.makeText(getApplicationContext(),"Le machin vient de subir un refresh scarla!!!", Toast.LENGTH_LONG).show();
+        /*Toast.makeText(getApplicationContext(),"Le machin vient de subir un refresh scarla!!!", Toast.LENGTH_LONG).show();
+        swipeRefreshLayout.setRefreshing(false);*/
         swipeRefreshLayout.setRefreshing(false);
+        data.clear();
+        allUsersAdapter.notifyDataSetChanged();
+        mShimmerViewContainer.setVisibility(View.VISIBLE);
+        ConnexionHistorique();
     }
 }
