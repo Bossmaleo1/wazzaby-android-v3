@@ -67,6 +67,9 @@ import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
 import com.wazzaby.android.wazzaby.model.data.Profil;
 
+import net.gotev.uploadservice.MultipartUploadRequest;
+import net.gotev.uploadservice.UploadNotificationConfig;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -85,6 +88,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static androidx.core.content.FileProvider.getUriForFile;
 
@@ -128,6 +132,8 @@ public class Sharepublicconversation extends AppCompatActivity {
     private RelativeLayout rootviewemoji;
     private boolean visibility_emoji = true;
 
+    public Uri globale_uri;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,28 +151,7 @@ public class Sharepublicconversation extends AppCompatActivity {
         visibility_emoji = true;
         add_emoji = findViewById(R.id.add_emoji);
         rootviewemoji = findViewById(R.id.myemojiview);
-        //setSupportActionBar(toolbar);
-        //Drawable maleoIcon = res.getDrawable(R.drawable.ic_close_black_24dp);
-        //maleoIcon.mutate().setColorFilter(Color.parseColor("#188dc8") ,PorterDuff.Mode.SRC_IN);
-        //getSupportActionBar().setTitle("");
-        //this.getSupportActionBar().setHomeAsUpIndicator(maleoIcon);
-        //getSupportActionBar().setDisplayShowHomeEnabled(true);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        /*emojiEditText = findViewById(R.id.emojiEditText);
-        emojiEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final EmojiPopup emojiPopup = EmojiPopup.Builder.fromRootView(rootView).build(emojiEditText);
-                emojiPopup.toggle();
-            }
-        });*/
-
-
-       /* emojiEditText = findViewById(R.id.emojiEditText);
-        final EmojiPopup emojiPopup = EmojiPopup.Builder.fromRootView(rootView).build(emojiEditText);
-        emojiPopup.toggle();
-        emojiPopup.dismiss(); */
 
         database = new DatabaseHandler(this);
         session = new SessionManager(getApplicationContext());
@@ -356,9 +341,7 @@ public class Sharepublicconversation extends AppCompatActivity {
                     public void onResponse(String response) {
                         //pDialog.dismiss();
                         showJSON(response);
-                        new UploadFileToServer().execute();
-                        Toast.makeText(getApplicationContext(),"C'est Uploader !!",Toast.LENGTH_LONG).show();
-                        // RequeteFinale();
+                        UploadMultipart();
                     }
                 },
                 new Response.ErrorListener() {
@@ -500,6 +483,7 @@ public class Sharepublicconversation extends AppCompatActivity {
             case REQUEST_IMAGE_CAPTURE:
                 if (resultCode == RESULT_OK) {
                     Uri imageUri = getCacheImagePath(fileName);
+                    globale_uri = getCacheImagePath(fileName);
                     status = true;
                     extension = "jpg";
                     try {
@@ -517,6 +501,7 @@ public class Sharepublicconversation extends AppCompatActivity {
             case REQUEST_GALLERY_IMAGE:
                 if (resultCode == RESULT_OK) {
                     Uri imageUri = data.getData();
+                    globale_uri = data.getData();
                     extension = "jpg";
                     sourceFile = new File(getPathGallery(imageUri));
                     status = true;
@@ -623,6 +608,45 @@ public class Sharepublicconversation extends AppCompatActivity {
             RequeteFinale();
         }
 
+    }
+
+    public void UploadMultipart() {
+
+        String path = getPath(globale_uri);
+        try {
+
+            String uploadId = UUID.randomUUID().toString();
+
+            new MultipartUploadRequest(this, uploadId, Const.dns.concat("/uploads/uploadScript.php"))
+                    .addFileToUpload(path, "photostatus") //Adding file
+                    .addParameter("name_file", name_file)
+                    .setNotificationConfig(new UploadNotificationConfig())
+                    .setMaxRetries(2)
+                    .startUpload();
+            etat = "0";
+            RequeteFinale();
+
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //method to get the file path from uri
+    public String getPath(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        String document_id = cursor.getString(0);
+        document_id = document_id.substring(document_id.lastIndexOf(":") + 1);
+        cursor.close();
+
+        cursor = getContentResolver().query(
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
+        cursor.moveToFirst();
+        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+        cursor.close();
+
+        return path;
     }
 
 

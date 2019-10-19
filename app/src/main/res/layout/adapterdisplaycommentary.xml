@@ -9,120 +9,143 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
+        android:padding="0dp"
+        android:background="@color/background_gray"
         >
 
-        <RelativeLayout
-            android:id="@+id/block_shimmer"
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="2"
+            android:tint="@android:color/white"
+            android:src="@drawable/arrow_bg1" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:padding="5dp"
+            android:orientation="vertical"
             >
 
             <RelativeLayout
+                android:id="@+id/block_shimmer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/rounded_corner_commentary"
                 >
 
 
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/icon"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_centerVertical="true"
-                    fresco:roundedCornerRadius="20dp"
-                    />
-
-                <LinearLayout
-                    android:id="@+id/block"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_toRightOf="@id/icon"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="4dp"
-                    >
-
-                    <TextView
-                        android:id="@+id/title1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        />
-
-                    <TextView
-                        android:id="@+id/title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textSize="10dp"
-                        />
-
-                    <TextView
-                        android:id="@+id/date"
-                        android:layout_marginTop="4dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textStyle="bold"
-                        android:textSize="10dp"
-                        />
-                </LinearLayout>
-
 
                 <RelativeLayout
-                    android:layout_below="@+id/icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     >
 
-                    <ImageView
-                        android:id="@+id/icononline"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_alignParentRight="true"
-                        android:tint="@color/colorPrimary"
-                        android:paddingRight="10dp"
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        android:id="@+id/icon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_centerVertical="true"
+                        fresco:roundedCornerRadius="20dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_weight="3"
                         />
 
+                    <LinearLayout
+                        android:id="@+id/block"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_toRightOf="@id/icon"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="4dp"
+                        >
+
+                        <TextView
+                            android:id="@+id/title1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            />
+
+                        <TextView
+                            android:id="@+id/title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:textSize="10dp"
+                            />
+
+                        <TextView
+                            android:id="@+id/date"
+                            android:layout_marginTop="4dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:textStyle="bold"
+                            android:textSize="10dp"
+                            />
+                    </LinearLayout>
+
+
+                    <RelativeLayout
+                        android:layout_below="@+id/icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
+
+                        <ImageView
+                            android:id="@+id/icononline"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentRight="true"
+                            android:tint="@color/colorPrimary"
+                            android:paddingRight="10dp"
+                            />
+
+                    </RelativeLayout>
                 </RelativeLayout>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/notre_shimmer"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@drawable/background_menu_message_public"
+                >
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/shimmer_view_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="vertical"
+                    shimmer:duration="800">
+
+                    <!-- Adding 3 rows of placeholders -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <include layout="@layout/recipe_placeholder_item" />
+
+                    </LinearLayout>
+
+                </com.facebook.shimmer.ShimmerFrameLayout>
             </RelativeLayout>
 
 
-        </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/notre_shimmer"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_below="@+id/block_shimmer"
-            android:background="@drawable/background_menu_message_public"
-            >
-
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/shimmer_view_container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:orientation="vertical"
-                shimmer:duration="800">
-
-                <!-- Adding 3 rows of placeholders -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <include layout="@layout/recipe_placeholder_item" />
-
-                </LinearLayout>
-
-            </com.facebook.shimmer.ShimmerFrameLayout>
-        </RelativeLayout>
-
-
+        </LinearLayout>
 
     </RelativeLayout>
 

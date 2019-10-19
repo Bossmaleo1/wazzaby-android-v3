@@ -13,6 +13,9 @@ import com.vanniktech.emoji.ios.IosEmojiProvider;
 import com.vanniktech.emoji.twitter.TwitterEmojiProvider;
 import com.wazzaby.android.wazzaby.R;
 
+import net.gotev.uploadservice.BuildConfig;
+import net.gotev.uploadservice.UploadService;
+
 public class MyApplication extends Application {
     @Override
     public void onCreate() {
@@ -29,5 +32,6 @@ public class MyApplication extends Application {
         //EmojiManager.install(new IosEmojiProvider());
         EmojiManager.install(new GoogleEmojiProvider());
         //EmojiManager.install(new TwitterEmojiProvider());
+        UploadService.NAMESPACE = BuildConfig.APPLICATION_ID;
     }
 }

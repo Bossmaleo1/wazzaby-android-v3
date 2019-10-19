@@ -37,18 +37,6 @@
                     android:text=""
                     android:textColor="#000" />
 
-                <!--TextView
-                    android:id="@+id/textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="16:48"
-                    android:layout_marginLeft="-38dp"
-                    android:layout_marginTop="15dp"
-                    android:textSize="10dp"
-                    android:paddingBottom="3dp"
-                    /-->
-
-
 
             </LinearLayout>
 

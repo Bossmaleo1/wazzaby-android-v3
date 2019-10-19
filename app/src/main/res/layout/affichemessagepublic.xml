@@ -130,7 +130,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="8"
-                            android:tint="@color/colorPrimary"
+                            android:tint="@color/primarygraydark"
                             android:layout_gravity="center_vertical"
                             android:src="@drawable/baseline_send_black_24" />
                 </LinearLayout>

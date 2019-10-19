@@ -46,7 +46,58 @@ public class categorieProbAdapter  extends RecyclerView.Adapter<categorieProbAda
     public void onBindViewHolder(categorieProbAdapter.MyViewHolder holder, int position) {
         Categorie_prob current = data.get(position);
         holder.title.setText(current.getLibelle());
-        holder.icon.setImageResource(R.drawable.ic_subject_black_24dp);
+        if (current.getLang().equals("fr")) {
+                if(current.getLibelle().equals("Sport")) {
+                    holder.icon.setImageResource(R.drawable.baseline_sports_black_24);
+                } else if (current.getLibelle().equals("Musique")) {
+                    holder.icon.setImageResource(R.drawable.baseline_music_note_black_24);
+                } else if (current.getLibelle().equals("Méloncolique")) {
+                    holder.icon.setImageResource(R.drawable.baseline_mood_bad_black_24);
+                } else if (current.getLibelle().equals("Fête/Céremonie/Evénement")) {
+                    holder.icon.setImageResource(R.drawable.ic_event_black_24dp);
+                } else if (current.getLibelle().equals("Business")) {
+                    holder.icon.setImageResource(R.drawable.baseline_timeline_black_24);
+                } else if (current.getLibelle().equals("Football")) {
+                    holder.icon.setImageResource(R.drawable.baseline_sports_soccer_black_24);
+                } else if (current.getLibelle().equals("Tennis")) {
+                    holder.icon.setImageResource(R.drawable.baseline_sports_tennis_black_24);
+                } else if (current.getLibelle().equals("Rugby")) {
+                    holder.icon.setImageResource(R.drawable.baseline_sports_rugby_black_18);
+                } else if (current.getLibelle().equals("Basketball")) {
+                    holder.icon.setImageResource(R.drawable.baseline_sports_basketball_black_24);
+                } else if (current.getLibelle().equals("Volley")) {
+                     holder.icon.setImageResource(R.drawable.baseline_sports_volleyball_black_24);
+                } else if (current.getLibelle().equals("MMA")) {
+                     holder.icon.setImageResource(R.drawable.baseline_sports_mma_black_24);
+                } else if (current.getLibelle().equals("Esport")) {
+                    holder.icon.setImageResource(R.drawable.baseline_sports_esports_black_24);
+                } else if (current.getLibelle().equals("Baseball")) {
+                    holder.icon.setImageResource(R.drawable.ic_subject_black_24dp);
+                } else if (current.getLibelle().equals("Judo")) {
+                    holder.icon.setImageResource(R.drawable.baseline_sports_kabaddi_black_24);
+                } else if (current.getLibelle().equals("Handball")) {
+                    holder.icon.setImageResource(R.drawable.baseline_sports_handball_black_24);
+                } else if (current.getLibelle().equals("Golf")) {
+                    holder.icon.setImageResource(R.drawable.baseline_sports_golf_black_24);
+                } else if (current.getLibelle().equals("Football Americain")) {
+                     holder.icon.setImageResource(R.drawable.baseline_sports_football_black_24);
+                } else if (current.getLibelle().equals("MotorSport")) {
+                     holder.icon.setImageResource(R.drawable.baseline_sports_motorsports_black_24);
+                } else if (current.getLibelle().equals("Natation")) {
+                     holder.icon.setImageResource(R.drawable.baseline_pool_black_24);
+                } else if (current.getLibelle().equals("Cyclisme")) {
+                    holder.icon.setImageResource(R.drawable.ic_subject_black_24dp);
+                } else if (current.getLibelle().equals("Cricket")) {
+                    holder.icon.setImageResource(R.drawable.baseline_sports_cricket_black_24);
+                }else if (current.getLibelle().equals("Hockey")) {
+                    holder.icon.setImageResource(R.drawable.baseline_sports_hockey_black_24);
+                }
+
+                else {
+                    holder.icon.setImageResource(R.drawable.ic_subject_black_24dp);
+                }
+        }
+        //holder.icon.setImageResource(R.drawable.ic_subject_black_24dp);
     }
 
     @Override

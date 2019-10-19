@@ -109,7 +109,7 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
         recyclerView = findViewById(R.id.my_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         allUsersAdapter = new displaycommentaryadapter(this,data);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        //recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(allUsersAdapter);
 
@@ -274,6 +274,11 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
                                 dateitem = object.getJSONObject("date").getString("date");
                                 commentitem_id = object.getInt("id");
                                 libelleitem = object.getString("status_text_content");
+
+                                if (countcommentitem>1) {
+                                    getSupportActionBar().setTitle("Commentaires");
+                                }
+
                                 ConnexionCommentItem();
                             }
 

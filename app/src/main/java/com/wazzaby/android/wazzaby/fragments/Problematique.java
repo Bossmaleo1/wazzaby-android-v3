@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
@@ -138,7 +139,7 @@ public class Problematique extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //Toast.makeText(getActivity(),response,Toast.LENGTH_LONG).show();
+
                         try {
                             JSONArray reponse = new JSONArray(response);
                             for(int i = 0;i<reponse.length();i++)
