@@ -29,61 +29,91 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".connInscript.Connexion" android:screenOrientation="portrait">
+        <activity android:name=".connInscript.Connexion"
+                  android:screenOrientation="portrait">
 
         </activity>
 
-        <activity android:name=".connInscript.Passforget" android:screenOrientation="portrait">
+        <activity android:name=".connInscript.Passforget"
+                  android:screenOrientation="portrait"
+                  android:parentActivityName=".connInscript.Connexion">
 
         </activity>
 
-        <activity android:name=".connInscript.About" android:screenOrientation="portrait">
+        <activity android:name=".connInscript.About"
+                  android:screenOrientation="portrait"
+                  android:parentActivityName=".connInscript.Connexion">
 
         </activity>
 
-        <activity android:name=".appviews.Home" android:screenOrientation="portrait">
+        <activity android:name=".appviews.Home"
+                  android:screenOrientation="portrait"
+                  android:parentActivityName=".connInscript.MainActivity">
 
         </activity>
 
-        <activity android:name=".appviews.AfficheCommentairePublic" android:screenOrientation="portrait">
+        <activity android:name=".appviews.AfficheCommentairePublic"
+                  android:screenOrientation="portrait"
+                  android:parentActivityName=".appviews.Home">
 
         </activity>
 
-        <activity android:name=".appviews.ProfilUser" android:screenOrientation="portrait">
+        <activity android:name=".appviews.ProfilUser"
+                  android:screenOrientation="portrait"
+                  android:parentActivityName=".appviews.Home">
 
         </activity>
 
-        <activity android:name=".appviews.ProfilDetails" android:screenOrientation="portrait">
+        <activity android:name=".appviews.NotificationIntent"
+                  android:launchMode="singleTask"
+                  android:taskAffinity=""
+                  android:excludeFromRecents="true">
 
         </activity>
 
-        <activity android:name=".appviews.CategorieProblematique" android:screenOrientation="portrait">
+        <activity android:name=".appviews.CategorieProblematique"
+                  android:screenOrientation="portrait"
+                  >
 
         </activity>
 
-        <activity android:name=".appviews.Sharepublicconversation" android:screenOrientation="portrait">
+        <activity android:name=".appviews.Sharepublicconversation"
+                  android:screenOrientation="portrait"
+                  android:parentActivityName=".appviews.Home">
 
         </activity>
 
-        <activity android:name=".appviews.MessageConstitution" android:screenOrientation="portrait">
+        <activity android:name=".appviews.MessageConstitution"
+                  android:screenOrientation="portrait"
+                  android:parentActivityName=".appviews.Home"
+                  >
 
         </activity>
 
-        <activity android:name=".appviews.UserOnline" android:screenOrientation="portrait">
+        <activity android:name=".appviews.UserOnline"
+                  android:screenOrientation="portrait"
+                  android:parentActivityName=".appviews.Home">
 
         </activity>
 
-        <activity android:name=".appviews.Historique" android:screenOrientation="portrait">
+        <activity android:name=".appviews.Historique"
+                  android:screenOrientation="portrait"
+                  android:parentActivityName=".appviews.Home">
 
         </activity>
 
-        <activity android:name=".appviews.NotificationsDetails" android:screenOrientation="portrait">
+        <activity android:name=".appviews.NotificationsDetails"
+                  android:screenOrientation="portrait"
+                  android:parentActivityName=".appviews.Home">
 
         </activity>
 
-        <activity android:name=".appviews.Problematique" android:screenOrientation="portrait">
+        <activity android:name=".appviews.Problematique"
+                  android:screenOrientation="portrait"
+                android:parentActivityName=".appviews.Home">
 
         </activity>
+
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -103,17 +133,6 @@
             </intent-filter>
         </service>
 
-        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
-             See README(https://goo.gl/l4GJaQ) for more. -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/wazaby" />
-
-        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
-               notification message. See README(https://goo.gl/6BKBk7) for more. -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/colorAccent" />
 
 
 

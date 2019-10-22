@@ -1,5 +1,6 @@
 package com.wazzaby.android.wazzaby.service;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
@@ -9,17 +10,20 @@ import android.graphics.Color;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.TaskStackBuilder;
+
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.wazzaby.android.wazzaby.R;
-import com.wazzaby.android.wazzaby.appviews.Historique;
-import com.wazzaby.android.wazzaby.appviews.Home;
+import com.wazzaby.android.wazzaby.appviews.Problematique;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     public static String TAG = "Something going well!!";
+    private String channel_id = "channel_id";
 
     @Override
     public void onNewToken(String token) {
@@ -40,48 +44,23 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        // Create an explicit intent for an Activity in your app
-        Intent intentlaunchernotification = new Intent(this, Home.class);
-        intentlaunchernotification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intentlaunchernotification, 0);
 
 
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "channel_id")
-                .setContentTitle(remoteMessage.getNotification().getTitle())
-                .setContentText(remoteMessage.getNotification().getBody())
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setStyle(new NotificationCompat.BigTextStyle())
-                .setSmallIcon(R.drawable.wazaby)
-                .setContentIntent(pendingIntent)
-                .setColor(Color.parseColor("#188dc8"))
-                .setAutoCancel(true);
-
-
-        //Color.parseColor("#188dc8")
-
-        /*Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
-        pushNotification.putExtra("message", remoteMessage.getData().toString());
-        LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);*/
-        //Toast.makeText(Home.context,"Test malin du bossmaleo !!",Toast.LENGTH_LONG).show();
         Intent intent = new Intent();
         intent.setAction("com.wazzaby.android.wazzaby.broadcast");
         intent.putExtra("message",remoteMessage.getNotification().getBody());
         sendBroadcast(intent);
-        //LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
-
-        //int mCartItemCount = 10;
-        //Accueil.badge = Accueil.navigation.showBadge(R.id.notification);
-        /*Accueil.badge.setNumber(mCartItemCount);
-        Accueil.badge.setBadgeTextColor(Color.WHITE);*/
 
         //startActivity(pushNotification);
         Log.e(TAG, "Data Payload: " + remoteMessage.getData().toString());
 
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        /*NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);*/
 
-        notificationManager.notify(0, notificationBuilder.build());
-        playNotificationSound();
+        createNotificationChannel();
+
+        //notificationManager.notify(1, notificationBuilder.build());
+        //playNotificationSound();
     }
 
     public void playNotificationSound() {
@@ -92,6 +71,24 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             r.play();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Nom du channel";
+            String description = "Description du channel";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(channel_id, name, importance);
+            channel.setDescription(description);
+
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+           // notificationManager.notify(1,notificationBuilder.build());
         }
     }
 

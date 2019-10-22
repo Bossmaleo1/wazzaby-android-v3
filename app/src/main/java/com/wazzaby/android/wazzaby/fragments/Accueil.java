@@ -53,7 +53,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.facebook.imagepipeline.nativecode.NativeJpegTranscoder.TAG;
 
 public class Accueil extends Fragment {
 
@@ -124,7 +123,7 @@ public class Accueil extends Fragment {
         MyReceiver receiver = new MyReceiver(navigation,mCartItemCount);
         registerReceiver(receiver, filter);*/
 
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+        /*mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String message = intent.getStringExtra("message");
@@ -136,9 +135,9 @@ public class Accueil extends Fragment {
 
                 Toast.makeText(getContext(),message,Toast.LENGTH_LONG).show();
             }
-        };
+        };*/
 
-        FirebaseInstanceId.getInstance().getInstanceId()
+        /*FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
                     public void onComplete(@NonNull Task<InstanceIdResult> task) {
@@ -151,7 +150,7 @@ public class Accueil extends Fragment {
                         Keypush = token;
                         Connexion();
                     }
-                });
+                });*/
 
         ConnexionCountNotification();
 
@@ -245,7 +244,7 @@ public class Accueil extends Fragment {
         }
     };
 
-    private void loadFragment(Fragment fragment) {
+    public void loadFragment(Fragment fragment) {
         // load fragment
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_container, fragment);
@@ -253,23 +252,24 @@ public class Accueil extends Fragment {
         transaction.commit();
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
         // register GCM registration complete receiver
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(Config.REGISTRATION_COMPLETE));
+        /*LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(Config.REGISTRATION_COMPLETE));*/
     }
 
     @Override
     public void onPause() {
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRegistrationBroadcastReceiver);
+        //LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRegistrationBroadcastReceiver);
         super.onPause();
     }
 
     @Override
     public void onStop() {
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRegistrationBroadcastReceiver);
+        //LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRegistrationBroadcastReceiver);
         super.onStop();
     }
 

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -61,6 +62,7 @@ public class Home extends AppCompatActivity implements FragmentDrawer.FragmentDr
     private String Keypush = null;
     public static Context context;
     private Intent intent;
+    public static CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +85,11 @@ public class Home extends AppCompatActivity implements FragmentDrawer.FragmentDr
         // display the first navigation drawer view on app launch
         displayView(0);
         intent = getIntent();
+
+        //Toast.makeText(getApplicationContext(),intent.getStringExtra("test"),Toast.LENGTH_LONG).show();
+
+        coordinatorLayout = findViewById(R.id.coordinatorLayout);
+
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
@@ -211,7 +218,6 @@ public class Home extends AppCompatActivity implements FragmentDrawer.FragmentDr
                     public void onResponse(String response) {
                         //database
                         database.UpdateKeyPush(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID(),Keypush);
-                        //Toast.makeText(getApplicationContext(),"Keypush modifier avec succès !!!",Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() {

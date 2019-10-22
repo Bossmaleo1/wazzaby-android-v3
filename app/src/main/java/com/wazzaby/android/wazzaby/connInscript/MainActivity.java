@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.wazzaby.android.wazzaby.R;
 import com.wazzaby.android.wazzaby.appviews.Home;
