@@ -42,15 +42,6 @@ public class MyReceiver extends BroadcastReceiver {
         badge.setNumber(mCartItemCount);
         badge.setBadgeTextColor(Color.WHITE);
 
-       // Intent resultIntent = new Intent(context, Home.class);
-       // resultIntent.putExtra("notification","Ok");
-// Create the TaskStackBuilder and add the intent, which inflates the back stack
-        //TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        //stackBuilder.addNextIntentWithParentStack(resultIntent);
-// Get the PendingIntent containing the entire back stack
-        //PendingIntent resultPendingIntent =
-               // stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
         Intent notifyIntent = new Intent(context, NotificationIntent.class);
 // Set the Activity to start in a new, empty task
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -63,7 +54,7 @@ public class MyReceiver extends BroadcastReceiver {
 
 
 
-        Toast.makeText(context,intent.getStringExtra("message"),Toast.LENGTH_LONG).show();
+        //Toast.makeText(context,intent.getStringExtra("message"),Toast.LENGTH_LONG).show();
 
         Notification notificationBuilder = new NotificationCompat.Builder(context, "channel_id")
                 .setContentTitle("Wazzaby")
@@ -82,20 +73,17 @@ public class MyReceiver extends BroadcastReceiver {
 
         notificationManager.notify(1, notificationBuilder);
 
-        snackbar = Snackbar
+        /*snackbar = Snackbar
                 .make(Home.coordinatorLayout, intent.getStringExtra("message"), Snackbar.LENGTH_LONG)
                 .setAction("Voir", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
-                        /*materialCardView.setVisibility(View.GONE);
-                        mShimmerViewContainer.startShimmer();
-                        mShimmerViewContainer.setVisibility(View.VISIBLE);
-                        ConnexionConversationsPublic();*/
+
                     }
                 });
 
-        snackbar.show();
+        snackbar.show();*/
         // Implement code here to be performed when
         // broadcast is detected
     }

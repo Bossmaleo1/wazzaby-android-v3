@@ -121,31 +121,34 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
         if (current.getCheckmention() == 1){
             this.booljaime = true;
             iconjaime.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
+            iconjaimepas.mutate().setColorFilter(Color.parseColor("#9E9E9E"),PorterDuff.Mode.SRC_IN);
             holder.icon_jaime.setImageDrawable(iconjaime);
             holder.icon_jaimepas.setImageDrawable(iconjaimepas);
             holder.nombre_de_jaime.setText(String.valueOf(current.getCountjaime()));
             holder.nombre_de_jaimepas.setText(String.valueOf(current.getCountjaimepas()));
             holder.nombre_de_jaime.setTextColor(Color.parseColor("#188dc8"));
-            holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#E0E0E0"));
+            holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#9E9E9E"));
         } else if (current.getCheckmention() == 2){
             this.booljaimepas = true;
             iconjaimepas.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
+            iconjaime.mutate().setColorFilter(Color.parseColor("#9E9E9E"),PorterDuff.Mode.SRC_IN);
             holder.icon_jaime.setImageDrawable(iconjaime);
             holder.icon_jaimepas.setImageDrawable(iconjaimepas);
             holder.nombre_de_jaime.setText(String.valueOf(current.getCountjaime()));
             holder.nombre_de_jaimepas.setText(String.valueOf(current.getCountjaimepas()));
             holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#188dc8"));
-            holder.nombre_de_jaime.setTextColor(Color.parseColor("#E0E0E0"));
+            holder.nombre_de_jaime.setTextColor(Color.parseColor("#9E9E9E"));
         } else if (current.getCheckmention() == 0){
             this.booljaime = false;
             this.booljaimepas = false;
             iconjaime.mutate().setColorFilter(Color.parseColor("#9E9E9E"), PorterDuff.Mode.SRC_IN);
+            //iconjaimepas.mutate().setColorFilter(Color.parseColor("#188dc8"),PorterDuff.Mode.SRC_IN);
             holder.icon_jaime.setImageDrawable(iconjaime);
             holder.icon_jaimepas.setImageDrawable(iconjaimepas);
             holder.nombre_de_jaime.setText(String.valueOf(current.getCountjaime()));
             holder.nombre_de_jaimepas.setText(String.valueOf(current.getCountjaimepas()));
-            holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#E0E0E0"));
-            holder.nombre_de_jaime.setTextColor(Color.parseColor("#E0E0E0"));
+            holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#9E9E9E"));
+            holder.nombre_de_jaime.setTextColor(Color.parseColor("#9E9E9E"));
         }
 
         holder.title.setText(current.getNameMembreProb());
@@ -274,44 +277,49 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
 
                 if(data.get(position).getCheckmention() == 1) {
 
-
+                    Drawable iconjaime931 = res.getDrawable(R.drawable.baseline_thumb_up_alt_black_24);
                     String url = Const.dns.concat("/WazzabyApi/public/api/MentionsUpdate?id_etat=0")
                             .concat("&id_mention=")
                             .concat(String.valueOf(data.get(position).getId_checkmention()));
 
                     ConnexionToServer(url);
                     booljaime = false;
-                    int jaime = Integer.valueOf(holder.nombre_de_jaime.getText().toString());
+                    int jaime = data.get(position).getCountjaime();
                     jaime--;
                     holder.nombre_de_jaime.setText(String.valueOf(jaime));
-                    holder.nombre_de_jaime.setTextColor(Color.parseColor("#E0E0E0"));
-                    iconjaime.mutate().setColorFilter(Color.parseColor("#E0E0E0"), PorterDuff.Mode.SRC_IN);
-                    holder.icon_jaime.setImageDrawable(iconjaime);
+                    holder.nombre_de_jaime.setTextColor(Color.parseColor("#9E9E9E"));
+                    iconjaime931.mutate().setColorFilter(Color.parseColor("#9E9E9E"), PorterDuff.Mode.SRC_IN);
+                    holder.icon_jaime.setImageDrawable(iconjaime931);
                     data.get(position).setCheckmention(0);
-                    //current.setCheckmention(0);
+                    data.get(position).setCountjaime(jaime);
                     data.set(position,data.get(position));
+                    holder.nombre_de_jaime.setText(String.valueOf(data.get(position).getCountjaime()));
 
                 } else if (data.get(position).getCheckmention() == 0 && data.get(position).getId_checkmention() != 0) {
 
                     String url = Const.dns.concat("/WazzabyApi/public/api/MentionsUpdate?id_etat=1")
-                            .concat("&id_mention=").concat(String.valueOf(current.getId_checkmention()));
+                            .concat("&id_mention=").concat(String.valueOf(data.get(position).getId_checkmention()));
                     ConnexionToServer(url);
                     booljaime = true;
                     booljaimepas = false;
 
-                    holder.nombre_de_jaime.setTextColor(Color.parseColor("#188dc8"));
-                    holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#E0E0E0"));
+                    Drawable iconjaime932 = res.getDrawable(R.drawable.baseline_thumb_up_alt_black_24);
+                    Drawable iconjaimepas932 = res.getDrawable(R.drawable.baseline_thumb_down_alt_black_24);
 
-                    iconjaime.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
-                    iconjaimepas.mutate().setColorFilter(Color.parseColor("#E0E0E0"), PorterDuff.Mode.SRC_IN);
-                    holder.icon_jaime.setImageDrawable(iconjaime);
-                    holder.icon_jaimepas.setImageDrawable(iconjaimepas);
-                    int jaime = Integer.valueOf(holder.nombre_de_jaime.getText().toString());
+                    holder.nombre_de_jaime.setTextColor(Color.parseColor("#188dc8"));
+                    holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#9E9E9E"));
+
+                    iconjaime932.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
+                    iconjaimepas932.mutate().setColorFilter(Color.parseColor("#9E9E9E"), PorterDuff.Mode.SRC_IN);
+                    holder.icon_jaime.setImageDrawable(iconjaime932);
+                    holder.icon_jaimepas.setImageDrawable(iconjaimepas932);
+                    int jaime = data.get(position).getCountjaime();
                     jaime++;
-                    holder.nombre_de_jaime.setText(String.valueOf(jaime));
                     data.get(position).setCheckmention(1);
-                    //current.setCheckmention(1);
+                    data.get(position).setCountjaime(jaime);
+
                     data.set(position,data.get(position));
+                    holder.nombre_de_jaime.setText(String.valueOf(data.get(position).getCountjaime()));
                     if(data.get(position).getId_recepteur() != user.getID()) {
                         recordNotification(url_notification);
                         SendPushNotification(pushnotification_url);
@@ -321,24 +329,27 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
                             .concat(String.valueOf(user.getID())).concat("&id_libelle=").concat(String.valueOf(data.get(position).getID()))
                             .concat("&id_etat=1").concat("&mention=1");
                     ConnexionToServerWithPosition(url,position);
+
+                    Drawable iconjaime933 = res.getDrawable(R.drawable.baseline_thumb_up_alt_black_24);
+                    Drawable iconjaimepas933 = res.getDrawable(R.drawable.baseline_thumb_down_alt_black_24);
+
+
                     booljaime = true;
                     booljaimepas = false;
-                    int jaime = Integer.valueOf(holder.nombre_de_jaime.getText().toString());
+                    int jaime = data.get(position).getCountjaime();
                     jaime++;
+                    data.get(position).setCountjaime(jaime);
                     //update of like color
                     holder.nombre_de_jaime.setTextColor(Color.parseColor("#188dc8"));
-                    iconjaime.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
-                    holder.icon_jaime.setImageDrawable(iconjaime);
+                    iconjaime933.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
+                    holder.icon_jaime.setImageDrawable(iconjaime933);
                     //mise à jour de la couleur du j'aime pas
-                    holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#E0E0E0"));
-                    iconjaimepas.mutate().setColorFilter(Color.parseColor("#E0E0E0"), PorterDuff.Mode.SRC_IN);
-                    holder.icon_jaimepas.setImageDrawable(iconjaimepas);
-                    holder.nombre_de_jaime.setText(String.valueOf(jaime));
+                    holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#9E9E9E"));
+                    iconjaimepas933.mutate().setColorFilter(Color.parseColor("#9E9E9E"), PorterDuff.Mode.SRC_IN);
+                    holder.icon_jaimepas.setImageDrawable(iconjaimepas933);
                     data.get(position).setCheckmention(1);
-                    //data.get(position).setId_checkmention(temp_id_checkmention);
-                    //current.setCheckmention(1);
-                    //current.setId_checkmention(temp_id_checkmention);
                     data.set(position,data.get(position));
+                    holder.nombre_de_jaime.setText(String.valueOf(data.get(position).getCountjaime()));
                     if (data.get(position).getId_recepteur() != user.getID()) {
                         recordNotification(url_notification);
                         SendPushNotification(pushnotification_url);
@@ -353,21 +364,25 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
                     booljaimepas = false;
                     booljaime = true;
 
-                    holder.nombre_de_jaime.setTextColor(Color.parseColor("#188dc8"));
-                    holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#E0E0E0"));
-                    iconjaime.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
-                    iconjaimepas.mutate().setColorFilter(Color.parseColor("#E0E0E0"), PorterDuff.Mode.SRC_IN);
-                    holder.icon_jaime.setImageDrawable(iconjaime);
-                    holder.icon_jaimepas.setImageDrawable(iconjaimepas);
-                    int jaime = Integer.valueOf(holder.nombre_de_jaime.getText().toString());
-                    jaime++;
-                    holder.nombre_de_jaime.setText(String.valueOf(jaime));
-                    data.get(position).setCheckmention(1);
-                    int jaimepas = Integer.valueOf(holder.nombre_de_jaimepas.getText().toString());
-                    jaimepas--;
-                    holder.nombre_de_jaimepas.setText(String.valueOf(jaimepas));
+                    Drawable iconjaime934 = res.getDrawable(R.drawable.baseline_thumb_up_alt_black_24);
+                    Drawable iconjaimepas934 = res.getDrawable(R.drawable.baseline_thumb_down_alt_black_24);
 
+                    holder.nombre_de_jaime.setTextColor(Color.parseColor("#188dc8"));
+                    holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#9E9E9E"));
+                    iconjaime934.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
+                    iconjaimepas934.mutate().setColorFilter(Color.parseColor("#9E9E9E"), PorterDuff.Mode.SRC_IN);
+                    holder.icon_jaime.setImageDrawable(iconjaime934);
+                    holder.icon_jaimepas.setImageDrawable(iconjaimepas934);
+                    int jaime = data.get(position).getCountjaime();
+                    jaime++;
+                    data.get(position).setCountjaime(jaime);
+                    data.get(position).setCheckmention(1);
+                    int jaimepas = data.get(position).getCountjaimepas();
+                    jaimepas--;
+                    data.get(position).setCountjaimepas(jaimepas);
                     data.set(position,data.get(position));
+                    holder.nombre_de_jaime.setText(String.valueOf(data.get(position).getCountjaime()));
+                    holder.nombre_de_jaimepas.setText(String.valueOf(data.get(position).getCountjaimepas()));
                     if (data.get(position).getId_recepteur() != user.getID()) {
                         recordNotification(url_notification);
                         SendPushNotification(pushnotification_url);
@@ -408,16 +423,19 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
                     String url = Const.dns.concat("/WazzabyApi/public/api/MentionsUpdate?id_etat=0").concat("&id_mention=")
                             .concat(String.valueOf(data.get(position).getId_checkmention()));
 
+                    Drawable iconjaimepas935 = res.getDrawable(R.drawable.baseline_thumb_down_alt_black_24);
+
                     ConnexionToServer(url);
                     booljaimepas = false;
-                    holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#E0E0E0"));
+                    holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#9E9E9E"));
                     int jaimepas = data.get(position).getCountjaimepas();
                     jaimepas--;
-                    holder.nombre_de_jaimepas.setText(String.valueOf(jaimepas));
+                    data.get(position).setCountjaime(jaimepas);
                     data.get(position).setCheckmention(0);
-                    iconjaimepas.mutate().setColorFilter(Color.parseColor("#E0E0E0"), PorterDuff.Mode.SRC_IN);
-                    holder.icon_jaimepas.setImageDrawable(iconjaimepas);
+                    iconjaimepas935.mutate().setColorFilter(Color.parseColor("#9E9E9E"), PorterDuff.Mode.SRC_IN);
+                    holder.icon_jaimepas.setImageDrawable(iconjaimepas935);
                     data.set(position,data.get(position));
+                    holder.nombre_de_jaimepas.setText(String.valueOf(data.get(position).getCountjaimepas()));
 
 
                 }else if (data.get(position).getCheckmention() == 0 && data.get(position).getId_checkmention() != 0) {
@@ -427,18 +445,20 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
                     ConnexionToServer(url);
                     booljaime = false;
                     booljaimepas = true;
+                    Drawable iconjaime936 = res.getDrawable(R.drawable.baseline_thumb_up_alt_black_24);
+                    Drawable iconjaimepas936 = res.getDrawable(R.drawable.baseline_thumb_down_alt_black_24);
                     int jaimepas = data.get(position).getCountjaimepas();
                     jaimepas++;
                     data.get(position).setCheckmention(2);
                     data.get(position).setCountjaimepas(jaimepas);
-                    holder.nombre_de_jaimepas.setText(String.valueOf(jaimepas));
                     holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#188dc8"));
-                    holder.nombre_de_jaime.setTextColor(Color.parseColor("#E0E0E0"));
-                    iconjaime.mutate().setColorFilter(Color.parseColor("#E0E0E0"), PorterDuff.Mode.SRC_IN);
-                    iconjaimepas.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
-                    holder.icon_jaime.setImageDrawable(iconjaime);
-                    holder.icon_jaimepas.setImageDrawable(iconjaimepas);
+                    holder.nombre_de_jaime.setTextColor(Color.parseColor("#9E9E9E"));
+                    iconjaime936.mutate().setColorFilter(Color.parseColor("#9E9E9E"), PorterDuff.Mode.SRC_IN);
+                    iconjaimepas936.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
+                    holder.icon_jaime.setImageDrawable(iconjaime936);
+                    holder.icon_jaimepas.setImageDrawable(iconjaimepas936);
                     data.set(position,data.get(position));
+                    holder.nombre_de_jaimepas.setText(String.valueOf(data.get(position).getCountjaimepas()));
                     if(data.get(position).getId_recepteur() != user.getID()) {
                         recordNotification(url_notification);
                         SendPushNotification(pushnotification_url);
@@ -452,20 +472,22 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
                     ConnexionToServerWithPosition(url,position);
                     booljaime = false;
                     booljaimepas = true;
+
+                    Drawable iconjaime937 = res.getDrawable(R.drawable.baseline_thumb_up_alt_black_24);
+                    Drawable iconjaimepas937 = res.getDrawable(R.drawable.baseline_thumb_down_alt_black_24);
+
                     int jaimepas = data.get(position).getCountjaimepas();
                     jaimepas++;
                     data.get(position).setCountjaimepas(jaimepas);
-                    //holder.nombre_de_jaimepas.setText(String.valueOf(jaimepas));
                     data.get(position).setCheckmention(2);
-                    //data.get(position).setId_checkmention(temp_id_checkmention);
                     holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#188dc8"));
-                    holder.nombre_de_jaime.setTextColor(Color.parseColor("#E0E0E0"));
-                    holder.nombre_de_jaimepas.setText(String.valueOf(jaimepas));
-                    iconjaime.mutate().setColorFilter(Color.parseColor("#E0E0E0"), PorterDuff.Mode.SRC_IN);
-                    iconjaimepas.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
-                    holder.icon_jaime.setImageDrawable(iconjaime);
-                    holder.icon_jaimepas.setImageDrawable(iconjaimepas);
+                    holder.nombre_de_jaime.setTextColor(Color.parseColor("#9E9E9E"));
+                    iconjaime937.mutate().setColorFilter(Color.parseColor("#9E9E9E"), PorterDuff.Mode.SRC_IN);
+                    iconjaimepas937.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
+                    holder.icon_jaime.setImageDrawable(iconjaime937);
+                    holder.icon_jaimepas.setImageDrawable(iconjaimepas937);
                     data.set(position,data.get(position));
+                    holder.nombre_de_jaimepas.setText(String.valueOf(data.get(position).getCountjaimepas()));
                     if (data.get(position).getId_recepteur() != user.getID()) {
                         recordNotification(url_notification);
                         SendPushNotification(pushnotification_url);
@@ -476,24 +498,27 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
                     ConnexionToServerWithPosition(url,position);
                     booljaimepas = true;
                     booljaime = false;
+
+                    Drawable iconjaime938 = res.getDrawable(R.drawable.baseline_thumb_up_alt_black_24);
+                    Drawable iconjaimepas938 = res.getDrawable(R.drawable.baseline_thumb_down_alt_black_24);
+
+
                     holder.nombre_de_jaimepas.setTextColor(Color.parseColor("#188dc8"));
-                    holder.nombre_de_jaime.setTextColor(Color.parseColor("#E0E0E0"));
+                    holder.nombre_de_jaime.setTextColor(Color.parseColor("#9E9E9E"));
                     int jaime = data.get(position).getCountjaime();
                     jaime--;
+                    data.get(position).setCountjaime(jaime);
                     int jaimepas = data.get(position).getCountjaimepas();
                     jaimepas++;
-                    data.get(position).setCountjaime(jaime);
                     data.get(position).setCountjaimepas(jaimepas);
                     data.get(position).setCheckmention(2);
-                    //data.get(position).setId_checkmention(temp_id_checkmention);
-
-                    iconjaime.mutate().setColorFilter(Color.parseColor("#E0E0E0"), PorterDuff.Mode.SRC_IN);
-                    iconjaimepas.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
-                    holder.icon_jaime.setImageDrawable(iconjaime);
-                    holder.icon_jaimepas.setImageDrawable(iconjaimepas);
-                    holder.nombre_de_jaimepas.setText(String.valueOf(jaimepas));
-                    holder.nombre_de_jaime.setText(String.valueOf(jaime));
+                    iconjaime938.mutate().setColorFilter(Color.parseColor("#9E9E9E"), PorterDuff.Mode.SRC_IN);
+                    iconjaimepas938.mutate().setColorFilter(Color.parseColor("#188dc8"), PorterDuff.Mode.SRC_IN);
+                    holder.icon_jaime.setImageDrawable(iconjaime938);
+                    holder.icon_jaimepas.setImageDrawable(iconjaimepas938);
                     data.set(position,data.get(position));
+                    holder.nombre_de_jaimepas.setText(String.valueOf(data.get(position).getCountjaimepas()));
+                    holder.nombre_de_jaime.setText(String.valueOf(data.get(position).getCountjaime()));
                     if (data.get(position).getId_recepteur() != user.getID()) {
                         recordNotification(url_notification);
                         SendPushNotification(pushnotification_url);
