@@ -26,6 +26,7 @@ public class NotificationItem implements Parcelable {
     private String status_text_content_messagepublic;
     private String etat_photo_status_messagepublic;
     private String status_photo_messagepublic;
+    private int state_shimmer;
 
     public NotificationItem() {
 
@@ -60,7 +61,7 @@ public class NotificationItem implements Parcelable {
             int checkmention, int id_checkmention,String user_photo_messagepublic,
             String status_text_content_messagepublic,
             String etat_photo_status_messagepublic,
-            String status_photo_messagepublic) {
+            String status_photo_messagepublic, int state_shimmer) {
 
             this.id_messagepublic = id_messagepublic;
             this.updated_messagepublic = updated_messagepublic;
@@ -83,6 +84,7 @@ public class NotificationItem implements Parcelable {
             this.status_text_content_messagepublic = status_text_content_messagepublic;
             this.etat_photo_status_messagepublic = etat_photo_status_messagepublic;
             this.status_photo_messagepublic = status_photo_messagepublic;
+            this.state_shimmer = state_shimmer;
 
     }
 
@@ -254,6 +256,14 @@ public class NotificationItem implements Parcelable {
 
     public void setUser_photo_messagepublic(String user_photo_messagepublic) {
         this.user_photo_messagepublic = user_photo_messagepublic;
+    }
+
+    public int getState_shimmer() {
+        return state_shimmer;
+    }
+
+    public void setState_shimmer(int state_shimmer) {
+        this.state_shimmer = state_shimmer;
     }
 
     @Override

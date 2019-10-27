@@ -70,6 +70,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
     private DatabaseHandler database;
     private SessionManager session;
     private List<ConversationPublicItem> data = new ArrayList<>();
+    private List<ConversationPublicItem> dataswiperefresh = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
     private ShimmerFrameLayout mShimmerViewContainer;
     private LinearLayout materialCardView;
@@ -85,6 +86,10 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
     private String anonymeitem;
     private int publicconvertitem_id;
 
+    /*cette variable est vrai lorsque le chargement et passe a false lorsque le chargement est sur le swiperefreshlayout*/
+    private boolean swipestart = true;
+    //On crée un compteur pour stabiliser le swiperefresh
+    private int compteur_swiperefresh = 0;
 
     /* this attribute it used to help use to stop
     * our lazzy loading */
@@ -113,7 +118,6 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
         mShimmerViewContainer = bossmaleo.findViewById(R.id.shimmer_view_container);
         text_error_message = bossmaleo.findViewById(R.id.text_error_message);
-        //progressBar = (ProgressBar) bossmaleo.findViewById(R.id.progressbar);
         coordinatorLayout =  bossmaleo.findViewById(R.id.coordinatorLayout);
         recyclerView = bossmaleo.findViewById(R.id.my_recycler_view);
         swipeRefreshLayout =  bossmaleo.findViewById(R.id.swipe_refresh_layout);
@@ -122,7 +126,6 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         allUsersAdapter = new ConversationspublicAdapter(getActivity(),data);
-        //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(allUsersAdapter);
 
@@ -136,23 +139,8 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                 mShimmerViewContainer.startShimmer();
                 mShimmerViewContainer.setVisibility(View.VISIBLE);
                 ConnexionConversationsPublic();
-                //Toast.makeText(getActivity(),"Test !!!",Toast.LENGTH_LONG).show();
             }
         });
-
-
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String message = intent.getStringExtra("message");
-                Toast.makeText(getActivity(),message,Toast.LENGTH_LONG).show();
-                //mCartItemCount++;
-                //BadgeDrawable badge = navigation.showBadge(R.id.notification);
-                //badge.setNumber(mCartItemCount);
-                //badge.setBadgeTextColor(Color.WHITE);
-            }
-        };
-
 
 
         recyclerView.addOnItemTouchListener(new Conversationspublic.RecyclerTouchListener(getActivity(), recyclerView, new Conversationspublic.ClickListener() {
@@ -240,7 +228,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
+                        swipestart = true;
                         fab.setVisibility(View.VISIBLE);
                         JSONArray reponse = null;
                         try {
@@ -284,16 +272,13 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
 
 
 
-                            //ConnexionItemMessagePublic(Integer.valueOf(user.getIDPROB()),user.getID(),dateitem);
-                            ConnexionItemMessagePublic(Integer.valueOf(user.getIDPROB()), user.getID(),
-                                    reponse.getJSONObject(0).getJSONObject("date").getString("date"),
-                                    reponse.getJSONObject(0).getInt("id")
-                                    ,reponse.getJSONObject(0).getString("status_text_content")
-                                    ,reponse.getJSONObject(0).getString("anonymous"));
-
-
-
-
+                            if(swipestart) {
+                                ConnexionItemMessagePublic(Integer.valueOf(user.getIDPROB()), user.getID(),
+                                        reponse.getJSONObject(0).getJSONObject("date").getString("date"),
+                                        reponse.getJSONObject(0).getInt("id")
+                                        ,reponse.getJSONObject(0).getString("status_text_content")
+                                        ,reponse.getJSONObject(0).getString("anonymous"));
+                            }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -367,13 +352,33 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
 
     @Override
     public void onRefresh() {
-        /*Toast.makeText(getContext(),"Le machin vient de subir un refresh scarla!!!", Toast.LENGTH_LONG).show();
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRegistrationBroadcastReceiver);*/
+        compteur_swiperefresh++;
         swipeRefreshLayout.setRefreshing(false);
+        //On efface les deux listes de conversations publiques
         data.clear();
-        allUsersAdapter.notifyDataSetChanged();
-        mShimmerViewContainer.setVisibility(View.VISIBLE);
-        ConnexionConversationsPublic();
+        dataswiperefresh.clear();
+        //on test si le compteur est paire
+        if (compteur_swiperefresh%2 == 0) {
+            swipestart = true;
+            allUsersAdapter = new ConversationspublicAdapter(getActivity(),data);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(allUsersAdapter);
+            allUsersAdapter.notifyDataSetChanged();
+            mShimmerViewContainer.setVisibility(View.VISIBLE);
+            ConnexionConversationsPublic();
+        } else {
+            swipestart = false;
+            allUsersAdapter = new ConversationspublicAdapter(getActivity(),dataswiperefresh);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(allUsersAdapter);
+            allUsersAdapter.notifyDataSetChanged();
+            mShimmerViewContainer.setVisibility(View.VISIBLE);
+            ConnexionConversationsPublicSwipeRefresh();
+        }
+
+
+
+
     }
 
     @Override
@@ -452,8 +457,9 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                                 //we add and launch our item loading if the user don't launch the refresh event
                                 //if (swipetest) {
                                  data.add(conversationPublicItem);
+                                 if(swipestart) {
                                  ConnexionItemMessagePublic(Integer.valueOf(user.getIDPROB()), user.getID(), dateitem,publicconvertitem_id,libelleitem,anonymeitem);
-                                //}
+                                }
 
                             }
 
@@ -537,6 +543,238 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
 
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         requestQueue.add(stringRequest);
+    }
+
+
+    //On écrit une deuxième méthode pour éviter l'instabilité
+    private void ConnexionConversationsPublicSwipeRefresh()
+    {
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, Const.dns+"/WazzabyApi/public/api/displayPublicMessage?id_problematique="
+                +String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB())
+                +"&id_user="+String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID()),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        swipestart = false;
+                        fab.setVisibility(View.VISIBLE);
+                        JSONArray reponse = null;
+                        try {
+
+                            reponse = new JSONArray(response);
+
+                            if(reponse.length()==0) {
+                                text_error_message.setText("Aucune conversation publique pour cette problématique");
+                                materialCardView.setVisibility(View.VISIBLE);
+                            }
+
+                            // Toast.makeText(getActivity(),"  "+response,Toast.LENGTH_LONG).show();
+
+                            object = reponse.getJSONObject(0);
+                            String count = null;
+                            String status_photo = null;
+
+                            if(object.getString("countcomment").equals("0") || object.getString("countcomment").equals("1")) {
+                                count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
+                            }else {
+                                count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
+                            }
+
+                            ConversationPublicItem conversationPublicItem = new ConversationPublicItem(context,object.getInt("user_id"),object.getInt("id")
+                                    ,object.getString("status_text_content"),object.getString("name"),object.getString("updated")
+                                    ,count,object.getString("user_photo"),R.drawable.baseline_add_comment_black_24
+                                    ,object.getString("etat_photo_status"),object.getString("status_photo")
+                                    ,object.getInt("anonymous"),object.getBoolean("visibility"),object.getInt("countjaime"),object.getInt("countjaimepas")
+                                    ,object.getInt("id_recepteur"),object.getInt("checkmention"),object.getInt("id_checkmention"),object.getInt("id_photo")
+                                    ,object.getString("pushkey_recepteur"),0);
+                            //shall we set our shimmer to 1 to display our progressbar
+                            //conversationPublicItem.setState_shimmer(1);
+                            dataswiperefresh.add(conversationPublicItem);
+
+                            dateitem = reponse.getJSONObject(0).getJSONObject("date").getString("date");
+                            countitem = reponse.getJSONObject(0).getInt("countmessagepublicitem");
+                            libelleitem = reponse.getJSONObject(0).getString("status_text_content");
+                            anonymeitem = reponse.getJSONObject(0).getString("anonymous");
+                            publicconvertitem_id = reponse.getJSONObject(0).getInt("id");
+
+
+
+
+                           if(swipestart == false) {
+                                ConnexionItemMessagePublicSwipeRefresh(Integer.valueOf(user.getIDPROB()), user.getID(),
+                                        reponse.getJSONObject(0).getJSONObject("date").getString("date"),
+                                        reponse.getJSONObject(0).getInt("id")
+                                        ,reponse.getJSONObject(0).getString("status_text_content")
+                                        ,reponse.getJSONObject(0).getString("anonymous"));
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        //progressBar.setVisibility(View.GONE);
+                        allUsersAdapter.notifyDataSetChanged();
+                        mShimmerViewContainer.stopShimmer();
+                        mShimmerViewContainer.setVisibility(View.GONE);
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        if(error instanceof ServerError)
+                        {
+                        }else if(error instanceof NetworkError)
+                        {
+                        }else if(error instanceof AuthFailureError)
+                        {
+                        }else if(error instanceof ParseError)
+                        {
+                        }else if(error instanceof NoConnectionError)
+                        {
+                        }else if(error instanceof TimeoutError)
+                        {
+                        }else
+                        {
+
+                        }
+
+                        mShimmerViewContainer.stopShimmer();
+                        mShimmerViewContainer.setVisibility(View.GONE);
+                        materialCardView.setVisibility(View.VISIBLE);
+                        //Toast.makeText(getActivity(),"Une erreur reseau vient de se produire veuillez reessayer !!",Toast.LENGTH_LONG).show();
+                        snackbar = Snackbar
+                                .make(coordinatorLayout, "Une erreur reseau vient de se produire veuillez reessayer !!", Snackbar.LENGTH_LONG)
+                                .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        materialCardView.setVisibility(View.GONE);
+                                        mShimmerViewContainer.startShimmer();
+                                        mShimmerViewContainer.setVisibility(View.VISIBLE);
+                                        ConnexionConversationsPublic();
+                                    }
+                                });
+
+                        snackbar.show();
+                        fab.setVisibility(View.GONE);
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
+    }
+
+    //On recrée une version de ConnexionItemMessagePublic pour les messages publics
+    public void ConnexionItemMessagePublicSwipeRefresh(int id_problematique, int id_user,  String date, int publicconvertitem_idnew, String libelle,  String anonyme) {
+
+        String url_lazy_loading = Const.dns.concat("/WazzabyApi/public/api/displayMessagePublicItem?id_problematique=")
+                .concat(String.valueOf(id_problematique)).concat("&id_user=")
+                .concat(String.valueOf(id_user))
+                .concat("&date=")
+                .concat(String.valueOf(date))
+                .concat("&publicconvert_id=").concat(String.valueOf(publicconvertitem_idnew))
+                .concat("&libelle=").concat(libelle)
+                .concat("&anonyme=").concat(anonyme);
+
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_lazy_loading,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        JSONArray reponse = null;
+
+                        try{
+
+                            reponse = new JSONArray(response);
+                            int temp_countitem = Integer.valueOf(countitem - data.size());
+
+                            //Toast.makeText(getActivity(),"  "+response,Toast.LENGTH_LONG).show();
+
+                            if(temp_countitem >= 1) {
+
+                                object = reponse.getJSONObject(0);
+                                String count = null;
+                                if(object.getString("countcomment").equals("0") || object.getString("countcomment").equals("1"))
+                                {
+                                    count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
+                                } else {
+                                    count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
+                                }
+
+                                ConversationPublicItem conversationPublicItem = new ConversationPublicItem(context,object.getInt("user_id"),object.getInt("id")
+                                        ,object.getString("status_text_content"),object.getString("name"),object.getString("updated")
+                                        ,count,object.getString("user_photo"),R.drawable.baseline_add_comment_black_24
+                                        ,object.getString("etat_photo_status"),object.getString("status_photo")
+                                        ,object.getInt("anonymous"),object.getBoolean("visibility"),object.getInt("countjaime"),object.getInt("countjaimepas")
+                                        ,object.getInt("id_recepteur"),object.getInt("checkmention"),object.getInt("id_checkmention"),object.getInt("id_photo")
+                                        ,object.getString("pushkey_recepteur"),0);
+
+                                libelleitem = object.getString("status_text_content");
+                                anonymeitem = object.getString("anonymous");
+                                publicconvertitem_id = object.getInt("id");
+                                dateitem = reponse.getJSONObject(0).getJSONObject("date").getString("date");
+
+                                //shall we test if our data array is not empty
+                                if(dataswiperefresh.size()>0) {
+                                    //we block our previous shimmer the shimmer of our last item
+                                    dataswiperefresh.get((dataswiperefresh.size()-1)).setState_shimmer(0);
+                                }
+
+                                //we set our current shimmer to display the shimmer in our item
+                                conversationPublicItem.setState_shimmer(1);
+                                //we add and launch our item loading if the user don't launch the refresh event
+                                //if (swipetest) {
+                                dataswiperefresh.add(conversationPublicItem);
+                                if(swipestart == false) {
+                                    ConnexionItemMessagePublicSwipeRefresh(Integer.valueOf(user.getIDPROB()), user.getID(), dateitem,publicconvertitem_id,libelleitem,anonymeitem);
+                                }
+
+                            }
+
+
+                            if (temp_countitem == 1) {
+                                dataswiperefresh.get((dataswiperefresh.size() - 1)).setState_shimmer(0);
+                            }
+
+
+
+
+                        }catch(JSONException e){
+                            e.printStackTrace();
+                        }
+
+
+
+                        allUsersAdapter.notifyDataSetChanged();
+
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getActivity(),"Une erreur réseau vient de se produire !!",Toast.LENGTH_LONG).show();
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
+
+
     }
 
 }

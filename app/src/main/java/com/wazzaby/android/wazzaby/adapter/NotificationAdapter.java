@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +15,7 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.wazzaby.android.wazzaby.R;
 import com.wazzaby.android.wazzaby.model.data.NotificationItem;
 
@@ -73,6 +75,15 @@ public class NotificationAdapter  extends RecyclerView.Adapter<NotificationAdapt
 
         holder.message.setText(current.getLibelle());
         holder.updated.setText(current.getUpdated());
+
+        if (data.get(position).getState_shimmer() == 1) {
+            holder.block_shimmer.setVisibility(View.VISIBLE);
+            holder.mShimmerViewContainer.setVisibility(View.VISIBLE);
+            holder.mShimmerViewContainer.startShimmer();
+        } else if (data.get(position).getState_shimmer() == 0) {
+            holder.block_shimmer.setVisibility(View.VISIBLE);
+            holder.mShimmerViewContainer.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -87,6 +98,8 @@ public class NotificationAdapter  extends RecyclerView.Adapter<NotificationAdapt
         TextView updated;
         SimpleDraweeView photo_user;
         ImageView icononline;
+        RelativeLayout block_shimmer;
+        ShimmerFrameLayout mShimmerViewContainer;
 
         public MyViewHolder(View itemView)
         {
@@ -96,6 +109,8 @@ public class NotificationAdapter  extends RecyclerView.Adapter<NotificationAdapt
             photo_user = itemView.findViewById(R.id.icon);
             updated = itemView.findViewById(R.id.updated);
             icononline = itemView.findViewById(R.id.icononline);
+            block_shimmer = itemView.findViewById(R.id.block_shimmer);
+            mShimmerViewContainer = itemView.findViewById(R.id.shimmer_view_container);
         }
     }
 

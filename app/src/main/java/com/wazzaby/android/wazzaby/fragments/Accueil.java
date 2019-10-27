@@ -173,7 +173,7 @@ public class Accueil extends Fragment {
                     Icon_notification = res.getDrawable(R.drawable.ic_notifications_black_24dp);
                     Icon_recherche = res.getDrawable(R.drawable.ic_question_answer_black_24dp);
                     Icon_annonce = res.getDrawable(R.drawable.baseline_chat_bubble_black_24);
-                    annonce_title_text = new SpannableString("Chat Privee");
+                    annonce_title_text = new SpannableString("Chat Privé");
                     recherche_title_text = new SpannableString("Chat Public");
                     notification_title_text = new SpannableString("Notifications");
 
@@ -196,7 +196,7 @@ public class Accueil extends Fragment {
                     Icon_notification = res.getDrawable(R.drawable.ic_notifications_black_24dp);
                     Icon_recherche = res.getDrawable(R.drawable.ic_question_answer_black_24dp);
                     Icon_annonce = res.getDrawable(R.drawable.baseline_chat_bubble_black_24);
-                    annonce_title_text = new SpannableString("Chat Privee");
+                    annonce_title_text = new SpannableString("Chat Privé");
                     recherche_title_text = new SpannableString("Chat Public");
                     notification_title_text = new SpannableString("Notifications");
 
@@ -221,7 +221,7 @@ public class Accueil extends Fragment {
                     Icon_notification = res.getDrawable(R.drawable.ic_notifications_black_24dp);
                     Icon_recherche = res.getDrawable(R.drawable.ic_question_answer_black_24dp);
                     Icon_annonce = res.getDrawable(R.drawable.baseline_chat_bubble_black_24);
-                    annonce_title_text = new SpannableString("Chat Privee");
+                    annonce_title_text = new SpannableString("Chat Privé");
                     recherche_title_text = new SpannableString("Chat Public");
                     notification_title_text = new SpannableString("Notifications");
 

@@ -345,8 +345,6 @@ public class NotificationsDetails extends AppCompatActivity {
                         allUsersAdapter.notifyDataSetChanged();*/
                         try {
                             JSONArray reponse = new JSONArray(response);
-                            /*for(int i = 0;i<reponse.length();i++)
-                            {*/
 
                             if  (reponse.length()>0) {
                                 object = reponse.getJSONObject(0);
@@ -366,6 +364,7 @@ public class NotificationsDetails extends AppCompatActivity {
                             if (reponse.length() == 0) {
                                 Error_text_message.setText(" Aucun commentaire");
                                 block_affichage_error.setVisibility(View.VISIBLE);
+                                progressbar.setVisibility(View.GONE);
                             }
 
 

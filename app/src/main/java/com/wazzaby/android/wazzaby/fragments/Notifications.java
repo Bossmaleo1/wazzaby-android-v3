@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -30,11 +31,13 @@ import com.android.volley.toolbox.Volley;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.wazzaby.android.wazzaby.R;
+import com.wazzaby.android.wazzaby.adapter.ConversationspublicAdapter;
 import com.wazzaby.android.wazzaby.adapter.NotificationAdapter;
 import com.wazzaby.android.wazzaby.appviews.NotificationsDetails;
 import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
+import com.wazzaby.android.wazzaby.model.data.ConversationPublicItem;
 import com.wazzaby.android.wazzaby.model.data.NotificationItem;
 import com.wazzaby.android.wazzaby.model.data.Profil;
 
@@ -49,7 +52,7 @@ import java.util.Map;
 
 import static com.wazzaby.android.wazzaby.appviews.Home.titlehome;
 
-public class Notifications extends Fragment {
+public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     private SessionManager session;
     private DatabaseHandler database;
@@ -58,6 +61,7 @@ public class Notifications extends Fragment {
     private String url;
     private JSONObject object;
     private List<NotificationItem> data = new ArrayList<>();
+    private List<NotificationItem> dataswiperefresh = new ArrayList<>();
     private NotificationAdapter allUsersAdapter;
     //private ProgressBar progressBar;
     private LinearLayout materialCardView;
@@ -70,6 +74,11 @@ public class Notifications extends Fragment {
     private int Countnotification;
     private int notification_id;
     private RelativeLayout notification_main_shimmer;
+    /*cette variable est vrai lorsque le chargement et passe a false lorsque le chargement est sur le swiperefreshlayout*/
+    private boolean swipestart = true;
+    //On crée un compteur pour stabiliser le swiperefresh
+    private int compteur_swiperefresh = 0;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public Notifications() {
         // Required empty public constructor
@@ -101,9 +110,12 @@ public class Notifications extends Fragment {
 
 
         mShimmerViewContainer = bossmaleo.findViewById(R.id.shimmer_view_container);
+        swipeRefreshLayout =  bossmaleo.findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         allUsersAdapter = new NotificationAdapter(getActivity(),data);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(allUsersAdapter);
         recyclerView.addOnItemTouchListener(new Conversationspublic.RecyclerTouchListener(getActivity(), recyclerView, new Conversationspublic.ClickListener() {
@@ -147,16 +159,15 @@ public class Notifications extends Fragment {
                     public void onResponse(String response) {
                         //progressBar.setVisibility(View.GONE);
 
+                        swipestart = true;
+
                         try {
                             JSONArray reponse = new JSONArray(response);
                             if (reponse.length() == 0) {
-                                //progressBar.setVisibility(View.GONE);
                                 error_message.setText(" Vous avez aucune notification");
                                 materialCardView.setVisibility(View.VISIBLE);
-                                //progressBar.setVisibility(View.GONE);
                             } else {
 
-                                //for (int i = 0; i < reponse.length(); i++) {
                                     object = reponse.getJSONObject(0);
 
 
@@ -168,15 +179,16 @@ public class Notifications extends Fragment {
                                             object.getString("name_messagepublic"), object.getString("nom"), object.getString("prenom"), object.getString("photo"), object.getInt("countjaime"),
                                             object.getInt("countjaimepas"), object.getInt("checkmention"), object.getInt("id_checkmention"), object.getString("user_photo_messagepublic")
                                             , object.getString("status_text_content_messagepublic"), object.getString("etat_photo_status_messagepublic"),
-                                            object.getString("status_photo_messagepublic"));
+                                            object.getString("status_photo_messagepublic"),0);
                                     data.add(notificationItem);
-                                    //progressBar.setVisibility(View.GONE);
-                                //}
 
                                 date = reponse.getJSONObject(0).getJSONObject("date").getString("date");
                                 Countnotification = reponse.getJSONObject(0).getInt("countnotification");
                                 notification_id = reponse.getJSONObject(0).getInt("notification_id");
-                                ConnexionItemNotification();
+                                if(swipestart) {
+                                    ConnexionItemNotification();
+                                }
+
                             }
 
                         }catch (JSONException e){
@@ -220,6 +232,34 @@ public class Notifications extends Fragment {
 
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         requestQueue.add(stringRequest);
+    }
+
+    @Override
+    public void onRefresh() {
+        compteur_swiperefresh++;
+        swipeRefreshLayout.setRefreshing(false);
+        //On efface les deux listes de conversations publiques
+        data.clear();
+        dataswiperefresh.clear();
+        //on test si le compteur est paire
+        if (compteur_swiperefresh%2 == 0) {
+            swipestart = true;
+            allUsersAdapter = new NotificationAdapter(getActivity(),data);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(allUsersAdapter);
+            allUsersAdapter.notifyDataSetChanged();
+            mShimmerViewContainer.setVisibility(View.VISIBLE);
+            ConnexionNotification();
+        } else {
+            swipestart = false;
+            allUsersAdapter = new NotificationAdapter(getActivity(),dataswiperefresh);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(allUsersAdapter);
+            allUsersAdapter.notifyDataSetChanged();
+            mShimmerViewContainer.setVisibility(View.VISIBLE);
+            ConnexionNotificationSwipeRefresh();
+        }
+
     }
 
     public static interface ClickListener {
@@ -284,7 +324,6 @@ public class Notifications extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
                         try {
 
                             JSONArray reponse = new JSONArray(response);
@@ -301,14 +340,27 @@ public class Notifications extends Fragment {
                                         object.getString("name_messagepublic"), object.getString("nom"), object.getString("prenom"), object.getString("photo"), object.getInt("countjaime"),
                                         object.getInt("countjaimepas"), object.getInt("checkmention"), object.getInt("id_checkmention"), object.getString("user_photo_messagepublic")
                                         , object.getString("status_text_content_messagepublic"), object.getString("etat_photo_status_messagepublic"),
-                                        object.getString("status_photo_messagepublic"));
+                                        object.getString("status_photo_messagepublic"),0);
 
+                                //shall we test if our data array is not empty
+                                if(data.size()>0) {
+                                    //we block our previous shimmer the shimmer of our last item
+                                    data.get((data.size()-1)).setState_shimmer(0);
+                                }
 
-
+                                //we set our current shimmer to display the shimmer in our item
+                                notificationItem.setState_shimmer(1);
                                 data.add(notificationItem);
                                 date = reponse.getJSONObject(0).getJSONObject("date").getString("date");
                                 notification_id = reponse.getJSONObject(0).getInt("notification_id");
-                                ConnexionItemNotification();
+                                if(swipestart) {
+                                    ConnexionItemNotification();
+                                }
+
+                            }
+
+                            if (tempcountitemp == 1) {
+                                data.get((data.size() - 1)).setState_shimmer(0);
                             }
 
                         }catch (JSONException e) {
@@ -390,6 +442,177 @@ public class Notifications extends Fragment {
                 return params;
             }
 
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
+    }
+
+    /**/
+
+    public void ConnexionNotificationSwipeRefresh() {
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        swipestart = false;
+
+                        try {
+                            JSONArray reponse = new JSONArray(response);
+                            if (reponse.length() == 0) {
+                                error_message.setText(" Vous avez aucune notification");
+                                materialCardView.setVisibility(View.VISIBLE);
+                            } else {
+
+                                object = reponse.getJSONObject(0);
+
+
+
+                                NotificationItem notificationItem
+                                        = new NotificationItem(
+                                        object.getInt("id_messagepublic"), object.getString("updated_messagepublic"), object.getString("libelle"), object.getString("updated"),
+                                        object.getInt("etat"), object.getInt("id_type"), object.getInt("expediteur_id"), object.getInt("notification_id"), object.getInt("id_libelle"),
+                                        object.getString("name_messagepublic"), object.getString("nom"), object.getString("prenom"), object.getString("photo"), object.getInt("countjaime"),
+                                        object.getInt("countjaimepas"), object.getInt("checkmention"), object.getInt("id_checkmention"), object.getString("user_photo_messagepublic")
+                                        , object.getString("status_text_content_messagepublic"), object.getString("etat_photo_status_messagepublic"),
+                                        object.getString("status_photo_messagepublic"),0);
+                                dataswiperefresh.add(notificationItem);
+
+                                date = reponse.getJSONObject(0).getJSONObject("date").getString("date");
+                                Countnotification = reponse.getJSONObject(0).getInt("countnotification");
+                                notification_id = reponse.getJSONObject(0).getInt("notification_id");
+                                if(swipestart==false) {
+                                    ConnexionItemNotificationSwipeRefresh();
+                                }
+
+                            }
+
+                        }catch (JSONException e){
+                            e.printStackTrace();
+                        }
+
+                        allUsersAdapter.notifyDataSetChanged();
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error_message.setText(" Erreur reseaux, veuillez reessayer svp !");
+                        materialCardView.setVisibility(View.VISIBLE);
+                        mShimmerViewContainer.stopShimmer();
+                        mShimmerViewContainer.setVisibility(View.GONE);
+                        notification_main_shimmer.setVisibility(View.GONE);
+                        //progressBar.setVisibility(View.GONE);
+                        snackbar = Snackbar
+                                .make(coordinatorLayout, res.getString(R.string.error_volley_timeouterror), Snackbar.LENGTH_LONG)
+                                .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                        materialCardView.setVisibility(View.GONE);
+                                        //progressBar.setVisibility(View.GONE);
+                                        //ConnexionNotification();
+                                    }
+                                });
+                        snackbar.show();
+                        //progressBar.setVisibility(View.GONE);
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
+    }
+
+    private void ConnexionItemNotificationSwipeRefresh() {
+        String url_lazy_loading = Const.dns.concat("/WazzabyApi/public/api/displayNotificationItem?id_recepteur=")
+                .concat(String.valueOf(session.getUserDetail().get(SessionManager.Key_ID)))
+                .concat("&date=").concat(String.valueOf(date))
+                .concat("&notification_id=").concat(String.valueOf(notification_id));
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_lazy_loading,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+
+                            JSONArray reponse = new JSONArray(response);
+
+
+                            object = reponse.getJSONObject(0);
+                            int tempcountitemp = Integer.valueOf(Countnotification - data.size());
+
+                            if (tempcountitemp >= 1) {
+                                NotificationItem notificationItem
+                                        = new NotificationItem(
+                                        object.getInt("id_messagepublic"), object.getString("updated_messagepublic"), object.getString("libelle"), object.getString("updated"),
+                                        object.getInt("etat"), object.getInt("id_type"), object.getInt("expediteur_id"), object.getInt("notification_id"), object.getInt("id_libelle"),
+                                        object.getString("name_messagepublic"), object.getString("nom"), object.getString("prenom"), object.getString("photo"), object.getInt("countjaime"),
+                                        object.getInt("countjaimepas"), object.getInt("checkmention"), object.getInt("id_checkmention"), object.getString("user_photo_messagepublic")
+                                        , object.getString("status_text_content_messagepublic"), object.getString("etat_photo_status_messagepublic"),
+                                        object.getString("status_photo_messagepublic"),0);
+
+                                //shall we test if our data array is not empty
+                                if(dataswiperefresh.size()>0) {
+                                    //we block our previous shimmer the shimmer of our last item
+                                    dataswiperefresh.get((dataswiperefresh.size()-1)).setState_shimmer(0);
+                                }
+
+                                //we set our current shimmer to display the shimmer in our item
+                                notificationItem.setState_shimmer(1);
+                                dataswiperefresh.add(notificationItem);
+                                date = reponse.getJSONObject(0).getJSONObject("date").getString("date");
+                                notification_id = reponse.getJSONObject(0).getInt("notification_id");
+                                if(swipestart==false) {
+                                    ConnexionItemNotificationSwipeRefresh();
+                                }
+
+                            }
+
+                            if (tempcountitemp == 1) {
+                                dataswiperefresh.get((dataswiperefresh.size() - 1)).setState_shimmer(0);
+                            }
+
+                        }catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        allUsersAdapter.notifyDataSetChanged();
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error_message.setText(" Erreur reseaux, veuillez reessayer svp !");
+                        materialCardView.setVisibility(View.VISIBLE);
+                        //progressBar.setVisibility(View.GONE);
+                        snackbar = Snackbar
+                                .make(coordinatorLayout, res.getString(R.string.error_volley_timeouterror), Snackbar.LENGTH_LONG)
+                                .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                        materialCardView.setVisibility(View.GONE);
+                                        //progressBar.setVisibility(View.GONE);
+                                        //ConnexionNotification();
+                                    }
+                                });
+                        snackbar.show();
+                        //progressBar.setVisibility(View.GONE);
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
         };
 
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
