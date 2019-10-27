@@ -41,6 +41,7 @@ import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
 import com.wazzaby.android.wazzaby.model.data.ConversationItem;
+import com.wazzaby.android.wazzaby.model.data.Profil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,6 +51,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.wazzaby.android.wazzaby.appviews.Home.titlehome;
 
 public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
@@ -66,6 +69,7 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
     private Context context;
     private DatabaseHandler database;
     private SessionManager session;
+    private Profil user;
 
     public Conversationsprivee() {
         // Required empty public constructor
@@ -93,18 +97,20 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
         res = getResources();
         database = new DatabaseHandler(getActivity());
         session = new SessionManager(getActivity());
-        progressBar = (ProgressBar)bossmaleo.findViewById(R.id.progressbar);
-        coordinatorLayout = (CoordinatorLayout)bossmaleo.findViewById(R.id.coordinatorLayout);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) bossmaleo.findViewById(R.id.swipeRefreshLayout);
+        user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
+        progressBar = bossmaleo.findViewById(R.id.progressbar);
+        coordinatorLayout = bossmaleo.findViewById(R.id.coordinatorLayout);
+        mSwipeRefreshLayout =  bossmaleo.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.colorPrimary);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        recyclerView = (RecyclerView)bossmaleo.findViewById(R.id.my_recycler_view);
+        recyclerView = bossmaleo.findViewById(R.id.my_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         allUsersAdapter = new ConversationsAdapter(getActivity(),data);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(allUsersAdapter);
+        this.ConnexionSynchronizationProblematique();
         ConnexionProblematique();
         recyclerView.addOnItemTouchListener(new Conversationsprivee.RecyclerTouchListener(getActivity(), recyclerView, new Conversationsprivee.ClickListener() {
             @Override
@@ -123,6 +129,8 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
 
             }
         }));
+
+
 
         return bossmaleo;
     }
@@ -326,6 +334,50 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
                 params.put("ID",String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID()));
                 params.put("IDProb",String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB()));
                 params.put("web","0");
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
+    }
+
+
+    //Cette methode assure la synchronization après une mise à jour de problématique
+    public void ConnexionSynchronizationProblematique() {
+        String url_sendkey = Const.dns.concat("/WazzabyApi/public/api/SynchronizationProblematique?user_id=").concat(String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID()));
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_sendkey,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        try {
+
+                            JSONObject problematique = new JSONObject(response);
+                            String problematique_libelle = problematique.getString("problematique_libelle");
+                            int id_prob = problematique.getInt("problematique_id");
+                            user.setLibelle_prob(problematique_libelle);
+                            user.setIDPROB(String.valueOf(id_prob));
+
+                            database.UpdateIDPROB(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID(),Integer.valueOf(user.getIDPROB()),user.getLibelle_prob());
+                            titlehome.setTitle(user.getLibelle_prob());
+
+                        }catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
                 return params;
             }
 

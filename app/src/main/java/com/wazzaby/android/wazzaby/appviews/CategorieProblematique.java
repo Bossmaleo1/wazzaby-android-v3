@@ -41,6 +41,7 @@ import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
 import com.wazzaby.android.wazzaby.model.data.Categorie_prob;
+import com.wazzaby.android.wazzaby.model.data.Profil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,6 +51,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.wazzaby.android.wazzaby.appviews.Home.titlehome;
 
 public class CategorieProblematique extends AppCompatActivity {
 
@@ -75,6 +78,7 @@ public class CategorieProblematique extends AppCompatActivity {
     private int ID = 0;
     private String IDCAT = null;
     private LinearLayout search_block;
+    private Profil user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +87,7 @@ public class CategorieProblematique extends AppCompatActivity {
         intent = getIntent();
         database = new DatabaseHandler(this);
         session = new SessionManager(getApplicationContext());
+        user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
         res = getResources();
         toolbar =  findViewById(R.id.toolbar);
         progressBar = findViewById(R.id.progressbar);
@@ -112,6 +117,7 @@ public class CategorieProblematique extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(allUsersAdapter);
         ConnexionProblematique();
+        this.ConnexionSynchronizationProblematique();
         recyclerView.addOnItemTouchListener(new CategorieProblematique.RecyclerTouchListener(this, recyclerView, new CategorieProblematique.ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -342,7 +348,7 @@ public class CategorieProblematique extends AppCompatActivity {
 
     private void ConnexionProblematiqueUpdate()
     {
-        String url93939393 = Const.dns+"/WazzabyApi/public/api/displayproblematique?ID="+String.valueOf(ID_user)+"&ID_prob="+String.valueOf(ID_prob);
+        String url93939393 = Const.dns+"/WazzabyApi/public/api/changeproblematique?ID="+String.valueOf(ID_user)+"&ID_prob="+String.valueOf(ID_prob);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url93939393,
                 new Response.Listener<String>() {
                     @Override
@@ -457,6 +463,49 @@ public class CategorieProblematique extends AppCompatActivity {
                 Map<String,String> params = new HashMap<String, String>();
                 /*params.put("ID_User",String.valueOf(ID_user));
                 params.put("ID_Prob",String.valueOf(ID_prob));*/
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+
+    //Cette methode assure la synchronization après une mise à jour de problématique
+    public void ConnexionSynchronizationProblematique() {
+        String url_sendkey = Const.dns.concat("/WazzabyApi/public/api/SynchronizationProblematique?user_id=").concat(String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID()));
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_sendkey,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        try {
+
+                            JSONObject problematique = new JSONObject(response);
+                            String problematique_libelle = problematique.getString("problematique_libelle");
+                            int id_prob = problematique.getInt("problematique_id");
+                            user.setLibelle_prob(problematique_libelle);
+                            user.setIDPROB(String.valueOf(id_prob));
+
+                            database.UpdateIDPROB(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID(),Integer.valueOf(user.getIDPROB()),user.getLibelle_prob());
+                            titlehome.setTitle(user.getLibelle_prob());
+
+                        }catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
                 return params;
             }
 

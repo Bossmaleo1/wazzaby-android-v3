@@ -55,6 +55,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.wazzaby.android.wazzaby.appviews.Home.titlehome;
+
 public class Conversationspublic extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     public static RecyclerView recyclerView;
@@ -124,7 +126,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(allUsersAdapter);
 
-
+        this.ConnexionSynchronizationProblematique();
         ConnexionConversationsPublic();
 
         materialCardView.setOnClickListener(new View.OnClickListener() {
@@ -163,6 +165,8 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
 
             }
         }));
+
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -170,6 +174,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                 startActivity(intent);
             }
         });
+
 
         return bossmaleo;
     }
@@ -488,6 +493,50 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
         requestQueue.add(stringRequest);
 
 
+    }
+
+
+    //Cette methode assure la synchronization après une mise à jour de problématique
+    public void ConnexionSynchronizationProblematique() {
+        String url_sendkey = Const.dns.concat("/WazzabyApi/public/api/SynchronizationProblematique?user_id=").concat(String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID()));
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_sendkey,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        try {
+
+                            JSONObject problematique = new JSONObject(response);
+                            String problematique_libelle = problematique.getString("problematique_libelle");
+                            int id_prob = problematique.getInt("problematique_id");
+                            user.setLibelle_prob(problematique_libelle);
+                            user.setIDPROB(String.valueOf(id_prob));
+
+                            database.UpdateIDPROB(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID(),Integer.valueOf(user.getIDPROB()),user.getLibelle_prob());
+                            titlehome.setTitle(user.getLibelle_prob());
+
+                        }catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
     }
 
 }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
@@ -54,12 +55,14 @@ public class NotificationAdapter  extends RecyclerView.Adapter<NotificationAdapt
 
 
         //Const.dns+"/uploads/photo_de_profil/"+current.getPhoto()
-        if(!current.getPhoto().equals("null")) {
-            Uri uri2 = Uri.parse(current.getPhoto());
-            holder.photo_user.setImageURI(uri2);
+
+
+        if(current.getPhoto().equals("http://wazzaby.com/uploads/photo_de_profil/")) {
+            holder.photo_user.setImageResource(R.drawable.ic_profile_colorier);
         }else
         {
-            holder.photo_user.setImageResource(R.drawable.ic_profile_colorier);
+            Uri uri2 = Uri.parse(current.getPhoto());
+            holder.photo_user.setImageURI(uri2);
         }
 
         if (current.getEtat()==0) {
