@@ -34,6 +34,31 @@
 
         </activity>
 
+        <activity android:name=".connInscript.FormInscriptStep1"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <activity android:name=".connInscript.FormInscriptStep2"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <activity android:name=".connInscript.FormInscriptStep3"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <activity android:name=".connInscript.UploadImage"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <activity android:name=".connInscript.ProblematiqueConnexion"
+            android:screenOrientation="portrait">
+
+        </activity>
+
         <activity android:name=".connInscript.Passforget"
                   android:screenOrientation="portrait"
                   android:parentActivityName=".connInscript.Connexion">
@@ -132,6 +157,20 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+
+        <activity android:name=".connInscript.ImagePickerActivity"
+            android:screenOrientation="portrait"
+            >
+
+        </activity>
+
+        <activity android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            >
+
+        </activity>
+
 
 
 

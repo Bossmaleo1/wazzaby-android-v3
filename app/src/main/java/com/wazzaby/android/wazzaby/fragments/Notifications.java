@@ -31,13 +31,11 @@ import com.android.volley.toolbox.Volley;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.wazzaby.android.wazzaby.R;
-import com.wazzaby.android.wazzaby.adapter.ConversationspublicAdapter;
 import com.wazzaby.android.wazzaby.adapter.NotificationAdapter;
 import com.wazzaby.android.wazzaby.appviews.NotificationsDetails;
 import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
-import com.wazzaby.android.wazzaby.model.data.ConversationPublicItem;
 import com.wazzaby.android.wazzaby.model.data.NotificationItem;
 import com.wazzaby.android.wazzaby.model.data.Profil;
 
@@ -94,7 +92,6 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View bossmaleo = inflater.inflate(R.layout.notifications, container, false);
-        //progressBar = bossmaleo.findViewById(R.id.progressbar);
         materialCardView = bossmaleo.findViewById(R.id.materialcardview);
         recyclerView = bossmaleo.findViewById(R.id.my_recycler_view);
         error_message = bossmaleo.findViewById(R.id.text_error_message);
@@ -115,10 +112,9 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         allUsersAdapter = new NotificationAdapter(getActivity(),data);
-        //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(allUsersAdapter);
-        recyclerView.addOnItemTouchListener(new Conversationspublic.RecyclerTouchListener(getActivity(), recyclerView, new Conversationspublic.ClickListener() {
+        recyclerView.addOnItemTouchListener(new Notifications.RecyclerTouchListener(getActivity(), recyclerView, new Notifications.ClickListener() {
             @Override
             public void onClick(View view, int position) {
                 Intent intent = new Intent(getActivity(), NotificationsDetails.class);
@@ -140,7 +136,6 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
             @Override
             public void onClick(View view) {
                 materialCardView.setVisibility(View.GONE);
-                //progressBar.setVisibility(View.VISIBLE);
                 ConnexionNotification();
             }
         });
@@ -166,11 +161,11 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
                             if (reponse.length() == 0) {
                                 error_message.setText(" Vous avez aucune notification");
                                 materialCardView.setVisibility(View.VISIBLE);
+                                notification_main_shimmer.setVisibility(View.GONE);
                             } else {
 
                                     object = reponse.getJSONObject(0);
-
-
+                                    notification_main_shimmer.setVisibility(View.GONE);
 
                                     NotificationItem notificationItem
                                             = new NotificationItem(
@@ -236,11 +231,18 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onRefresh() {
+
+        /*mShimmerViewContainer.setVisibility(View.VISIBLE);
+        mShimmerViewContainer.startShimmer();*/
         compteur_swiperefresh++;
         swipeRefreshLayout.setRefreshing(false);
         //On efface les deux listes de conversations publiques
         data.clear();
         dataswiperefresh.clear();
+        materialCardView.setVisibility(View.GONE);
+        notification_main_shimmer.setVisibility(View.VISIBLE);
+        mShimmerViewContainer.setVisibility(View.VISIBLE);
+        mShimmerViewContainer.startShimmer();
         //on test si le compteur est paire
         if (compteur_swiperefresh%2 == 0) {
             swipestart = true;
@@ -249,6 +251,7 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
             recyclerView.setAdapter(allUsersAdapter);
             allUsersAdapter.notifyDataSetChanged();
             mShimmerViewContainer.setVisibility(View.VISIBLE);
+            mShimmerViewContainer.startShimmer();
             ConnexionNotification();
         } else {
             swipestart = false;
@@ -257,6 +260,7 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
             recyclerView.setAdapter(allUsersAdapter);
             allUsersAdapter.notifyDataSetChanged();
             mShimmerViewContainer.setVisibility(View.VISIBLE);
+            mShimmerViewContainer.startShimmer();
             ConnexionNotificationSwipeRefresh();
         }
 
@@ -463,6 +467,8 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
                             if (reponse.length() == 0) {
                                 error_message.setText(" Vous avez aucune notification");
                                 materialCardView.setVisibility(View.VISIBLE);
+                                notification_main_shimmer.setVisibility(View.GONE);
+                                mShimmerViewContainer.setVisibility(View.GONE);
                             } else {
 
                                 object = reponse.getJSONObject(0);
@@ -482,6 +488,8 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
                                 date = reponse.getJSONObject(0).getJSONObject("date").getString("date");
                                 Countnotification = reponse.getJSONObject(0).getInt("countnotification");
                                 notification_id = reponse.getJSONObject(0).getInt("notification_id");
+                                notification_main_shimmer.setVisibility(View.GONE);
+                                mShimmerViewContainer.setVisibility(View.GONE);
                                 if(swipestart==false) {
                                     ConnexionItemNotificationSwipeRefresh();
                                 }
@@ -557,6 +565,9 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
                                         object.getInt("countjaimepas"), object.getInt("checkmention"), object.getInt("id_checkmention"), object.getString("user_photo_messagepublic")
                                         , object.getString("status_text_content_messagepublic"), object.getString("etat_photo_status_messagepublic"),
                                         object.getString("status_photo_messagepublic"),0);
+
+                                notification_main_shimmer.setVisibility(View.GONE);
+                                mShimmerViewContainer.setVisibility(View.GONE);
 
                                 //shall we test if our data array is not empty
                                 if(dataswiperefresh.size()>0) {

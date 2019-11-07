@@ -125,6 +125,7 @@ public class NotificationsDetails extends AppCompatActivity {
         title1 = findViewById(R.id.title1);
         photo_du_poste_background = findViewById(R.id.photo_du_poste_background);
         contenu = findViewById(R.id.contenu);
+        contenu.setTextColor(0xff000000);
         contenucomment = findViewById(R.id.contenucomment);
         nombre_de_jaime = findViewById(R.id.nombre_de_jaime);
         nombre_de_jaimepas = findViewById(R.id.nombre_de_jaimepas);
@@ -142,7 +143,7 @@ public class NotificationsDetails extends AppCompatActivity {
         recyclerView = findViewById(R.id.my_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         allUsersAdapter = new displaycommentaryadapter(this,data);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        //recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(allUsersAdapter);
         this.Connexion_DisplayComment();

@@ -48,6 +48,7 @@ dependencies {
     implementation 'com.vanniktech:emoji:0.6.0'
     implementation 'com.vanniktech:emoji-google:0.6.0'
     implementation 'net.gotev:uploadservice:3.5.2'
+    implementation 'com.github.yalantis:ucrop:2.2.4-native'
 
 }
 

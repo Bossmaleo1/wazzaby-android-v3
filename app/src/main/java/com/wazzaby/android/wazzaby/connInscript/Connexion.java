@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -251,14 +252,26 @@ public class Connexion extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //je suis entrain de souligner le bouton s'inscrire
+        getMenuInflater().inflate(R.menu.menu_inscript, menu);
+        /*SpannableString content = new SpannableString(res.getString(R.string.inscript));
+        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+        Inscript = menu.findItem(R.id.inscript);
+        Inscript.setTitle(content);*/
+        return true;
+    }
+
+
     //gère le click sur une action de l'ActionBar
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.inscript:
                 //ControleGPS();
-                /*Intent intent = new Intent(getApplicationContext(),forminscript3.class);
-                startActivity(intent);*/
+                Intent intent = new Intent(getApplicationContext(),FormInscriptStep1.class);
+                startActivity(intent);
                 /*Intent intent = new Intent(getApplicationContext(),UploadImage.class);
                 startActivity(intent);*/
                 return true;

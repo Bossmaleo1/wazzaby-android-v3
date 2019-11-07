@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
 
-                    sleep(3*1000);
+                    sleep(1000);
                     if(!session.IsLoggedIn()) {
                         Intent i = new Intent(getApplicationContext(), Connexion.class);
                         startActivity(i);
