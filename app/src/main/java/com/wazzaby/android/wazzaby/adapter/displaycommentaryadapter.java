@@ -36,6 +36,9 @@ public class displaycommentaryadapter extends RecyclerView.Adapter<displaycommen
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.data = data;
+        database = new DatabaseHandler(context);
+        session = new SessionManager(context);
+        user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
     }
 
     public void delete(int position)
@@ -56,10 +59,19 @@ public class displaycommentaryadapter extends RecyclerView.Adapter<displaycommen
     public void onBindViewHolder(displaycommentaryadapter.MyViewHolder holder, int position) {
         displaycommentary current = data.get(position);
         holder.title.setText(current.getTitle());
+        holder.title.setTextColor(0xff000000);
         holder.title1.setText(current.getNOM());
         holder.date.setText(current.getDATETIME());
-        Uri uri = Uri.parse(current.getPHOTO());
-        holder.icon.setImageURI(uri);
+        holder.date.setTextColor(0xff000000);
+
+        if (Integer.valueOf(user.getETAT()) == 1) {
+            holder.icon.setImageResource(R.drawable.ic_profile_anonymous);
+        } else {
+            Uri uri = Uri.parse(current.getPHOTO());
+            holder.icon.setImageURI(uri);
+        }
+
+
 
         holder.icononline.setImageResource(current.getIcononline());
         holder.icononline.setColorFilter(context.getResources().getColor(current.getColor1()));

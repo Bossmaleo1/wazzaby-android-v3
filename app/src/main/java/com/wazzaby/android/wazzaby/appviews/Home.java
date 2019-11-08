@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,6 +52,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.wazzaby.android.wazzaby.fragments.FragmentDrawer.imageView;
+
 public class Home extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener{
 
     private LayoutInflater inflater;
@@ -61,13 +64,15 @@ public class Home extends AppCompatActivity implements FragmentDrawer.FragmentDr
     private Toolbar toolbar;
     private Resources res;
     private DatabaseHandler database;
-    private Profil user;
+    public static Profil user;
     private static final String TAG = Home.class.getSimpleName();
     private String Keypush = null;
     public static Context context;
     private Intent intent;
     public static CoordinatorLayout coordinatorLayout;
     public static  androidx.appcompat.app.ActionBar titlehome;
+
+    public static boolean stabilasationanymousmode = false;
 
 
     @Override
@@ -113,8 +118,13 @@ public class Home extends AppCompatActivity implements FragmentDrawer.FragmentDr
         MyReceiver receiver = new MyReceiver();
         registerReceiver(receiver, filter);
 
+        ConnexionSynchronizationModeAnonymous();
+
         //on lance ce service pour assurer la synchronisation de changement de problematique
         //this.ConnexionSynchronizationProblematique();
+
+        //on met le switch à jour suivant l'état du modeanonymous
+        MiseajourduSwitchSuivantLeModeAnonymous(user);
 
     }
 
@@ -280,6 +290,99 @@ public class Home extends AppCompatActivity implements FragmentDrawer.FragmentDr
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
+    }
+
+    //Mise en place de la synchronisation du mode anonymous
+    public void ConnexionSynchronizationModeAnonymous() {
+
+        String url_synchronisation_anonymous_mode = Const.dns.concat("/WazzabyApi/public/api/DisplayUserAnonymousState?user_id=").concat(String.valueOf(user.getID()));
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_synchronisation_anonymous_mode,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        try {
+
+                            JSONObject reponse = new JSONObject(response);
+                            stabilasationanymousmode = true;
+                            if (reponse.getInt("user_etat") == 1) {
+
+                                database.UpdateAnonymousMode(user.getID(),"Anonyme","Utilisateur","","1");
+                                imageView.setImageResource(R.drawable.ic_profile_anonymous);
+                                user.setPRENOM("Utilisateur");
+                                user.setNOM("Anonyme");
+                                user.setPHOTO("");
+                                FragmentDrawer.user.setPRENOM("Utilisateur");
+                                FragmentDrawer.user.setNOM("Anonyme");
+                                FragmentDrawer.user.setPHOTO("");
+                                FragmentDrawer.nom.setText(user.getPRENOM()+" "+user.getNOM());
+
+                                //on met le switch à jour suivant l'état du modeanonymous
+                                MiseajourduSwitchSuivantLeModeAnonymous(user);
+
+                            } else if (reponse.getInt("user_etat") == 0) {
+
+                                database.UpdateAnonymousMode(user.getID(),reponse.getString("nom"),reponse.getString("prenom"),reponse.getString("photo"),"0");
+                                //imageView.setImageResource(R.drawable.ic_profile_anonymous);
+                                user.setPRENOM(reponse.getString("prenom"));
+                                user.setNOM(reponse.getString("nom"));
+                                user.setPHOTO(reponse.getString("photo"));
+                                FragmentDrawer.user.setPRENOM(reponse.getString("prenom"));
+                                FragmentDrawer.user.setNOM(reponse.getString("nom"));
+                                FragmentDrawer.user.setPHOTO(reponse.getString("photo"));
+                                FragmentDrawer.nom.setText(user.getPRENOM()+" "+user.getNOM());
+
+                                //On actualise la photo de l'utilisateur
+                                if(!user.getPHOTO().equals("null") && !user.getPHOTO().isEmpty()) {
+                                    if(user.getPHOTO().equals("yo")) {
+                                        imageView.setImageResource(R.drawable.ic_profile);
+                                    }else {
+                                        Uri uri = Uri.parse(Const.dns+"/uploads/photo_de_profil/" + user.getPHOTO());
+                                        imageView.setImageURI(uri);
+                                    }
+                                }else
+                                {
+                                    imageView.setImageResource(R.drawable.ic_profile);
+                                }
+
+                                //on met le switch à jour suivant l'état du modeanonymous
+                                MiseajourduSwitchSuivantLeModeAnonymous(user);
+
+                            }
+
+                        }catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //on met le switch à jour suivant l'état du modeanonymous
+                        MiseajourduSwitchSuivantLeModeAnonymous(user);
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+
+    }
+
+
+    //Cette fonction détecter l'état du mode anonymous
+    public static void MiseajourduSwitchSuivantLeModeAnonymous(Profil user) {
+        if (user.getETAT().equals("1")) {
+            FragmentDrawer.switchforanonymousmode.setChecked(true);
+        } else {
+            FragmentDrawer.switchforanonymousmode.setChecked(false);
+        }
     }
 
 }

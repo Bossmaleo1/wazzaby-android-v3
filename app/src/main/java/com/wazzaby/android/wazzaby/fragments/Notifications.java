@@ -55,7 +55,7 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
     private SessionManager session;
     private DatabaseHandler database;
     private Resources res;
-    private Profil user;
+    public static Profil user;
     private String url;
     private JSONObject object;
     private List<NotificationItem> data = new ArrayList<>();

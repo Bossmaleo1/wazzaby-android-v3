@@ -132,6 +132,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.update(TABLE_USER,values, KEY_ID+"="+IDUSER, null);
     }
 
+    public void UpdateAnonymousMode(int IDUSER,String name,String firstname,String photo,String etat)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_NOM,name);
+        values.put(KEY_PRENOM,firstname);
+        values.put(KEY_PHOTO,photo);
+        values.put(KEY_ETAT,etat);
+        db.update(TABLE_USER,values, KEY_ID+"="+IDUSER, null);
+    }
+
     public void UpdateKeyPush(int IDUSER,String keypush)
     {
         SQLiteDatabase db = this.getWritableDatabase();

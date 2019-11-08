@@ -73,7 +73,7 @@ public class Problematique extends Fragment {
     private LinearLayout search_block;
     private LinearLayout materialcardview;
     private SessionManager session;
-    private Profil user;
+    public static Profil user;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

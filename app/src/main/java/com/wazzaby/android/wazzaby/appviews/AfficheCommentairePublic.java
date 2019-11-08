@@ -22,7 +22,6 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.AuthFailureError;
@@ -37,7 +36,6 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.snackbar.Snackbar;
 import com.wazzaby.android.wazzaby.R;
 import com.wazzaby.android.wazzaby.adapter.displaycommentaryadapter;
@@ -109,7 +107,6 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
         recyclerView = findViewById(R.id.my_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         allUsersAdapter = new displaycommentaryadapter(this,data);
-        //recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(allUsersAdapter);
 
@@ -149,9 +146,18 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
             @Override
             public void onClick(View view) {
                 if(!editcomment.getText().toString().isEmpty()) {
-                    displaycommentary commentary = new displaycommentary("http://wazzaby.com/uploads/photo_de_profil/" + user.getPHOTO(), context, R.drawable.ic_done_black_18dp
-                            , "A l'instant", R.color.greencolor, 0, editcomment.getText().toString(),
-                            user.getPRENOM() + " " + user.getNOM(),0);
+
+                    displaycommentary commentary;
+                    if(Integer.valueOf(user.getETAT()) == 1) {
+                        commentary = new displaycommentary("http://wazzaby.com/uploads/photo_de_profil/" + user.getPHOTO(), context, R.drawable.ic_done_black_18dp
+                                , "A l'instant", R.color.greencolor, 0, editcomment.getText().toString(),
+                                "Utilisateur" + " " + "Anonyme",0);
+                    } else {
+                        commentary = new displaycommentary("http://wazzaby.com/uploads/photo_de_profil/" + user.getPHOTO(), context, R.drawable.ic_done_black_18dp
+                                , "A l'instant", R.color.greencolor, 0, editcomment.getText().toString(),
+                                user.getPRENOM() + " " + user.getNOM(),0);
+                    }
+
                     block_affichage_error.setVisibility(View.GONE);
                     /*Ligne de code permettant de
                     * faire une insertion du message en tete
@@ -448,7 +454,7 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
 
     public void Connexion_Insert_Notification() {
         String message;
-        if (user.getETAT().equals('1')) {
+        if (Integer.valueOf(user.getETAT()) == 1) {
             message = "Votre message public vient d'etre commenter par un Utilisateur Anonyme";
         } else {
             message = "Votre message public vient d'etre commenter par "

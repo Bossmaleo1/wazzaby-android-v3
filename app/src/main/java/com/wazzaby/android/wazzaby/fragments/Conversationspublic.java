@@ -74,7 +74,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
     private SwipeRefreshLayout swipeRefreshLayout;
     private ShimmerFrameLayout mShimmerViewContainer;
     private LinearLayout materialCardView;
-    private Profil user;
+    public static Profil user;
     private TextView text_error_message;
     private static int anonymous;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
@@ -130,7 +130,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
         recyclerView.setAdapter(allUsersAdapter);
 
         this.ConnexionSynchronizationProblematique();
-        ConnexionConversationsPublic();
+        this.ConnexionConversationsPublic();
 
         materialCardView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,5 +1,6 @@
 package com.wazzaby.android.wazzaby.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
@@ -17,7 +20,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.wazzaby.android.wazzaby.R;
 import com.wazzaby.android.wazzaby.adapter.NavigationDrawerAdapter;
 import com.wazzaby.android.wazzaby.model.Const;
@@ -26,13 +37,18 @@ import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
 import com.wazzaby.android.wazzaby.model.data.DrawerItem;
 import com.wazzaby.android.wazzaby.model.data.Profil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FragmentDrawer extends Fragment {
 
     private static String TAG = FragmentDrawer.class.getSimpleName();
-    private TextView nom;
+    public static TextView nom;
     private DatabaseHandler database;
     private RecyclerView recyclerView;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -42,8 +58,10 @@ public class FragmentDrawer extends Fragment {
     private static String[] titles = null;
     private FragmentDrawerListener drawerListener;
     private SessionManager session;
-    private Profil user;
-    private SimpleDraweeView imageView;
+    public static Profil user;
+    public static SimpleDraweeView imageView;
+    public static SwitchMaterial switchforanonymousmode;
+    private ProgressDialog pDialog;
 
     public FragmentDrawer() {
 
@@ -93,6 +111,7 @@ public class FragmentDrawer extends Fragment {
         recyclerView =  layout.findViewById(R.id.drawerList);
         nom = layout.findViewById(R.id.welcome_msg);
         imageView = layout.findViewById(R.id.ic_profile);
+        switchforanonymousmode = layout.findViewById(R.id.compatSwitch);
         nom.setText(user.getPRENOM()+" "+user.getNOM());
 
         if(!user.getPHOTO().equals("null") && !user.getPHOTO().isEmpty()) {
@@ -110,6 +129,7 @@ public class FragmentDrawer extends Fragment {
         adapter = new NavigationDrawerAdapter(getActivity(), getData());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -122,6 +142,62 @@ public class FragmentDrawer extends Fragment {
 
             }
         }));
+
+
+        switchforanonymousmode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+
+
+                /*if (!stabilasationanymousmode)
+                {*/
+                    //on active la barre de progression
+                    /*pDialog = new ProgressDialog(getActivity());
+                    pDialog.setMessage("Connexion en cours...");
+                    pDialog.setIndeterminate(false);
+                    pDialog.setCancelable(false);
+                    pDialog.show();
+                    if (isChecked) {*/
+                        //On active le mode anonymous si l'utilisateur accepte d'activer le mode anonyme
+                        /*VolleyActivateAnonymousMode();
+                    } else {*/
+                        //On désactive le mode anonymous si l'utilisateur accepte de désactiver le mode anonyme
+                       /* VolleyDisabledAnonymousMode();
+                    }
+                }*/
+
+
+            }
+        });
+
+        //Mise en place de l'évenement permettant de gérer le mode anonymous
+        switchforanonymousmode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                pDialog = new ProgressDialog(getActivity());
+                pDialog.setMessage("Connexion en cours...");
+                pDialog.setIndeterminate(false);
+                pDialog.setCancelable(false);
+                pDialog.show();
+
+                if (((SwitchMaterial) view).isChecked()) {
+                    //On active le mode anonymous si l'utilisateur accepte d'activer le mode anonyme
+                    VolleyActivateAnonymousMode();
+                } else {
+                    //On désactive le mode anonymous si l'utilisateur accepte de désactiver le mode anonyme
+                    VolleyDisabledAnonymousMode();
+                }
+
+            }
+
+        });
+
+        if (user.getETAT().equals("1")) {
+            imageView.setImageResource(R.drawable.ic_profile_anonymous);
+        }
+
+        //Toast.makeText(getActivity()," "+user.getETAT(),Toast.LENGTH_LONG).show();
 
         return layout;
     }
@@ -213,4 +289,140 @@ public class FragmentDrawer extends Fragment {
     public interface FragmentDrawerListener {
         void onDrawerItemSelected(View view, int position);
     }
+
+    //La requête HTTP pour activer le mode Anonymous
+    public void VolleyActivateAnonymousMode() {
+
+        String url_activateAnonymousMode = Const.dns+"/WazzabyApi/public/api/AnonymousModeActivation?user_id=" + String.valueOf(user.getID()) + "&etat=1";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_activateAnonymousMode,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(getActivity(),"Votre mode anonyme vient d'être activer avec succès !!",Toast.LENGTH_LONG).show();
+                        database.UpdateAnonymousMode(user.getID(),"Anonyme","Utilisateur","","1");
+                        imageView.setImageResource(R.drawable.ic_profile_anonymous);
+                        user.setPRENOM("Utilisateur");
+                        user.setNOM("Anonyme");
+                        user.setPHOTO("");
+                        user.setETAT("1");
+                        nom.setText(user.getPRENOM()+" "+user.getNOM());
+                        //setUserObjectInHomeNotificationProblematiqueANDConversationpublic(user.getNOM(),user.getPRENOM(),user.getETAT(),user.getPHOTO());
+                        switchforanonymousmode.setChecked(true);
+                        pDialog.dismiss();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getActivity(),"L'activation à échouer car une erreur réseau vient de se produire",Toast.LENGTH_LONG).show();
+                        pDialog.dismiss();
+                        switchforanonymousmode.setChecked(false);
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
+    }
+
+    //La requête HTTP pour désactiver le mode Anonymous
+    public void VolleyDisabledAnonymousMode() {
+        String url_disabledAnonymousMode = Const.dns+"/WazzabyApi/public/api/AnonymousModeActivation?user_id=" + String.valueOf(user.getID()) + "&etat=0";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_disabledAnonymousMode,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject reponse = new JSONObject(response);
+                            Toast.makeText(getActivity(),"Votre mode anonyme vient d'être désactiver avec succès !!",Toast.LENGTH_LONG).show();
+
+                            database.UpdateAnonymousMode(user.getID(),"Anonyme","Utilisateur","","0");
+                            imageView.setImageResource(R.drawable.ic_profile_anonymous);
+                            user.setPRENOM(reponse.getString("prenom"));
+                            user.setNOM(reponse.getString("nom"));
+                            user.setPHOTO(reponse.getString("photo"));
+                            user.setETAT("0");
+                            nom.setText(user.getPRENOM()+" "+user.getNOM());
+                            //setUserObjectInHomeNotificationProblematiqueANDConversationpublic(user.getNOM(),user.getPRENOM(),user.getETAT(),user.getPHOTO());
+                            pDialog.dismiss();
+
+                            //On actualise la photo de l'utilisateur
+                            if(!user.getPHOTO().equals("null") && !user.getPHOTO().isEmpty()) {
+                                if(user.getPHOTO().equals("yo")) {
+                                    imageView.setImageResource(R.drawable.ic_profile);
+                                }else {
+                                    Uri uri = Uri.parse(Const.dns+"/uploads/photo_de_profil/" + user.getPHOTO());
+                                    imageView.setImageURI(uri);
+                                }
+                            }else
+                            {
+                                imageView.setImageResource(R.drawable.ic_profile);
+                            }
+
+                            //on met le switch à jour suivant l'état du modeanonymous
+                            switchforanonymousmode.setChecked(false);
+                            //Home.MiseajourduSwitchSuivantLeModeAnonymous(user);
+
+                        }catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getActivity(),"La désactivation à échouer car une erreur réseau vient de se produire",Toast.LENGTH_LONG).show();
+                        pDialog.dismiss();
+                        switchforanonymousmode.setChecked(true);
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
+    }
+
+    //public static void setUserObjectInHomeNotificationProblematiqueANDConversationpublic(String nom, String prenom, String etat,String photo) {
+
+        //on set l'objet user set de la classe home
+        /*Home.user.setETAT(etat);
+        Home.user.setNOM(nom);
+        Home.user.setPHOTO(photo);
+        Home.user.setPRENOM(prenom);*/
+
+        //on set l'objet user de la classe Notification
+        /*Notifications.user.setETAT(etat);
+        Notifications.user.setNOM(nom);
+        Notifications.user.setPHOTO(photo);
+        Notifications.user.setPRENOM(prenom);*/
+
+        //on set l'objet user de la classe Conversationspublic
+        /*Conversationspublic.user.setETAT(etat);
+        Conversationspublic.user.setNOM(nom);
+        Conversationspublic.user.setPHOTO(photo);
+        Conversationspublic.user.setPRENOM(prenom);*/
+
+        //on set l'objet user de la classe Problematique
+        /*Problematique.user.setETAT(etat);
+        Problematique.user.setNOM(nom);
+        Problematique.user.setPHOTO(photo);
+        Problematique.user.setPRENOM(prenom);*/
+
+    //}
+
 }

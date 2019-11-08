@@ -157,6 +157,10 @@ public class Sharepublicconversation extends AppCompatActivity {
         session = new SessionManager(getApplicationContext());
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
 
+        /*if(Integer.valueOf(user.getETAT()) == 1) {
+            Toast.makeText(this,user.getETAT(),Toast.LENGTH_LONG).show();
+        }*/
+
         rootView = findViewById(R.id.root_view);
         //emojiconEditText =  findViewById(R.id.textArea_information);
         //icon_cancel_image_view = findViewById(R.id.image_cancel);
@@ -326,7 +330,7 @@ public class Sharepublicconversation extends AppCompatActivity {
     private void Connexion()
     {
         int anonymous;
-        if(user.getETAT().equals('1')){
+        if(Integer.valueOf(user.getETAT())==1){
             anonymous = 1;
         }   else {
             anonymous = 0;
@@ -482,6 +486,7 @@ public class Sharepublicconversation extends AppCompatActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_IMAGE_CAPTURE:
                 if (resultCode == RESULT_OK) {
@@ -498,7 +503,7 @@ public class Sharepublicconversation extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(Sharepublicconversation.this,"Echec !!",Toast.LENGTH_LONG).show();
+                    Toast.makeText(Sharepublicconversation.this, "Echec !!", Toast.LENGTH_LONG).show();
                 }
                 break;
             case REQUEST_GALLERY_IMAGE:
@@ -518,7 +523,7 @@ public class Sharepublicconversation extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(Sharepublicconversation.this,"Echec !!",Toast.LENGTH_LONG).show();
+                    Toast.makeText(Sharepublicconversation.this, "Echec !!", Toast.LENGTH_LONG).show();
                 }
                 break;
             default:
@@ -670,7 +675,7 @@ public class Sharepublicconversation extends AppCompatActivity {
     private void RequeteFinale()
     {
         int anonymous;
-        if (user.getETAT().equals('1')) {
+        if (Integer.valueOf(user.getETAT())==1) {
           anonymous = 1;
         } else {
           anonymous = 0;
