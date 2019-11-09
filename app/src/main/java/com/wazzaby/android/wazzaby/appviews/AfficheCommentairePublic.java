@@ -430,6 +430,8 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
                         if (!String.valueOf(intent.getIntExtra("id_recepteur",0)).equals(String.valueOf(user.getID()))) {
 
                             Connexion_Insert_Notification();
+                            SendCommentaryPushNotification();
+
                         }
                     }
                 },
@@ -583,4 +585,50 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
         requestQueue.add(stringRequest);
 
     }
+
+    //Cette méthode est le service HTTP pour l'envoie d'une pushnotification du commentaire de l'utilisateur
+    public void SendCommentaryPushNotification() {
+        String message;
+        if (Integer.valueOf(user.getETAT()) == 1) {
+            message = "Votre message public vient d'etre commenter par un Utilisateur Anonyme";
+        } else {
+            message = "Votre message public vient d'etre commenter par "
+                    .concat(user.getPRENOM()).concat(" ")
+                    .concat(user.getNOM());
+        }
+
+        //On construit l'url de la pushnotification
+        String pushnotification_url = Const.dns.concat("/Apifcm/apiFCMmessagerie.php?message=").concat(message).concat("&title=Wazzaby")
+                .concat("&regId=").concat(user.getKEYPUSH());
+        ConnexionToServer(pushnotification_url);
+
+    }
+
+    //This volley method allow us the ability to insert in our commentary pushnotification
+    public void ConnexionToServer(String url_notification) {
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_notification,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+
 }
