@@ -64,7 +64,7 @@ public class displaycommentaryadapter extends RecyclerView.Adapter<displaycommen
         holder.date.setText(current.getDATETIME());
         holder.date.setTextColor(0xff000000);
 
-        if (Integer.valueOf(user.getETAT()) == 1) {
+        if (current.getNOM().equals("Utilisateur Anonyme")) {
             holder.icon.setImageResource(R.drawable.ic_profile_anonymous);
         } else {
             Uri uri = Uri.parse(current.getPHOTO());

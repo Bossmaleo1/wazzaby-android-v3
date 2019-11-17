@@ -103,6 +103,9 @@ public class NotificationsDetails extends AppCompatActivity {
     private int commentitem_id;
     private String libelleitem;
 
+    private LinearLayout block_mentionjaime;
+    private LinearLayout block_mentionjaimepas;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,6 +127,8 @@ public class NotificationsDetails extends AppCompatActivity {
         title = findViewById(R.id.title);
         title1 = findViewById(R.id.title1);
         photo_du_poste_background = findViewById(R.id.photo_du_poste_background);
+        block_mentionjaime = findViewById(R.id.block_mentionjaime);
+        block_mentionjaimepas = findViewById(R.id.block_mentionjaimepas);
         contenu = findViewById(R.id.contenu);
         contenu.setTextColor(0xff000000);
         contenucomment = findViewById(R.id.contenucomment);
@@ -263,6 +268,22 @@ public class NotificationsDetails extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"Veuillez ecrire votre commentaire",Toast.LENGTH_LONG).show();
                 }
             }
+        });
+
+        //on capture l'évenement click sur le block de la mention j'aime
+        block_mentionjaime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        //on capture l'évenement clik sur le block de la mention j'aime pas
+        block_mentionjaimepas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+
         });
     }
 
@@ -419,7 +440,6 @@ public class NotificationsDetails extends AppCompatActivity {
         String url = Const.dns+"/WazzabyApi/public/api/addComment?id_user="+String.valueOf(user.getID())+"&id_messagepublic="+String.valueOf(notificationItem.getId_messagepublic())
                 +"&libelle_comment="+Libelle+"&anonymous=0";
         //progressBar.setVisibility(View.VISIBLE);
-        Toast.makeText(getApplicationContext(),url,Toast.LENGTH_LONG).show();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
@@ -540,6 +560,60 @@ public class NotificationsDetails extends AppCompatActivity {
 
     }
 
+
+    public void recordNotification(String url_notification) {
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_notification,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //temp_id_checkmention =
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(stringRequest);
+    }
+
+    //this volley request who used to send our pushnotification
+    //This volley method allow us the ability to insert in our database our notification
+    public void SendPushNotification(String url_pushnotification) {
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_pushnotification,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(stringRequest);
+    }
 
 
 }

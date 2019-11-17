@@ -357,6 +357,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
         //On efface les deux listes de conversations publiques
         data.clear();
         dataswiperefresh.clear();
+        materialCardView.setVisibility(View.GONE);
         //on test si le compteur est paire
         if (compteur_swiperefresh%2 == 0) {
             swipestart = true;
@@ -642,7 +643,8 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                         mShimmerViewContainer.stopShimmer();
                         mShimmerViewContainer.setVisibility(View.GONE);
                         materialCardView.setVisibility(View.VISIBLE);
-                        //Toast.makeText(getActivity(),"Une erreur reseau vient de se produire veuillez reessayer !!",Toast.LENGTH_LONG).show();
+
+
                         snackbar = Snackbar
                                 .make(coordinatorLayout, "Une erreur reseau vient de se produire veuillez reessayer !!", Snackbar.LENGTH_LONG)
                                 .setAction(res.getString(R.string.try_again), new View.OnClickListener() {

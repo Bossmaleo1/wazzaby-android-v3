@@ -254,16 +254,20 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
             public void onClick(View view) {
                 int anonymous;
                 String message;
-                if (user.getETAT().equals('1')) {
+                if (Integer.valueOf(user.getETAT()) == 1) {
                     anonymous = 1;
+                    message = "Votre message public vient de faire reagir "
+                            .concat("Utilisateur")
+                            .concat(" ")
+                            .concat("Anonyme");
                 }else {
                     anonymous = 0;
+                    message = "Votre message public vient de faire reagir "
+                            .concat(user.getPRENOM())
+                            .concat(" ")
+                            .concat(user.getNOM());
                 }
 
-                message = "Votre message public vient de faire reagir "
-                        .concat(user.getPRENOM())
-                        .concat(" ")
-                        .concat(user.getNOM());
 
                 String url_notification = Const.dns.concat("/WazzabyApi/public/api/InsertNotification?users_id=")
                         .concat(String.valueOf(user.getID()))
@@ -396,16 +400,22 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
         holder.dislike_block.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               String message =  "Votre message public vient de faire reagir "
-                        .concat(user.getPRENOM())
-                        .concat(" ")
-                        .concat(user.getNOM());
+
                 int anonymous;
-                if(user.getETAT().equals("1"))
+                String message;
+                if(Integer.valueOf(user.getETAT()) == 1)
                 {
                     anonymous = 1;
+                    message =  "Votre message public vient de faire reagir "
+                            .concat("Utilisateur")
+                            .concat(" ")
+                            .concat("Anonyme");
                 } else {
                     anonymous = 0;
+                    message =  "Votre message public vient de faire reagir "
+                            .concat(user.getPRENOM())
+                            .concat(" ")
+                            .concat(user.getNOM());
                 }
 
                 String url_notification = Const.dns.concat("/WazzabyApi/public/api/InsertNotification?users_id=")
