@@ -1,7 +1,6 @@
 package com.wazzaby.android.wazzaby.appviews;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,7 +12,6 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -21,7 +19,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -47,7 +44,6 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.wazzaby.android.wazzaby.R;
-import com.wazzaby.android.wazzaby.connInscript.AndroidMultiPartEntity;
 import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
@@ -55,22 +51,11 @@ import com.wazzaby.android.wazzaby.model.data.Profil;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.UploadNotificationConfig;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,12 +78,12 @@ public class Sharepublicconversation extends AppCompatActivity {
     private EmojiconEditText editText;
     private ImageView image_cancel;
     private ImageView image_post;
-    //private LinearLayout imageblock;
+
     public static final int REQUEST_GALLERY_IMAGE = 1;
     public static final int REQUEST_IMAGE_CAPTURE = 0;
     public static String fileName;
     private static final String TAG = Sharepublicconversation.class.getSimpleName();
-    //private EditText emojiconEditText;
+
     private View rootView;
     private ImageView image_view;
     private File sourceFile;
@@ -671,11 +656,6 @@ public class Sharepublicconversation extends AppCompatActivity {
         return valid;
     }
 
-    @Override
-    public void onBackPressed() {
-        visibility_emoji = true;
-        Toast.makeText(getApplicationContext(),"The fucking back button is pressing !!",Toast.LENGTH_LONG).show();
-    }
 
     //Cette methode assure la synchronization après une mise à jour de problématique
     public void ConnexionSynchronizationProblematique() {

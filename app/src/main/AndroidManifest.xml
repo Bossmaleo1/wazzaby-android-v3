@@ -89,6 +89,12 @@
 
         </activity>
 
+        <activity android:name=".appviews.PictureUpdate"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".appviews.ProfilUser">
+
+        </activity>
+
         <activity android:name=".appviews.NotificationIntent"
                   android:launchMode="singleTask"
                   android:taskAffinity=""

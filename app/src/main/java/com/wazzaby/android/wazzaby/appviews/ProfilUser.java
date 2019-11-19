@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -130,8 +131,8 @@ public class ProfilUser extends AppCompatActivity {
                 return true;
 
             case R.id.profil_user:
-                /*Intent intentprofildetails = new Intent(getApplicationContext(),ProfilDetails.class);
-                startActivity(intentprofildetails);*/
+                Intent intent = new Intent(getApplicationContext(),PictureUpdate.class);
+                startActivity(intent);
                 return true;
 
             default:
