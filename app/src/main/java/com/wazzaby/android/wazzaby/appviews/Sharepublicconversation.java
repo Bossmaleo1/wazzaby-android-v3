@@ -17,19 +17,17 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -48,18 +46,6 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.vanniktech.emoji.EmojiEditText;
-import com.vanniktech.emoji.EmojiManager;
-import com.vanniktech.emoji.EmojiPopup;
-import com.vanniktech.emoji.EmojiTextView;
-import com.vanniktech.emoji.google.GoogleEmojiProvider;
-import com.vanniktech.emoji.ios.IosEmojiProvider;
-import com.vanniktech.emoji.listeners.OnEmojiBackspaceClickListener;
-import com.vanniktech.emoji.listeners.OnEmojiPopupDismissListener;
-import com.vanniktech.emoji.listeners.OnEmojiPopupShownListener;
-import com.vanniktech.emoji.listeners.OnSoftKeyboardCloseListener;
-import com.vanniktech.emoji.listeners.OnSoftKeyboardOpenListener;
-import com.vanniktech.emoji.twitter.TwitterEmojiProvider;
 import com.wazzaby.android.wazzaby.R;
 import com.wazzaby.android.wazzaby.connInscript.AndroidMultiPartEntity;
 import com.wazzaby.android.wazzaby.model.Const;
@@ -90,6 +76,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import developer.semojis.Helper.EmojiconEditText;
+import developer.semojis.actions.EmojIconActions;
+
 import static androidx.core.content.FileProvider.getUriForFile;
 import static com.wazzaby.android.wazzaby.appviews.Home.titlehome;
 
@@ -101,7 +90,7 @@ public class Sharepublicconversation extends AppCompatActivity {
     private DatabaseHandler database;
     private SessionManager session;
     private String LIBELLE;
-    private EditText editText;
+    private EmojiconEditText editText;
     private ImageView image_cancel;
     private ImageView image_post;
     //private LinearLayout imageblock;
@@ -133,6 +122,7 @@ public class Sharepublicconversation extends AppCompatActivity {
     private RelativeLayout rootviewemoji;
     private boolean visibility_emoji = true;
     public Uri globale_uri;
+    private EmojIconActions emojIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -262,49 +252,24 @@ public class Sharepublicconversation extends AppCompatActivity {
             }
         });
 
-        add_emoji.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final EmojiPopup emojiPopup;
-                emojiPopup = EmojiPopup.Builder.fromRootView(rootviewemoji)
-                        .setOnEmojiPopupShownListener(new OnEmojiPopupShownListener() {
-                    @Override
-                    public void onEmojiPopupShown() {
-                            Toast.makeText(getApplicationContext(),"Emojikeyboard is showing !!",Toast.LENGTH_LONG).show();
-                    }
-                }).setOnSoftKeyboardCloseListener(new OnSoftKeyboardCloseListener() {
-                            @Override
-                            public void onKeyboardClose() {
-                                Toast.makeText(getApplicationContext(),"Close keyboard declenché !!",Toast.LENGTH_LONG);
-                            }
-                        }).setOnEmojiPopupDismissListener(new OnEmojiPopupDismissListener() {
-                            @Override
-                            public void onEmojiPopupDismiss() {
-                                Toast.makeText(getApplicationContext(),"Dismiss event !!",Toast.LENGTH_LONG);
-                            }
-                        }).setOnSoftKeyboardOpenListener(new OnSoftKeyboardOpenListener() {
-                            @Override
-                            public void onKeyboardOpen(final int keyBoardHeight) {
-                                Toast.makeText(getApplicationContext(),"Board is opening !!",Toast.LENGTH_LONG);
-                            }
-                        }).setOnEmojiBackspaceClickListener(new OnEmojiBackspaceClickListener() {
-                            @Override
-                            public void onEmojiBackspaceClick(View v) {
-                                Toast.makeText(getApplicationContext(),"BackSpace !!",Toast.LENGTH_LONG);
-                            }
-
-                        })
-                        .build(editText);
-                if(visibility_emoji) {
-                    emojiPopup.toggle();
-                }
-
-                visibility_emoji = false;
-            }
-        });
 
         this.ConnexionSynchronizationProblematique();
 
+        emojIcon= new EmojIconActions(this, rootView,  editText,
+                add_emoji);
+        emojIcon.ShowEmojIcon();
+
+        emojIcon.setKeyboardListener(new EmojIconActions.KeyboardListener() {
+            @Override
+            public void onKeyboardOpen() {
+                Log.e("Keyboard","open");
+            }
+
+            @Override
+            public void onKeyboardClose() {
+                Log.e("Keyboard","close");
+            }
+        });
 
     }
 
@@ -532,91 +497,6 @@ public class Sharepublicconversation extends AppCompatActivity {
     }
 
 
-
-    /**
-     * Uploading the file to server
-     * */
-    private class UploadFileToServer extends AsyncTask<Void, Integer, String> {
-        @Override
-        protected void onPreExecute() {
-            // setting progress bar to zero
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... progress) {
-            // Making progress bar visible
-
-            // updating progress bar value
-
-            // updating percentage value
-
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            return uploadFile();
-        }
-
-        @SuppressWarnings("deprecation")
-        private String uploadFile() {
-            String responseString = null;
-
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost(Const.dns.concat("/uploads/uploadScript.php"));
-
-
-
-            try {
-
-                URL urlObj = new URL(Const.dns.concat("/uploads/uploadScript.php"));
-
-                AndroidMultiPartEntity entity = new AndroidMultiPartEntity(
-                        new AndroidMultiPartEntity.ProgressListener() {
-
-
-                            @Override
-                            public void transferred(long num) {
-                            }
-                        });
-
-                // Adding file data to http body
-                entity.addPart("photostatus", new FileBody(sourceFile));
-
-                entity.addPart("name_file", new StringBody(name_file));
-                httppost.setEntity(entity);
-
-
-                HttpResponse response = httpclient.execute(httppost);
-                HttpEntity r_entity = response.getEntity();
-
-                int statusCode = response.getStatusLine().getStatusCode();
-                if (statusCode == 200) {
-                    responseString = EntityUtils.toString(r_entity);
-                } else {
-                    responseString = "Error occurred! Http Status Code: "
-                            + statusCode;
-                }
-
-            } catch (ClientProtocolException e) {
-                responseString = e.toString();
-            } catch (IOException e) {
-                responseString = e.toString();
-            }
-
-            return responseString;
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-
-            super.onPostExecute(result);
-            etat = "0";
-            RequeteFinale();
-        }
-
-    }
 
     public void UploadMultipart() {
 

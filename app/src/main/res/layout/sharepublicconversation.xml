@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:emojicon="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -9,23 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!--com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbarlayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/white"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
-                app:layout_scrollFlags="scroll|enterAlways"
-                android:fitsSystemWindows="false"/>
-
-        </com.google.android.material.appbar.AppBarLayout-->
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/root_view"
@@ -81,19 +64,6 @@
                         android:layout_alignParentRight="true"
                         >
 
-
-
-                        <!--ImageView
-                            android:id="@+id/emoji"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:tint="@color/colorPrimary"
-                            android:layout_margin="5dp"
-                            android:src="@drawable/baseline_emoji_emotions_black_24"/-->
-
-
-
-
                         <ImageView
                              android:id="@+id/add_picture"
                              android:layout_width="wrap_content"
@@ -131,7 +101,8 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:hint="Votre publication">
 
-                <com.vanniktech.emoji.EmojiEditText
+
+                <developer.semojis.Helper.EmojiconEditText
                     android:id="@+id/textArea_information"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -142,7 +113,9 @@
                     android:lines="10"
                     android:maxLines="11"
                     android:scrollbars="vertical"
-                    android:scrollHorizontally="true" />
+                    android:scrollHorizontally="true"
+                    emojicon:emojiconSize="28sp" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <ImageView

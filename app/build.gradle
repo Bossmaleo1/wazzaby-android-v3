@@ -18,7 +18,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
 }
+
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -43,13 +49,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:17.1.0'
     implementation 'com.google.firebase:firebase-messaging:20.0.0'
 
-    implementation 'com.vanniktech:emoji-ios:0.6.0'
-    implementation 'com.vanniktech:emoji-twitter:0.6.0'
-    implementation 'com.vanniktech:emoji:0.6.0'
-    implementation 'com.vanniktech:emoji-google:0.6.0'
     implementation 'net.gotev:uploadservice:3.5.2'
     implementation 'com.github.yalantis:ucrop:2.2.4-native'
-
+    implementation 'com.github.TutorialsAndroid:SEmojis:v1.0.19'
 }
 
 apply plugin: 'com.google.gms.google-services'

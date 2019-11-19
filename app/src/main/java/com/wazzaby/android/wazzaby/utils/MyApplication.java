@@ -7,10 +7,6 @@ import androidx.emoji.text.EmojiCompat;
 import androidx.emoji.text.FontRequestEmojiCompatConfig;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.vanniktech.emoji.EmojiManager;
-import com.vanniktech.emoji.google.GoogleEmojiProvider;
-import com.vanniktech.emoji.ios.IosEmojiProvider;
-import com.vanniktech.emoji.twitter.TwitterEmojiProvider;
 import com.wazzaby.android.wazzaby.R;
 
 import net.gotev.uploadservice.BuildConfig;
@@ -29,9 +25,6 @@ public class MyApplication extends Application {
         EmojiCompat.Config config = new FontRequestEmojiCompatConfig(this, fontRequest);
         EmojiCompat.init(config);
 
-        //EmojiManager.install(new IosEmojiProvider());
-        EmojiManager.install(new GoogleEmojiProvider());
-        //EmojiManager.install(new TwitterEmojiProvider());
         UploadService.NAMESPACE = BuildConfig.APPLICATION_ID;
     }
 }
