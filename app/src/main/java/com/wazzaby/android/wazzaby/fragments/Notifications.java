@@ -17,7 +17,6 @@ import android.widget.Toast;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -78,6 +77,8 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
     private int compteur_swiperefresh = 0;
     private SwipeRefreshLayout swipeRefreshLayout;
 
+    private LinearLayout notification_mistake_block;
+
     public Notifications() {
         // Required empty public constructor
     }
@@ -97,6 +98,7 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
         error_message = bossmaleo.findViewById(R.id.text_error_message);
         coordinatorLayout =  bossmaleo.findViewById(R.id.coordinatorLayout);
         notification_main_shimmer = bossmaleo.findViewById(R.id.notification_main_shimmer);
+        notification_mistake_block = bossmaleo.findViewById(R.id.notification_mistake_block);
 
         database = new DatabaseHandler(getActivity());
         session = new SessionManager(getActivity());
@@ -128,19 +130,36 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
             }
         }));
 
-        this.ConnexionSynchronizationProblematique();
-
-        ConnexionNotification();
-
         materialCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 materialCardView.setVisibility(View.GONE);
+                Toast.makeText(getActivity(),"Bossmaleo test !!",Toast.LENGTH_LONG).show();
                 ConnexionNotification();
             }
         });
 
+        notification_mistake_block.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(),"MALEO Test !!",Toast.LENGTH_LONG).show();
+            }
+        });
+
+       /* materialCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                materialCardView.setVisibility(View.GONE);
+                mShimmerViewContainer.startShimmer();
+                mShimmerViewContainer.setVisibility(View.VISIBLE);
+                ConnexionNotification();
+            }
+        });*/
+
         this.ConnexionSynchronizationProblematique();
+
+        ConnexionNotification();
+
 
         return bossmaleo;
     }
@@ -159,7 +178,7 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
                         try {
                             JSONArray reponse = new JSONArray(response);
                             if (reponse.length() == 0) {
-                                error_message.setText(" Vous avez aucune notification");
+                                error_message.setText(R.string.empty_notification_error);
                                 materialCardView.setVisibility(View.VISIBLE);
                                 notification_main_shimmer.setVisibility(View.GONE);
                             } else {
@@ -197,7 +216,7 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        error_message.setText(" Erreur reseaux, veuillez reessayer svp !");
+                        error_message.setText(res.getString(R.string.error_network));
                         materialCardView.setVisibility(View.VISIBLE);
                         mShimmerViewContainer.stopShimmer();
                         mShimmerViewContainer.setVisibility(View.GONE);
@@ -378,7 +397,7 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        error_message.setText(" Erreur reseaux, veuillez reessayer svp !");
+                        error_message.setText(res.getString(R.string.error_network));
                         materialCardView.setVisibility(View.VISIBLE);
                         //progressBar.setVisibility(View.GONE);
                         snackbar = Snackbar
@@ -465,7 +484,7 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
                         try {
                             JSONArray reponse = new JSONArray(response);
                             if (reponse.length() == 0) {
-                                error_message.setText(" Vous avez aucune notification");
+                                error_message.setText(res.getString(R.string.no_notification));
                                 materialCardView.setVisibility(View.VISIBLE);
                                 notification_main_shimmer.setVisibility(View.GONE);
                                 mShimmerViewContainer.setVisibility(View.GONE);
@@ -507,7 +526,7 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        error_message.setText(" Erreur reseaux, veuillez reessayer svp !");
+                        error_message.setText(res.getString(R.string.network_error));
                         materialCardView.setVisibility(View.VISIBLE);
                         mShimmerViewContainer.stopShimmer();
                         mShimmerViewContainer.setVisibility(View.GONE);
@@ -601,7 +620,7 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        error_message.setText(" Erreur reseaux, veuillez reessayer svp !");
+                        error_message.setText(res.getString(R.string.network_error1));
                         materialCardView.setVisibility(View.VISIBLE);
                         //progressBar.setVisibility(View.GONE);
                         snackbar = Snackbar

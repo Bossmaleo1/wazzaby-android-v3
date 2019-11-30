@@ -236,7 +236,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                             reponse = new JSONArray(response);
 
                             if(reponse.length()==0) {
-                                text_error_message.setText("Aucune conversation publique pour cette problématique");
+                                text_error_message.setText(res.getString(R.string.error_empty_public_chat));
                                 materialCardView.setVisibility(View.VISIBLE);
                             }
 
@@ -316,7 +316,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                         materialCardView.setVisibility(View.VISIBLE);
                         //Toast.makeText(getActivity(),"Une erreur reseau vient de se produire veuillez reessayer !!",Toast.LENGTH_LONG).show();
                         snackbar = Snackbar
-                                .make(coordinatorLayout, "Une erreur reseau vient de se produire veuillez reessayer !!", Snackbar.LENGTH_LONG)
+                                .make(coordinatorLayout, res.getString(R.string.network_error), Snackbar.LENGTH_LONG)
                                 .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -486,7 +486,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getActivity(),"Une erreur réseau vient de se produire !!",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(),res.getString(R.string.network_error1),Toast.LENGTH_LONG).show();
                     }
                 }){
             @Override
@@ -565,7 +565,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                             reponse = new JSONArray(response);
 
                             if(reponse.length()==0) {
-                                text_error_message.setText("Aucune conversation publique pour cette problématique");
+                                text_error_message.setText(res.getString(R.string.error_empty_public_chat));
                                 materialCardView.setVisibility(View.VISIBLE);
                             }
 
@@ -646,7 +646,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
 
 
                         snackbar = Snackbar
-                                .make(coordinatorLayout, "Une erreur reseau vient de se produire veuillez reessayer !!", Snackbar.LENGTH_LONG)
+                                .make(coordinatorLayout, res.getString(R.string.network_error), Snackbar.LENGTH_LONG)
                                 .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -763,7 +763,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getActivity(),"Une erreur réseau vient de se produire !!",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(),res.getString(R.string.network_error1),Toast.LENGTH_LONG).show();
                     }
                 }){
             @Override

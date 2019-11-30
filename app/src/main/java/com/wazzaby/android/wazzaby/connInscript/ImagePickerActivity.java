@@ -33,7 +33,6 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.wazzaby.android.wazzaby.R;
-import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
 import com.wazzaby.android.wazzaby.model.data.Profil;
@@ -277,9 +276,8 @@ public class ImagePickerActivity extends AppCompatActivity {
 
 
 
-    private void Connexion(String url_connexion)
+    /*private void Connexion(String url_connexion)
     {
-        //String url_connexion = Const.dns+"/WazzabyApi/public/api/connexion?email=" + String.valueOf(email.getText().toString())+"&password="+ String.valueOf(password.getText().toString());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url_connexion,
                 new Response.Listener<String>() {
                     @Override
@@ -327,7 +325,7 @@ public class ImagePickerActivity extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
-    }
+    }*/
 
 
 }

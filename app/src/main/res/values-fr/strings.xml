@@ -19,7 +19,7 @@
     <string name="inscript_nom">Votre Nom</string>
     <string name="inscript_naissance">Date de naissance</string>
     <string name="inscript_next">SUIVANT</string>
-    <string name="inscript_email">Votre e-mail</string>
+    <string name="inscript_email">Votre E-mail</string>
     <string name="inscript_password">Mot de passe</string>
     <string name="inscript_confirm_password">Mot de passe (Confirmation)</string>
     <string name="inscript_sexe">Veuillez selectionner votre sexe</string>
@@ -38,7 +38,10 @@
     <string name="password_error4">Le mot de passe ne doit pas être vide</string>
     <string name="nom_error">Le nom doit etre non vide</string>
     <string name="prenom_error">Le prenom doit etre non vide</string>
+    <string name="error_connexion">votre mot de passe ou votre adresse e-mail est incorrecte</string>
 
+    <string name="renseigner_password">Renseigner votre Mot de passe </string>
+    <string name="format_incorrect">Format email incorrect</string>
 
     <string-array name="nav_drawer_labels">
         <item>Accueil</item>
@@ -79,4 +82,34 @@
     <string name="your_comment">Votre Commentaire</string>
     <string name="history">Historique</string>
 
+    <string name="chat_prive">Chat Privée</string>
+    <string name="chat_public">Chat Public</string>
+    <string name="notification">Notifications</string>
+    <string name="network_error">Une erreur reseau vient de se produire veuillez reessayer !!</string>
+    <string name="authentification_fail">Une erreur d\'authentification réseau viens de survenir  </string>
+    <string name="timeout_error">Le delai d\'attente viens d\'expirer,veuillez revoir votre connexion internet ! </string>
+    <string name="network_error1">Une erreur réseau vient de se produire !!</string>
+    <string name="error_empty_public_chat">Aucune conversation publique pour cette problématique</string>
+    <string name="empty_notification_error">Vous avez aucune notification</string>
+    <string name="language_list">Liste des langues </string>
+    <string name="dark_mode">Mode Nuit</string>
+
+    <string name="gallery_photo">Galerie</string>
+    <string name="device_photo">Camera</string>
+
+    <string name="desactivation_echouer">La désactivation à échouer car une erreur réseau vient de se produire</string>
+    <string name="activation_mode_anonyme">Votre mode anonyme vient d\'être désactiver avec succès !!</string>
+
+    <string name="loading">Chargement en cours ...</string>
+
+    <string name="votre_publication">Votre publication</string>
+
+    <string name="no_notification">Vous avez aucune notification</string>
+
+    <string name="error_network">Erreur reseaux, veuillez reessayer svp !</string>
+
+
+    <string name="address_busy">This email address is already occupied !!</string>
+
+    <string name="verif_code">Vous avez introduit le mauvais code de verification !!! </string>
 </resources>

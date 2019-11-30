@@ -80,7 +80,7 @@ public class FormInscriptStep1 extends AppCompatActivity {
                     if (code_verification_edittext.getText().length()==0) {
 
                         pDialog = new ProgressDialog(FormInscriptStep1.this);
-                        pDialog.setMessage("Connexion en cours...");
+                        pDialog.setMessage(res.getString(R.string.loading));
                         pDialog.setIndeterminate(false);
                         pDialog.setCancelable(false);
                         pDialog.show();
@@ -97,7 +97,7 @@ public class FormInscriptStep1 extends AppCompatActivity {
                             intent.putExtra("code",String.valueOf(code_verification_edittext.getText()).trim());
                             startActivity(intent);
                         } else {
-                            Toast.makeText(FormInscriptStep1.this,"Vous avez introduit le mauvais code de verification !!! ",Toast.LENGTH_LONG).show();
+                            Toast.makeText(FormInscriptStep1.this,res.getString(R.string.verif_code),Toast.LENGTH_LONG).show();
                         }
                     }
                 }
@@ -136,7 +136,7 @@ public class FormInscriptStep1 extends AppCompatActivity {
                             reponse = new JSONObject(response);
                             int email_code_error = reponse.getInt("email");
                             if(email_code_error == 1) {
-                                Toast.makeText(getApplicationContext(),"Cette adresse email est déjà occupée !!",Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(),res.getString(R.string.address_busy),Toast.LENGTH_LONG).show();
                                 pDialog.dismiss();
                             }else if (email_code_error == 0) {
                                 volley_de_verification_de_email();
@@ -159,28 +159,33 @@ public class FormInscriptStep1 extends AppCompatActivity {
 
                         if(error instanceof ServerError)
                         {
-                            Toast.makeText(FormInscriptStep1.this,"Une erreur au niveau du serveur viens de survenir ",Toast.LENGTH_LONG).show();
+                            Toast.makeText(FormInscriptStep1.this,res.getString(R.string.error_volley_servererror),Toast.LENGTH_LONG).show();
+                            //email.setText("");
                         }else if(error instanceof NetworkError)
                         {
-                            Toast.makeText(FormInscriptStep1.this,"Une erreur  du réseau viens de survenir ",Toast.LENGTH_LONG).show();
+                            Toast.makeText(FormInscriptStep1.this,res.getString(R.string.network_error1),Toast.LENGTH_LONG).show();
+                            //email.setText("");
                         }else if(error instanceof AuthFailureError)
                         {
-                            Toast.makeText(FormInscriptStep1.this,"Une erreur d'authentification réseau viens de survenir ",Toast.LENGTH_LONG).show();
+                            Toast.makeText(FormInscriptStep1.this,res.getString(R.string.authentification_fail),Toast.LENGTH_LONG).show();
+                            //email.setText("");
                         }else if(error instanceof ParseError)
                         {
-                            Toast.makeText(FormInscriptStep1.this,"Une erreur  du réseau viens de survenir ",Toast.LENGTH_LONG).show();
+                            Toast.makeText(FormInscriptStep1.this,res.getString(R.string.network_error1),Toast.LENGTH_LONG).show();
+                            //email.setText("");
                         }else if(error instanceof NoConnectionError)
                         {
-                            Toast.makeText(FormInscriptStep1.this,"Une erreur  du réseau viens de survenir, veuillez revoir votre connexion internet ",Toast.LENGTH_LONG).show();
-
+                            Toast.makeText(FormInscriptStep1.this,res.getString(R.string.network_error1),Toast.LENGTH_LONG).show();
+                            //email.setText("");
                         }else if(error instanceof TimeoutError)
                         {
-                            Toast.makeText(FormInscriptStep1.this,"Le delai d'attente viens d'expirer,veuillez revoir votre connexion internet ! ",Toast.LENGTH_LONG).show();
+                            Toast.makeText(FormInscriptStep1.this,res.getString(R.string.timeout_error),Toast.LENGTH_LONG).show();
+                            //email.setText("");
                         }else
                         {
 
-                            Toast.makeText(FormInscriptStep1.this,"Une erreur  du réseau viens de survenir ",Toast.LENGTH_LONG).show();
-
+                            Toast.makeText(FormInscriptStep1.this,res.getString(R.string.network_error1), Toast.LENGTH_LONG).show();
+                            //email.setText("");
                         }
                     }
                 }){
@@ -227,41 +232,35 @@ public class FormInscriptStep1 extends AppCompatActivity {
 
                         if(error instanceof ServerError)
                         {
-                            Toast.makeText(FormInscriptStep1.this,"Une erreur au niveau du serveur viens de survenir ",Toast.LENGTH_LONG).show();
+                            Toast.makeText(FormInscriptStep1.this,res.getString(R.string.error_volley_servererror),Toast.LENGTH_LONG).show();
                             email.setText("");
-                            //password.setText("");
                         }else if(error instanceof NetworkError)
                         {
-                            Toast.makeText(FormInscriptStep1.this,"Une erreur  du réseau viens de survenir ",Toast.LENGTH_LONG).show();
+                            Toast.makeText(FormInscriptStep1.this,res.getString(R.string.network_error1),Toast.LENGTH_LONG).show();
                             email.setText("");
-                            //password.setText("");
                         }else if(error instanceof AuthFailureError)
                         {
-                            Toast.makeText(FormInscriptStep1.this,"Une erreur d'authentification réseau viens de survenir ",Toast.LENGTH_LONG).show();
-                            //email.setText("");
-                            //password.setText("");
+                            Toast.makeText(FormInscriptStep1.this,res.getString(R.string.authentification_fail),Toast.LENGTH_LONG).show();
+                            email.setText("");
                         }else if(error instanceof ParseError)
                         {
-                            Toast.makeText(FormInscriptStep1.this,"Une erreur  du réseau viens de survenir ",Toast.LENGTH_LONG).show();
-                            //email.setText("");
-                            //password.setText("");
+                            Toast.makeText(FormInscriptStep1.this,res.getString(R.string.network_error1),Toast.LENGTH_LONG).show();
+                            email.setText("");
                         }else if(error instanceof NoConnectionError)
                         {
-                            Toast.makeText(FormInscriptStep1.this,"Une erreur  du réseau viens de survenir, veuillez revoir votre connexion internet ",Toast.LENGTH_LONG).show();
-                            //email.setText("");
-                            //password.setText("");
+                            Toast.makeText(FormInscriptStep1.this,res.getString(R.string.network_error1),Toast.LENGTH_LONG).show();
+                            email.setText("");
                         }else if(error instanceof TimeoutError)
                         {
-                            Toast.makeText(FormInscriptStep1.this,"Le delai d'attente viens d'expirer,veuillez revoir votre connexion internet ! ",Toast.LENGTH_LONG).show();
-                            //email.setText("");
-                            //password.setText("");
+                            Toast.makeText(FormInscriptStep1.this,res.getString(R.string.timeout_error),Toast.LENGTH_LONG).show();
+                            email.setText("");
                         }else
                         {
 
-                            Toast.makeText(FormInscriptStep1.this,"Une erreur  du réseau viens de survenir ",Toast.LENGTH_LONG).show();
-                            //email.setText("");
-                            //password.setText("");
+                            Toast.makeText(FormInscriptStep1.this,res.getString(R.string.network_error1), Toast.LENGTH_LONG).show();
+                            email.setText("");
                         }
+
                     }
                 }){
             @Override

@@ -1,14 +1,14 @@
 <resources>
     <string name="app_name">Wazzaby</string>
-    <string name="about">À propos</string>
+    <string name="about">About</string>
     <string name="email">E-mail</string>
-    <string name="password">Mot de passe</string>
-    <string name="connexion">Connexion</string>
-    <string name="inscript">S\'Inscrire</string>
-    <string name="passforget">Mot de Passe oublié?</string>
+    <string name="password">Password</string>
+    <string name="connexion">Log in</string>
+    <string name="inscript">Sign Up</string>
+    <string name="passforget">Forgot your password?</string>
     <string name="internet">Mauvaise connexion internet</string>
     <string name="send">Envoyer</string>
-    <string name="email_error">Entrer un email valide</string>
+    <string name="email_error">Enter a valid email</string>
     <string name="password_error1">Mauvais mot de passe</string>
     <string name="password_error2">Le mot de passe doit faire au moins 8 caractères</string>
     <!--Les nouveaux names-->
@@ -19,64 +19,98 @@
     <string name="inscript_prenom">Votre Prenom</string>
     <string name="inscript_nom">Votre Nom</string>
     <string name="inscript_naissance">Date de naissance</string>
-    <string name="inscript_next">SUIVANT</string>
-    <string name="inscript_email">Votre e-mail</string>
+    <string name="inscript_next">NEXT</string>
+    <string name="inscript_email">Your E-mail</string>
     <string name="inscript_password">Mot de passe</string>
     <string name="inscript_confirm_password">Mot de passe (Confirmation)</string>
     <string name="password_error3">Le mot de passe de confirmation doit etre identique au mot de passe</string>
     <string name="password_error4">Le mot de passe ne doit pas etre vide</string>
     <string name="nom_error">Le nom doit etre non vide</string>
     <string name="prenom_error">Le prenom doit etre non vide</string>
+    <string name="error_connexion">Your password or email address is incorrect</string>
     <string name="inscript_upload">UPLOADER</string>
     <string name="inscript_uploading">Photo de Profil</string>
     <string name="inscript_finish">TERMINER</string>
     <string name="title_prob">Problématique</string>
     <string name="title_accueil">Accueil</string>
 
-    <string name="profil">Profil</string>
-    <string name="param">Paramètres</string>
+    <string name="profil">Profile</string>
+    <string name="param">Settings</string>
     <string name="help">Aide</string>
-    <string name="deco">Déconnexion</string>
+    <string name="deco">Sign Out</string>
+
+    <string name="renseigner_password">Enter your  password</string>
+    <string name="format_incorrect">Format email incorrect</string>
 
 
     <string-array name="nav_drawer_labels">
-        <item>Accueil</item>
-        <item>Problématique</item>
+        <item>Home</item>
+        <item>Problematic</item>
     </string-array>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
 
     <!--Les erreurs de réseaux-->
-    <string name="error_volley_error">Une erreur viens de survenir</string>
-    <string name="error_volley_servererror">Une erreur au niveau du serveur viens de survenir</string>
-    <string name="error_volley_noconnectionerror">Problème de connexion, veuillez revoir votre connexion</string>
-    <string name="error_volley_timeouterror">Votre delai d\'attente à exepirer, veuillez revoir votre connexion</string>
-    <string name="try_again">Réessayer</string>
+    <string name="error_volley_error">An error has just occurred</string>
+    <string name="error_volley_servererror">A server error has just occurred</string>
+    <string name="error_volley_noconnectionerror">Connection problem, please review your connection</string>
+    <string name="error_volley_timeouterror">Your waiting time to exephant, please review your connection</string>
+    <string name="try_again">Retry</string>
 
 
     <string name="convertpublic_inters">Interventions</string>
-    <string name="convertpublic_inter">Interventions</string>
-    <string name="commentaire">Commentaire</string>
-    <string name="commentaires">Commentaires</string>
+    <string name="convertpublic_inter">Intervention</string>
+    <string name="commentaire">Comment</string>
+    <string name="commentaires">Comments</string>
 
-    <string name="chargement">En cours de chargement...</string>
-    <string name="comment_share">Votre commentaire à été publier avec succès</string>
+    <string name="chargement">Loading...</string>
+    <string name="comment_share">Your comment has been successfully published</string>
 
-    <string name="hint1">Rechercher une catégorie de problématique</string>
-    <string name="hint">Rechercher une problématique</string>
-    <string name="ajouter">Ajouter Problématique</string>
+    <string name="hint1">Search a problem category</string>
+    <string name="hint">Search for a problem</string>
+    <string name="ajouter">Add Problematic</string>
 
-    <string name="prob">Problematique</string>
+    <string name="prob">Problematic</string>
 
-    <string name="code_de_validation">Veuillez inserer le code recu par mail dans le champ code validation</string>
-    <string name="code_de_libelle">Code validation</string>
+    <string name="code_de_validation">Please insert the code received by email in the validation code field</string>
+    <string name="code_de_libelle">Validation code</string>
 
-    <string name="title_add_message">Ajouter un commentaire</string>
-    <string name="add_comment">Ajouter</string>
-    <string name="cancel_comment">Annuler</string>
-    <string name="your_comment">Votre Commentaire</string>
-    <string name="history">Historique</string>
+    <string name="title_add_message">Add Comment</string>
+    <string name="add_comment">Add</string>
+    <string name="cancel_comment">Cancel</string>
+    <string name="your_comment">Your Comment</string>
+    <string name="history">History</string>
+
+    <string name="chat_prive">Private Chat</string>
+    <string name="chat_public">Public Chat</string>
+    <string name="notification">Notifications</string>
+    <string name="network_error">A network error has just occurred please try again !!</string>
+    <string name="network_error1">A network error has just occurred !!</string>
+    <string name="authentification_fail">A network authentication error has just occurred</string>
+    <string name="timeout_error">The waiting time has expired, please review your internet connection! </string>
+    <string name="error_empty_public_chat">No public conversation for this issue</string>
+    <string name="empty_notification_error">You have no notification</string>
+    <string name="language_list">List of languages </string>
+    <string name="dark_mode">Dark Mode</string>
+
+    <string name="gallery_photo">Gallery</string>
+    <string name="device_photo">Camera</string>
+
+    <string name="desactivation_echouer">Deactivation fails because a network error has just occurred</string>
+    <string name="activation_mode_anonyme">Your anonymous mode has been successfully deactivated !!</string>
+
+    <string name="loading">Loading ...</string>
+
+    <string name="votre_publication">Your publication</string>
+
+    <string name="no_notification">You have no notification</string>
+
+    <string name="error_network">Network error, please try again!</string>
+
+    <string name="address_busy">This email address is already occupied !!</string>
+
+    <string name="verif_code">You have introduced the wrong verification code !!!</string>
 
 
 </resources>

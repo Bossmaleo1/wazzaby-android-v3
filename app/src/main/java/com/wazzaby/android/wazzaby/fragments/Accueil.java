@@ -1,9 +1,6 @@
 package com.wazzaby.android.wazzaby.fragments;
 
 import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -13,35 +10,25 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.wazzaby.android.wazzaby.R;
-import com.wazzaby.android.wazzaby.broadcast.MyReceiver;
-import com.wazzaby.android.wazzaby.model.Config;
 import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
@@ -89,9 +76,9 @@ public class Accueil extends Fragment {
         Icon_recherche = res.getDrawable(R.drawable.ic_question_answer_black_24dp);
         Icon_annonce = res.getDrawable(R.drawable.baseline_chat_bubble_black_24);
 
-        annonce_title_text = new SpannableString("Chat Privee");
-        recherche_title_text = new SpannableString("Chat Public");
-        notification_title_text = new SpannableString("Notifications");
+        annonce_title_text = new SpannableString(res.getString(R.string.chat_prive));
+        recherche_title_text = new SpannableString(res.getString(R.string.chat_public));
+        notification_title_text = new SpannableString(res.getString(R.string.notification));
 
         Icon_recherche.mutate().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
         recherche_title_text.setSpan(new ForegroundColorSpan(res.getColor(R.color.colorPrimary)),0,recherche_title_text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -173,9 +160,9 @@ public class Accueil extends Fragment {
                     Icon_notification = res.getDrawable(R.drawable.ic_notifications_black_24dp);
                     Icon_recherche = res.getDrawable(R.drawable.ic_question_answer_black_24dp);
                     Icon_annonce = res.getDrawable(R.drawable.baseline_chat_bubble_black_24);
-                    annonce_title_text = new SpannableString("Chat Privé");
-                    recherche_title_text = new SpannableString("Chat Public");
-                    notification_title_text = new SpannableString("Notifications");
+                    annonce_title_text = new SpannableString(res.getString(R.string.chat_prive));
+                    recherche_title_text = new SpannableString(res.getString(R.string.chat_public));
+                    notification_title_text = new SpannableString(res.getString(R.string.notification));
 
                     Icon_notification.setColorFilter(getResources().getColor(R.color.gray_strong), PorterDuff.Mode.SRC_IN);
                     Icon_annonce.setColorFilter(getResources().getColor(R.color.gray_strong), PorterDuff.Mode.SRC_IN);
@@ -196,9 +183,9 @@ public class Accueil extends Fragment {
                     Icon_notification = res.getDrawable(R.drawable.ic_notifications_black_24dp);
                     Icon_recherche = res.getDrawable(R.drawable.ic_question_answer_black_24dp);
                     Icon_annonce = res.getDrawable(R.drawable.baseline_chat_bubble_black_24);
-                    annonce_title_text = new SpannableString("Chat Privé");
-                    recherche_title_text = new SpannableString("Chat Public");
-                    notification_title_text = new SpannableString("Notifications");
+                    annonce_title_text = new SpannableString(res.getString(R.string.chat_prive));
+                    recherche_title_text = new SpannableString(res.getString(R.string.chat_public));
+                    notification_title_text = new SpannableString(res.getString(R.string.notification));
 
                     Icon_notification.setColorFilter(getResources().getColor(R.color.gray_strong), PorterDuff.Mode.SRC_IN);
                     Icon_recherche.setColorFilter(getResources().getColor(R.color.gray_strong), PorterDuff.Mode.SRC_IN);
@@ -221,9 +208,9 @@ public class Accueil extends Fragment {
                     Icon_notification = res.getDrawable(R.drawable.ic_notifications_black_24dp);
                     Icon_recherche = res.getDrawable(R.drawable.ic_question_answer_black_24dp);
                     Icon_annonce = res.getDrawable(R.drawable.baseline_chat_bubble_black_24);
-                    annonce_title_text = new SpannableString("Chat Privé");
-                    recherche_title_text = new SpannableString("Chat Public");
-                    notification_title_text = new SpannableString("Notifications");
+                    annonce_title_text = new SpannableString(res.getString(R.string.chat_prive));
+                    recherche_title_text = new SpannableString(res.getString(R.string.chat_public));
+                    notification_title_text = new SpannableString(res.getString(R.string.notification));
 
                     Icon_annonce.setColorFilter(getResources().getColor(R.color.gray_strong), PorterDuff.Mode.SRC_IN);
                     Icon_recherche.setColorFilter(getResources().getColor(R.color.gray_strong), PorterDuff.Mode.SRC_IN);

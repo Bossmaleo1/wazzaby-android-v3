@@ -36,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.wazzaby.android.wazzaby.appviews.Home.titlehome;
@@ -54,6 +55,8 @@ public class ProfilUser extends AppCompatActivity {
     private TextView edit_name;
     private TextView edit_problematique;
     private RelativeLayout problematique_block;
+    private RelativeLayout langue_block;
+    private TextView langue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,8 @@ public class ProfilUser extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         edit_name = findViewById(R.id.edit_name);
         edit_problematique = findViewById(R.id.edit_problematique);
+        langue = findViewById(R.id.langue_text);
+        langue.setText(Locale.getDefault().getDisplayLanguage());
         res = getResources();
         intent = getIntent();
         database = new DatabaseHandler(getApplicationContext());
@@ -87,13 +92,25 @@ public class ProfilUser extends AppCompatActivity {
             pictureuser.setImageResource(R.drawable.ic_profile_colorier);
         }
 
-        //shall wd get the problematique block
+        //shall we get the problematique block
         problematique_block = findViewById(R.id.problematique_block);
         //shall we get the click event
         problematique_block.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(),Problematique.class);
+                startActivity(intent);
+
+            }
+        });
+        //shall we get the langue_block
+        langue_block = findViewById(R.id.langue_block);
+        //shall we get the click event
+        //shall we get the click event
+        langue_block.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(),LanguageList.class);
                 startActivity(intent);
 
             }

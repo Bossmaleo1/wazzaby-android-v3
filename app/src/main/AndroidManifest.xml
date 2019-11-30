@@ -95,6 +95,12 @@
 
         </activity>
 
+        <activity android:name=".appviews.LanguageList"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".appviews.ProfilUser">
+
+        </activity>
+
         <activity android:name=".appviews.NotificationIntent"
                   android:launchMode="singleTask"
                   android:taskAffinity=""

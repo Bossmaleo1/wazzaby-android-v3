@@ -73,7 +73,7 @@ public class ProblematiqueConnexion extends AppCompatActivity {
         progressBar = findViewById(R.id.progressbar);
         toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Problematiques");
+        getSupportActionBar().setTitle("Choisir sa problématique");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         coordinatorLayout =  findViewById(R.id.coordinatorLayout);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

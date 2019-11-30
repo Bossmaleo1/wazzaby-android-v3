@@ -99,7 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:hint="Votre publication">
+                android:hint="@string/votre_publication">
 
 
                 <developer.semojis.Helper.EmojiconEditText

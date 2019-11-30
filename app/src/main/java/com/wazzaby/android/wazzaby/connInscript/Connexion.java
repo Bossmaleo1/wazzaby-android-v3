@@ -117,7 +117,7 @@ public class Connexion extends AppCompatActivity {
 
                 if(validate()==true){
                     pDialog = new ProgressDialog(Connexion.this);
-                    pDialog.setMessage("Connexion en cours...");
+                    pDialog.setMessage(res.getString(R.string.loading));
                     pDialog.setIndeterminate(false);
                     pDialog.setCancelable(false);
                     pDialog.show();
@@ -135,14 +135,14 @@ public class Connexion extends AppCompatActivity {
         String _password = password.getText().toString();
 
         if (_email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(_email).matches()) {
-            email_error.setError("Format email incorrect");
+            email_error.setError(res.getString(R.string.format_incorrect));
             valid = false;
         } else {
             email_error.setError(null);
         }
 
         if (_password.isEmpty()) {
-            password_error.setError("Renseigner votre Mot de passe vide");
+            password_error.setError(res.getString(R.string.renseigner_password));
             valid = false;
         } else {
             password_error.setError(null);
@@ -164,7 +164,7 @@ public class Connexion extends AppCompatActivity {
                         if(succes!=1) {
                             email.setText("");
                             password.setText("");
-                            Toast.makeText(Connexion.this, "votre mot de passe ou votre adresse e-mail est incorrecte" , Toast.LENGTH_LONG).show();
+                            Toast.makeText(Connexion.this, res.getString(R.string.error_connexion) , Toast.LENGTH_LONG).show();
                         }
                     }
                 },
@@ -175,38 +175,38 @@ public class Connexion extends AppCompatActivity {
 
                         if(error instanceof ServerError)
                         {
-                            Toast.makeText(Connexion.this,"Une erreur au niveau du serveur viens de survenir ",Toast.LENGTH_LONG).show();
+                            Toast.makeText(Connexion.this,res.getString(R.string.error_volley_servererror),Toast.LENGTH_LONG).show();
                             email.setText("");
                             password.setText("");
                         }else if(error instanceof NetworkError)
                         {
-                            Toast.makeText(Connexion.this,"Une erreur  du réseau viens de survenir ",Toast.LENGTH_LONG).show();
+                            Toast.makeText(Connexion.this,res.getString(R.string.network_error1),Toast.LENGTH_LONG).show();
                             email.setText("");
                             password.setText("");
                         }else if(error instanceof AuthFailureError)
                         {
-                            Toast.makeText(Connexion.this,"Une erreur d'authentification réseau viens de survenir ",Toast.LENGTH_LONG).show();
+                            Toast.makeText(Connexion.this,res.getString(R.string.authentification_fail),Toast.LENGTH_LONG).show();
                             email.setText("");
                             password.setText("");
                         }else if(error instanceof ParseError)
                         {
-                            Toast.makeText(Connexion.this,"Une erreur  du réseau viens de survenir ",Toast.LENGTH_LONG).show();
+                            Toast.makeText(Connexion.this,res.getString(R.string.network_error1),Toast.LENGTH_LONG).show();
                             email.setText("");
                             password.setText("");
                         }else if(error instanceof NoConnectionError)
                         {
-                            Toast.makeText(Connexion.this,"Une erreur  du réseau viens de survenir, veuillez revoir votre connexion internet ",Toast.LENGTH_LONG).show();
+                            Toast.makeText(Connexion.this,res.getString(R.string.network_error1),Toast.LENGTH_LONG).show();
                             email.setText("");
                             password.setText("");
                         }else if(error instanceof TimeoutError)
                         {
-                            Toast.makeText(Connexion.this,"Le delai d'attente viens d'expirer,veuillez revoir votre connexion internet ! ",Toast.LENGTH_LONG).show();
+                            Toast.makeText(Connexion.this,res.getString(R.string.timeout_error),Toast.LENGTH_LONG).show();
                             email.setText("");
                             password.setText("");
                         }else
                         {
 
-                            Toast.makeText(Connexion.this,"Une erreur  du réseau viens de survenir ", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Connexion.this,res.getString(R.string.network_error1), Toast.LENGTH_LONG).show();
                             email.setText("");
                             password.setText("");
                         }
@@ -240,9 +240,18 @@ public class Connexion extends AppCompatActivity {
                         , reponse.getString("pays"), reponse.getString("ville")
                         , reponse.getString("id_prob")
                         , reponse.getString("libelle_prob"));
+
+                //Toast.makeText(getApplicationContext(),"id_prob : "+,Toast.LENGTH_LONG).show();
                 database.addUSER(profil);
-                Intent intent = new Intent(getApplicationContext(), Home.class);
-                startActivity(intent);
+
+                if (Integer.valueOf(reponse.getString("id_prob")) == 0) {
+                    Intent intent = new Intent(getApplicationContext(), ProblematiqueConnexion.class);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), Home.class);
+                    startActivity(intent);
+                }
+
             }
 
 

@@ -23,4 +23,9 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+
+
+    <!--include layout="@layout/bottom_sheet_picture" /-->
+
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -2,6 +2,7 @@ package com.wazzaby.android.wazzaby.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.GestureDetector;
@@ -62,6 +63,7 @@ public class FragmentDrawer extends Fragment {
     public static SimpleDraweeView imageView;
     public static SwitchMaterial switchforanonymousmode;
     private ProgressDialog pDialog;
+    private Resources res;
 
     public FragmentDrawer() {
 
@@ -101,6 +103,7 @@ public class FragmentDrawer extends Fragment {
         database = new DatabaseHandler(getActivity());
         session = new SessionManager(getActivity());
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
+        res = getResources();
     }
 
     @Override
@@ -176,7 +179,7 @@ public class FragmentDrawer extends Fragment {
             public void onClick(View view) {
 
                 pDialog = new ProgressDialog(getActivity());
-                pDialog.setMessage("Connexion en cours...");
+                pDialog.setMessage(res.getString(R.string.loading));
                 pDialog.setIndeterminate(false);
                 pDialog.setCancelable(false);
                 pDialog.show();
@@ -299,7 +302,7 @@ public class FragmentDrawer extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(getActivity(),"Votre mode anonyme vient d'être activer avec succès !!",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(),res.getString(R.string.activation_mode_anonyme),Toast.LENGTH_LONG).show();
                         database.UpdateAnonymousMode(user.getID(),"Anonyme","Utilisateur","","1");
                         imageView.setImageResource(R.drawable.ic_profile_anonymous);
                         user.setPRENOM("Utilisateur");
@@ -315,7 +318,7 @@ public class FragmentDrawer extends Fragment {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getActivity(),"L'activation à échouer car une erreur réseau vient de se produire",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(),res.getString(R.string.desactivation_echouer),Toast.LENGTH_LONG).show();
                         pDialog.dismiss();
                         switchforanonymousmode.setChecked(false);
                     }
@@ -342,7 +345,7 @@ public class FragmentDrawer extends Fragment {
                     public void onResponse(String response) {
                         try {
                             JSONObject reponse = new JSONObject(response);
-                            Toast.makeText(getActivity(),"Votre mode anonyme vient d'être désactiver avec succès !!",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(),res.getString(R.string.activation_mode_anonyme),Toast.LENGTH_LONG).show();
 
                             database.UpdateAnonymousMode(user.getID(),"Anonyme","Utilisateur","","0");
                             imageView.setImageResource(R.drawable.ic_profile_anonymous);
@@ -380,7 +383,7 @@ public class FragmentDrawer extends Fragment {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getActivity(),"La désactivation à échouer car une erreur réseau vient de se produire",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(),res.getString(R.string.desactivation_echouer),Toast.LENGTH_LONG).show();
                         pDialog.dismiss();
                         switchforanonymousmode.setChecked(true);
                     }
@@ -397,32 +400,5 @@ public class FragmentDrawer extends Fragment {
         requestQueue.add(stringRequest);
     }
 
-    //public static void setUserObjectInHomeNotificationProblematiqueANDConversationpublic(String nom, String prenom, String etat,String photo) {
-
-        //on set l'objet user set de la classe home
-        /*Home.user.setETAT(etat);
-        Home.user.setNOM(nom);
-        Home.user.setPHOTO(photo);
-        Home.user.setPRENOM(prenom);*/
-
-        //on set l'objet user de la classe Notification
-        /*Notifications.user.setETAT(etat);
-        Notifications.user.setNOM(nom);
-        Notifications.user.setPHOTO(photo);
-        Notifications.user.setPRENOM(prenom);*/
-
-        //on set l'objet user de la classe Conversationspublic
-        /*Conversationspublic.user.setETAT(etat);
-        Conversationspublic.user.setNOM(nom);
-        Conversationspublic.user.setPHOTO(photo);
-        Conversationspublic.user.setPRENOM(prenom);*/
-
-        //on set l'objet user de la classe Problematique
-        /*Problematique.user.setETAT(etat);
-        Problematique.user.setNOM(nom);
-        Problematique.user.setPHOTO(photo);
-        Problematique.user.setPRENOM(prenom);*/
-
-    //}
 
 }

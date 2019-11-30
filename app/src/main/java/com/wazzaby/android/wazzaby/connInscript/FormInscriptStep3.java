@@ -106,8 +106,18 @@ public class FormInscriptStep3 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(validate() == true) {
-                    Intent intent = new Intent(getApplicationContext(),UploadImage.class);
-                    startActivity(intent);
+                    pDialog = new ProgressDialog(FormInscriptStep3.this);
+                    pDialog.setMessage("Chargement en cours...");
+                    pDialog.setIndeterminate(false);
+                    pDialog.setCancelable(false);
+                    pDialog.show();
+                    String datedenaissanceLibelle;
+                    datedenaissanceLibelle = String.valueOf(naissance.getText()).split("/")[2]+"-"+String.valueOf(naissance.getText()).split("/")[1]+"-"+String.valueOf(naissance.getText()).split("/")[0];
+                    String url = Const.dns+"/WazzabyApi/public/api/insertUsers?nom="+intent.getStringExtra("nom")
+                            +"&prenom="+intent.getStringExtra("prenom")+"&email="+intent.getStringExtra("email")+"&codedevalidation="
+                            +intent.getStringExtra("code")+"&sexe="+intent.getStringExtra("sexe")+"&password="+String.valueOf(password.getText().toString())
+                            +"&date="+datedenaissanceLibelle;
+                    CreateUser(url);
                 }
 
                 /*if (validate()==true) {
@@ -145,8 +155,8 @@ public class FormInscriptStep3 extends AppCompatActivity {
                                 .concat("&prenom=").concat(intent.getStringExtra("prenom")).concat("&nom=").concat(intent.getStringExtra("nom"));
                         SendMessage(url92);
                         Toast.makeText(FormInscriptStep3.this, "Votre Inscription s'est effectuer avec succes !!" , Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getApplicationContext(),UploadImage.class);
-                        startActivity(intent);
+                        /*Intent intent = new Intent(getApplicationContext(),UploadImage.class);
+                        startActivity(intent);*/
                     }
                 },
                 new Response.ErrorListener() {
@@ -354,14 +364,6 @@ public class FormInscriptStep3 extends AppCompatActivity {
         try {
             reponse = new JSONObject(response);
             session.createLoginSession(reponse.getInt("id"));
-            /*Profil profil = new Profil(reponse.getInt("id"),reponse.getString("nom")
-                        ,reponse.getString("prenom"),reponse.getString("datenaissance")
-                        ,reponse.getString("sexe"),reponse.getString("email"),
-                        reponse.getString("photo"),reponse.getString("keypush")//ici c'est le keypush, il va falloir l'ajouter sur le script php et ajouter libelle prob
-                        ,reponse.getString("langue"),reponse.getString("etat")
-                        ,reponse.getString("pays"),reponse.getString("ville")
-                        ,"yoyo"
-                        ,"yoyo");*/
             Profil profil = new Profil(reponse.getInt("id"),intent.getStringExtra("nom")
                     ,intent.getStringExtra("prenom"),String.valueOf(naissance.getText()).split("/")[2]+"-"+String.valueOf(naissance.getText()).split("/")[1]+"-"+String.valueOf(naissance.getText()).split("/")[0]
                     ,intent.getStringExtra("sexe"),intent.getStringExtra("email"),
@@ -371,6 +373,8 @@ public class FormInscriptStep3 extends AppCompatActivity {
                     ,"yoyo"
                     ,"yoyo");
             database.addUSER(profil);
+            Intent intent = new Intent(getApplicationContext(), ProblematiqueConnexion.class);
+            startActivity(intent);
         } catch (JSONException e) {
             e.printStackTrace();
         }

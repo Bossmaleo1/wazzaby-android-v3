@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
 
-                    sleep(1000);
+                    sleep(50);
                     if(!session.IsLoggedIn()) {
                         Intent i = new Intent(getApplicationContext(), Connexion.class);
                         startActivity(i);
@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
                     {
                         if(user.getIDPROB().equals("yoyo"))
                         {
-                            /*Intent i = new Intent(getApplicationContext(), ProblematiqueConnexion.class);
-                            startActivity(i);*/
+                            Intent i = new Intent(getApplicationContext(), ProblematiqueConnexion.class);
+                            startActivity(i);
                         }else {
                             Intent i = new Intent(getApplicationContext(), Home.class);
                             startActivity(i);
