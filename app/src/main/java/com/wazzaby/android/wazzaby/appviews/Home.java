@@ -73,10 +73,27 @@ public class Home extends AppCompatActivity implements FragmentDrawer.FragmentDr
     public static  androidx.appcompat.app.ActionBar titlehome;
 
     public static boolean stabilasationanymousmode = false;
+    private String dark_mode_item = null;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        res = getResources();
+        intent = getIntent();
+        database = new DatabaseHandler(getApplicationContext());
+        session = new SessionManager(getApplicationContext());
+        dark_mode_item = database.getDARKMODE();
+        //si le dark mode est activé
+        if (dark_mode_item.equals("1"))
+        {
+            setTheme(R.style.AppDarkTheme);
+            //edit_modenuit.setChecked(true);
+        } else if (dark_mode_item.equals("0")) {
+            setTheme(R.style.AppTheme);
+            //edit_modenuit.setChecked(false);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
 

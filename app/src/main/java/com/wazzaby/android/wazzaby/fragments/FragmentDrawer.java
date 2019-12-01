@@ -3,6 +3,7 @@ package com.wazzaby.android.wazzaby.fragments;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.GestureDetector;
@@ -11,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +66,11 @@ public class FragmentDrawer extends Fragment {
     public static SwitchMaterial switchforanonymousmode;
     private ProgressDialog pDialog;
     private Resources res;
+    private RelativeLayout block_globale;
+
+    private String dark_mode_item = null;
+
+    private RelativeLayout nav_header_container;
 
     public FragmentDrawer() {
 
@@ -115,7 +122,12 @@ public class FragmentDrawer extends Fragment {
         nom = layout.findViewById(R.id.welcome_msg);
         imageView = layout.findViewById(R.id.ic_profile);
         switchforanonymousmode = layout.findViewById(R.id.compatSwitch);
+        nav_header_container = layout.findViewById(R.id.nav_header_container);
+        block_globale = layout.findViewById(R.id.block_globale);
+
         nom.setText(user.getPRENOM()+" "+user.getNOM());
+
+        dark_mode_item = database.getDARKMODE();
 
         if(!user.getPHOTO().equals("null") && !user.getPHOTO().isEmpty()) {
             if(user.getPHOTO().equals("yo")) {
@@ -127,6 +139,17 @@ public class FragmentDrawer extends Fragment {
         }else
         {
             imageView.setImageResource(R.drawable.ic_profile);
+        }
+
+        if (dark_mode_item.equals("1"))
+        {
+            //setTheme(R.style.AppDarkTheme);
+            //edit_modenuit.setChecked(true);
+            block_globale.setBackgroundColor(getResources().getColor(R.color.darkprimarydark));
+            nav_header_container.setBackgroundColor(getResources().getColor(R.color.darkprimary));
+        } else if (dark_mode_item.equals("0")) {
+            //setTheme(R.style.AppTheme);
+            //edit_modenuit.setChecked(false);
         }
 
         adapter = new NavigationDrawerAdapter(getActivity(), getData());

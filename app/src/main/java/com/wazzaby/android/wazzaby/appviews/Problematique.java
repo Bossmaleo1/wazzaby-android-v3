@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
@@ -66,21 +67,38 @@ public class Problematique extends AppCompatActivity {
     private LinearLayout search_block;
     private LinearLayout materialcardview;
     private Toolbar toolbar;
+    private String dark_mode_item = null;
+    private ImageView search_icon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        res = getResources();
+        database = new DatabaseHandler(this);
+
+        dark_mode_item = database.getDARKMODE();
+        //si le dark mode est activé
+        if (dark_mode_item.equals("1"))
+        {
+            setTheme(R.style.AppDarkTheme);
+            //edit_modenuit.setChecked(true);
+        } else if (dark_mode_item.equals("0")) {
+            setTheme(R.style.AppTheme);
+            //edit_modenuit.setChecked(false);
+        }
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.problematique_after_profil);
+
 
         recyclerView =  findViewById(R.id.my_recycler_view);
         searchview = findViewById(R.id.searchview);
         progressBar =  findViewById(R.id.progressbar);
+        search_icon = findViewById(R.id.search_icon);
         coordinatorLayout =  findViewById(R.id.coordinatorLayout);
         search_block = findViewById(R.id.search_block);
         materialcardview = findViewById(R.id.materialcardview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        res = getResources();
-        database = new DatabaseHandler(this);
 
         allUsersAdapter = new categorieProbAdapter(this, data);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
@@ -123,6 +141,13 @@ public class Problematique extends AppCompatActivity {
         getSupportActionBar().setTitle(res.getString(R.string.prob));
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        //si le dark mode est activé
+        if (dark_mode_item.equals("1"))
+        {
+            search_icon.setColorFilter(res.getColor(R.color.graycolor));
+            //edit_modenuit.setChecked(true);
+        }
     }
 
     public static interface ClickListener {

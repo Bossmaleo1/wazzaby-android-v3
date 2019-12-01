@@ -108,12 +108,29 @@ public class Sharepublicconversation extends AppCompatActivity {
     private boolean visibility_emoji = true;
     public Uri globale_uri;
     private EmojIconActions emojIcon;
+    private String dark_mode_item = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        database = new DatabaseHandler(this);
+        session = new SessionManager(getApplicationContext());
+        res = getResources();
+        dark_mode_item = database.getDARKMODE();
+
+        //si le dark mode est activé
+        if (dark_mode_item.equals("1"))
+        {
+            setTheme(R.style.AppDarkTheme2);
+            //edit_modenuit.setChecked(true);
+        } else if (dark_mode_item.equals("0")) {
+            setTheme(R.style.AppTheme);
+            //edit_modenuit.setChecked(false);
+        }
+
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sharepublicconversation);
-        res = getResources();
         //toolbar =  findViewById(R.id.toolbar);
         editText = findViewById(R.id.textArea_information);
         image_cancel = findViewById(R.id.image_cancel);
@@ -128,8 +145,7 @@ public class Sharepublicconversation extends AppCompatActivity {
         rootviewemoji = findViewById(R.id.myemojiview);
 
 
-        database = new DatabaseHandler(this);
-        session = new SessionManager(getApplicationContext());
+
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
 
         /*if(Integer.valueOf(user.getETAT()) == 1) {

@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import com.android.volley.Request;
@@ -46,6 +47,7 @@ import static com.wazzaby.android.wazzaby.appviews.Home.titlehome;
 public class Accueil extends Fragment {
 
     public static BottomNavigationView navigation;
+    private CoordinatorLayout coordinatorLayout;
     private Resources res;
     private Menu menu;
     private SpannableString annonce_title_text;
@@ -62,6 +64,7 @@ public class Accueil extends Fragment {
     private DatabaseHandler database;
     private Profil user;
     public static BadgeDrawable badge;
+    private String dark_mode_item = null;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -70,6 +73,7 @@ public class Accueil extends Fragment {
         final View inflatedView = inflater.inflate(R.layout.accueil, container, false);
         res = getResources();
         navigation =  inflatedView.findViewById(R.id.bottom_navigation);
+        coordinatorLayout = inflatedView.findViewById(R.id.coordinatorLayout);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         menu = navigation.getMenu();
         Icon_notification = res.getDrawable(R.drawable.ic_notifications_black_24dp);
@@ -106,6 +110,19 @@ public class Accueil extends Fragment {
         session = new SessionManager(getActivity());
         res = getResources();
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
+
+        dark_mode_item = database.getDARKMODE();
+
+        if (dark_mode_item.equals("1"))
+        {
+            navigation.setBackgroundColor(res.getColor(R.color.darkprimarydark));
+            coordinatorLayout.setBackgroundColor(res.getColor(R.color.darkprimarydark));
+            //setTheme(R.style.AppDarkTheme);
+            //edit_modenuit.setChecked(true);
+        } else if (dark_mode_item.equals("0")) {
+            //setTheme(R.style.AppTheme);
+            //edit_modenuit.setChecked(false);
+        }
 
         /*IntentFilter filter = new IntentFilter("com.wazzaby.android.wazzaby.broadcast");
 

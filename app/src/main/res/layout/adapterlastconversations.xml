@@ -7,12 +7,14 @@
     android:layout_height="wrap_content">
 
     <RelativeLayout
+        android:id="@+id/main_block"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/graycolor"
         >
 
         <RelativeLayout
+            android:id="@+id/second_block_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"

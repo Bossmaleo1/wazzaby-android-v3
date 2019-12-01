@@ -19,14 +19,37 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout block;
     private Profil user;
     private DatabaseHandler database;
+    private String dark_mode_item = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        database = new DatabaseHandler(this);
+        session = new SessionManager(this);
+
+        dark_mode_item = database.getDARKMODE();
+        //si le dark mode est activé
+        if (dark_mode_item.equals("1"))
+        {
+            setTheme(R.style.AppDarkTheme);
+            //edit_modenuit.setChecked(true);
+        } else if (dark_mode_item.equals("0")) {
+            setTheme(R.style.AppTheme);
+            //edit_modenuit.setChecked(false);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         block = findViewById(R.id.block);
-        database = new DatabaseHandler(this);
-        session = new SessionManager(this);
+        if (dark_mode_item.equals("1"))
+        {
+            block.setBackgroundColor(getResources().getColor(R.color.darkprimary));
+            //setTheme(R.style.AppDarkTheme);
+            //edit_modenuit.setChecked(true);
+        } else if (dark_mode_item.equals("0")) {
+            //setTheme(R.style.AppTheme);
+            //edit_modenuit.setChecked(false);
+        }
         if(!String.valueOf(session.getUserDetail().get(SessionManager.Key_ID)).equals("null")) {
             user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
         }

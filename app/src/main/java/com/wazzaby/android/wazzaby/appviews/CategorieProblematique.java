@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
@@ -79,21 +80,37 @@ public class CategorieProblematique extends AppCompatActivity {
     private String IDCAT = null;
     private LinearLayout search_block;
     private Profil user;
+    private String dark_mode_item = null;
+    private ImageView search_icon;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        database = new DatabaseHandler(this);
+        session = new SessionManager(getApplicationContext());
+        res = getResources();
+        dark_mode_item = database.getDARKMODE();
+        //si le dark mode est activé
+        if (dark_mode_item.equals("1"))
+        {
+            setTheme(R.style.AppDarkTheme);
+            //edit_modenuit.setChecked(true);
+        } else if (dark_mode_item.equals("0")) {
+            setTheme(R.style.AppTheme);
+            //edit_modenuit.setChecked(false);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.categorieproblematique);
         intent = getIntent();
-        database = new DatabaseHandler(this);
-        session = new SessionManager(getApplicationContext());
+
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
-        res = getResources();
         toolbar =  findViewById(R.id.toolbar);
         progressBar = findViewById(R.id.progressbar);
         searchview = findViewById(R.id.searchview);
         coordinatorLayout = findViewById(R.id.coordinatorLayout);
         search_block = findViewById(R.id.search_block);
+        search_icon = findViewById(R.id.search_icon);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(intent.getStringExtra("TITLE"));
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -137,6 +154,11 @@ public class CategorieProblematique extends AppCompatActivity {
 
             }
         }));
+
+        if (dark_mode_item.equals("1"))
+        {
+            search_icon.setColorFilter(res.getColor(R.color.graycolor));
+        }
     }
 
     private void ConnexionProblematique()

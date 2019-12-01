@@ -1,6 +1,7 @@
 package com.wazzaby.android.wazzaby.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,8 @@ public class displaycommentaryadapter extends RecyclerView.Adapter<displaycommen
     private DatabaseHandler database;
     private SessionManager session;
     private Profil user;
+    private String dark_mode_item = null;
+    private Resources res;
 
     public displaycommentaryadapter(Context context,List<displaycommentary> data)
     {
@@ -39,6 +42,7 @@ public class displaycommentaryadapter extends RecyclerView.Adapter<displaycommen
         database = new DatabaseHandler(context);
         session = new SessionManager(context);
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
+        res = context.getResources();
     }
 
     public void delete(int position)
@@ -85,6 +89,24 @@ public class displaycommentaryadapter extends RecyclerView.Adapter<displaycommen
             holder.notre_shimmer.setVisibility(View.GONE);
             holder.mShimmerViewContainer.setVisibility(View.GONE);
         }
+
+        dark_mode_item = database.getDARKMODE();
+        if (dark_mode_item.equals("1"))
+        {
+
+            holder.block_shimmer.setBackground(res.getDrawable(R.drawable.background_menu_message_public_mode_dark));
+            holder.icononline.setColorFilter(res.getColor(android.R.color.white));
+            holder.title.setTextColor(res.getColor(R.color.graycolor));
+            holder.title1.setTextColor(res.getColor(R.color.graycolor));
+            holder.date.setTextColor(res.getColor(R.color.graycolor));
+            holder.global_block.setBackgroundColor(res.getColor(R.color.darkprimary));
+            holder.notre_shimmer.setBackground(res.getDrawable(R.drawable.background_menu_message_public_mode_dark));
+            holder.imageView.setColorFilter(res.getColor(R.color.darkmorelight));
+            holder.icononline.setColorFilter(res.getColor(android.R.color.white));
+
+        } else if (dark_mode_item.equals("0")) {
+
+        }
     }
 
     @Override
@@ -97,11 +119,13 @@ public class displaycommentaryadapter extends RecyclerView.Adapter<displaycommen
         TextView title;
         SimpleDraweeView icon;
         ImageView icononline;
+        ImageView imageView;
         TextView date;
         TextView title1;
         RelativeLayout block_shimmer;
         ShimmerFrameLayout mShimmerViewContainer;
         RelativeLayout notre_shimmer;
+        RelativeLayout global_block;
 
         public MyViewHolder(View itemView)
         {
@@ -114,6 +138,8 @@ public class displaycommentaryadapter extends RecyclerView.Adapter<displaycommen
             block_shimmer = itemView.findViewById(R.id.block_shimmer);
             mShimmerViewContainer = itemView.findViewById(R.id.shimmer_view_container);
             notre_shimmer = itemView.findViewById(R.id.notre_shimmer);
+            global_block = itemView.findViewById(R.id.global_block);
+            imageView = itemView.findViewById(R.id.imageView);
         }
     }
 

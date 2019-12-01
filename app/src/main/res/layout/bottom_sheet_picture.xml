@@ -25,6 +25,7 @@
         android:paddingTop="8dp">
 
         <ImageView
+            android:id="@+id/gallery_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginRight="32dp"
@@ -32,6 +33,7 @@
             android:tint="@color/colorPrimary" />
 
         <TextView
+            android:id="@+id/gallery_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -54,6 +56,7 @@
         android:paddingTop="8dp">
 
         <ImageView
+            android:id="@+id/camera_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginRight="32dp"
@@ -61,6 +64,7 @@
             android:tint="@color/colorPrimary" />
 
         <TextView
+            android:id="@+id/camera_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

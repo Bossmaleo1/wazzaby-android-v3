@@ -79,6 +79,9 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private LinearLayout notification_mistake_block;
 
+    private String dark_mode_item = null;
+    private RelativeLayout block_shimmer;
+
     public Notifications() {
         // Required empty public constructor
     }
@@ -99,10 +102,12 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
         coordinatorLayout =  bossmaleo.findViewById(R.id.coordinatorLayout);
         notification_main_shimmer = bossmaleo.findViewById(R.id.notification_main_shimmer);
         notification_mistake_block = bossmaleo.findViewById(R.id.notification_mistake_block);
+        block_shimmer = bossmaleo.findViewById(R.id.block_shimmer);
 
         database = new DatabaseHandler(getActivity());
         session = new SessionManager(getActivity());
         res = getResources();
+        dark_mode_item = database.getDARKMODE();
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
         url = Const.dns.concat("/WazzabyApi/public/api/displayNotification?id_recepteur=")
                 .concat(String.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
@@ -155,6 +160,18 @@ public class Notifications extends Fragment implements SwipeRefreshLayout.OnRefr
                 ConnexionNotification();
             }
         });*/
+
+        if (dark_mode_item.equals("1"))
+        {
+            block_shimmer.setBackground(res.getDrawable(R.drawable.background_menu_message_public_mode_dark));
+            notification_main_shimmer.setBackgroundColor(res.getColor(R.color.darkprimarydark));
+            /*holder.block_shimmer.setBackground(res.getDrawable(R.drawable.background_menu_message_public_mode_dark));
+            holder.block_globale_notification.setBackgroundColor(res.getColor(R.color.darkprimarydark));*/
+            /*coordinatorLayout.setBackgroundColor(getResources().getColor(R.color.darkprimary));
+            recyclerView.setBackgroundColor(getResources().getColor(R.color.darkprimary));*/
+        } else if (dark_mode_item.equals("0")) {
+
+        }
 
         this.ConnexionSynchronizationProblematique();
 

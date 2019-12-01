@@ -105,20 +105,37 @@ public class NotificationsDetails extends AppCompatActivity {
 
     private LinearLayout block_mentionjaime;
     private LinearLayout block_mentionjaimepas;
+    private String dark_mode_item = null;
+
+    private  RelativeLayout block_globale;
+    private RelativeLayout block_globale_cardview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+        res = getResources();
+        session = new SessionManager(this);
+        database = new DatabaseHandler(this);
+        dark_mode_item = database.getDARKMODE();
+        //si le dark mode est activé
+        if (dark_mode_item.equals("1"))
+        {
+            setTheme(R.style.AppDarkTheme);
+            //edit_modenuit.setChecked(true);
+        } else if (dark_mode_item.equals("0")) {
+            setTheme(R.style.AppTheme);
+            //edit_modenuit.setChecked(false);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.notificationsdetails);
-        res = getResources();
         coordinatorLayout = findViewById(R.id.coordinatorLayout);
         toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Message Public");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        session = new SessionManager(this);
-        database = new DatabaseHandler(this);
         intent = getIntent();
         context = this;
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
@@ -126,6 +143,8 @@ public class NotificationsDetails extends AppCompatActivity {
         icon = findViewById(R.id.icon);
         title = findViewById(R.id.title);
         title1 = findViewById(R.id.title1);
+        block_globale_cardview = findViewById(R.id.block_globale_cardview);
+        block_globale = findViewById(R.id.block_globale);
         photo_du_poste_background = findViewById(R.id.photo_du_poste_background);
         block_mentionjaime = findViewById(R.id.block_mentionjaime);
         block_mentionjaimepas = findViewById(R.id.block_mentionjaimepas);
@@ -285,6 +304,18 @@ public class NotificationsDetails extends AppCompatActivity {
             }
 
         });
+
+        //si le dark mode est activé
+        if (dark_mode_item.equals("1"))
+        {
+            block_globale.setBackgroundColor(res.getColor(R.color.darkprimary));
+            block_globale_cardview.setBackground(res.getDrawable(R.drawable.background_menu_message_public_mode_dark));
+            title.setTextColor(res.getColor(R.color.graycolor));
+            title1.setTextColor(res.getColor(R.color.graycolor));
+            contenu.setTextColor(res.getColor(R.color.graycolor));
+        }
+
+
     }
 
     @Override

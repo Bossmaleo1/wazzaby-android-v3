@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -74,6 +75,8 @@ public class Problematique extends Fragment {
     private LinearLayout materialcardview;
     private SessionManager session;
     public static Profil user;
+    private ImageView search_icon;
+    private String dark_mode_item = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,6 +91,7 @@ public class Problematique extends Fragment {
         searchview = rootView.findViewById(R.id.searchview);
         progressBar =  rootView.findViewById(R.id.progressbar);
         coordinatorLayout =  rootView.findViewById(R.id.coordinatorLayout);
+        search_icon = rootView.findViewById(R.id.search_icon);
         search_block = rootView.findViewById(R.id.search_block);
         materialcardview = rootView.findViewById(R.id.materialcardview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -135,9 +139,17 @@ public class Problematique extends Fragment {
             }
         });
 
-
-
-
+        dark_mode_item = database.getDARKMODE();
+        if (dark_mode_item.equals("1"))
+        {
+            search_icon.setColorFilter(res.getColor(R.color.graycolor));
+            /*block_shimmer.setBackground(res.getDrawable(R.drawable.background_menu_message_public_mode_dark));
+            notification_main_shimmer.setBackgroundColor(res.getColor(R.color.darkprimarydark));*/
+            /*holder.block_shimmer.setBackground(res.getDrawable(R.drawable.background_menu_message_public_mode_dark));
+            holder.block_globale_notification.setBackgroundColor(res.getColor(R.color.darkprimarydark));*/
+            /*coordinatorLayout.setBackgroundColor(getResources().getColor(R.color.darkprimary));
+            recyclerView.setBackgroundColor(getResources().getColor(R.color.darkprimary));*/
+        }
         // Inflate the layout for this fragment
         return rootView;
     }

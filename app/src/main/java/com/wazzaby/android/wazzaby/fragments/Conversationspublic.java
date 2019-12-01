@@ -95,6 +95,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
     * our lazzy loading */
 
     //private boolean swipetest = true;
+    private String dark_mode_item = null;
 
     public Conversationspublic() {
         // Required empty public constructor
@@ -128,6 +129,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
         allUsersAdapter = new ConversationspublicAdapter(getActivity(),data);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(allUsersAdapter);
+        dark_mode_item = database.getDARKMODE();
 
         this.ConnexionSynchronizationProblematique();
         this.ConnexionConversationsPublic();
@@ -162,6 +164,16 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                 startActivity(intent);
             }
         });
+
+        if (dark_mode_item.equals("1"))
+        {
+            /*holder.block_shimmer.setBackground(res.getDrawable(R.drawable.background_menu_message_public_mode_dark));
+            holder.block_globale_notification.setBackgroundColor(res.getColor(R.color.darkprimarydark));*/
+            //coordinatorLayout.setBackgroundColor(getResources().getColor(R.color.darkprimary));
+            //recyclerView.setBackgroundColor(getResources().getColor(R.color.darkprimary));
+        } else if (dark_mode_item.equals("0")) {
+
+        }
 
 
         return bossmaleo;

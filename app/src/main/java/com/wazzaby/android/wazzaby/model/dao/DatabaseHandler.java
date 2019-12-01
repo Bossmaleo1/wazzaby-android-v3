@@ -18,7 +18,7 @@ import java.util.List;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "Wazaby";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     //La table USER
     private static final String TABLE_USER = "USER";
     private static final String KEY_ID ="ID";
@@ -50,6 +50,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_ID_EME_CONV ="ID_EME";
     private static final String KEY_LIBELLE ="LIBELLE";
 
+    //La table du darkMode
+    private static final String TABLE_DARK_MODE = "TABLE_DARK_MODE";
+    private static  final  String KEY_DARK_MODE = "DARK_MODE";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -75,11 +78,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String CREATE_CONVERSATION = "CREATE TABLE "+TABLE_CONVERSATION+ "("
                 +KEY_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"+KEY_ID_EME_CONV+" TEXT,"+KEY_LIBELLE+" TEXT,"+KEY_ETAT+" TEXT)";
+
+        String CREATE_DARK_MODE = "CREATE TABLE "+TABLE_DARK_MODE+"("
+                +KEY_ID+" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"+KEY_DARK_MODE+" TEXT)";
+
         db.execSQL(CREATE_USER_TABLE);
         db.execSQL(CREATE_CATPROB_TABLE);
         db.execSQL(CREATE_PROB_TABLE);
         db.execSQL(CREATE_LIBELLETITLE);
         db.execSQL(CREATE_CONVERSATION);
+        db.execSQL(CREATE_DARK_MODE);
     }
 
     @Override
@@ -110,6 +118,49 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_LIBELLE ="LIBELLE";
 
          */
+    }
+
+
+    // this method add a 1 attribut if user switch in Dark Mode
+    public void addDARKMODE(String dark) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_DARK_MODE,dark);
+
+        db.insert(TABLE_DARK_MODE,null,values);
+        db.close();
+    }
+
+    //this method help us to get the dark mode
+    public String getDARKMODE() {
+        String selectQuery = "SELECT  * FROM " + TABLE_DARK_MODE+ " WHERE "+KEY_ID+"= 1";
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String dark_mode = "";
+
+        Cursor cursor = db.rawQuery(selectQuery,null);
+        if(cursor.moveToFirst())
+        {
+            do{
+                dark_mode = cursor.getString(1);
+                /*Conversation conversation = new Conversation();
+                conversation.setID_EME(cursor.getString(1));
+                conversation.setLibelle(cursor.getString(2));
+                conversation.setEtat(cursor.getString(3));
+                conversations.add(conversation);*/
+            }while (cursor.moveToNext());
+        }
+
+        return dark_mode;
+    }
+
+    public void updateDARKMODE(String value)  {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_DARK_MODE,value);
+        db.update(TABLE_DARK_MODE,values,KEY_ID+"=1",null);
     }
 
     //Modifier id_user

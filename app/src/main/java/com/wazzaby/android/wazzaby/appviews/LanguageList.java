@@ -32,9 +32,24 @@ public class LanguageList extends AppCompatActivity {
     private Resources res;
     private DatabaseHandler database;
     private Toolbar toolbar;
+    private String dark_mode_item = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        res = getResources();
+        database = new DatabaseHandler(this);
+        dark_mode_item = database.getDARKMODE();
+        //si le dark mode est activé
+        if (dark_mode_item.equals("1"))
+        {
+            setTheme(R.style.AppDarkTheme);
+            //edit_modenuit.setChecked(true);
+        } else if (dark_mode_item.equals("0")) {
+            setTheme(R.style.AppTheme);
+            //edit_modenuit.setChecked(false);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.language_list);
 
@@ -42,8 +57,6 @@ public class LanguageList extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         coordinatorLayout =  findViewById(R.id.coordinatorLayout);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        res = getResources();
-        database = new DatabaseHandler(this);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(res.getString(R.string.language_list));

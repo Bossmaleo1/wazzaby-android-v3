@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -78,11 +79,28 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
     private String dateitem;
     private int commentitem_id;
     private String libelleitem;
+    private String dark_mode_item = null;
+    private RelativeLayout block_messagerie_edit_text;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        res = getResources();
+        intent = getIntent();
+        database = new DatabaseHandler(getApplicationContext());
+        session = new SessionManager(getApplicationContext());
+        dark_mode_item = database.getDARKMODE();
+        //si le dark mode est activé
+        if (dark_mode_item.equals("1"))
+        {
+            setTheme(R.style.AppDarkTheme3);
+            //edit_modenuit.setChecked(true);
+        } else if (dark_mode_item.equals("0")) {
+            setTheme(R.style.AppTheme);
+            //edit_modenuit.setChecked(false);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.affichemessagepublic);
         res = getResources();
@@ -91,6 +109,7 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
         toolbar =  findViewById(R.id.toolbar);
         progressBar = findViewById(R.id.progressbar);
         submitcomment = findViewById(R.id.submitcomment);
+        block_messagerie_edit_text = findViewById(R.id.block_messagerie_edit_text);
         editcomment = findViewById(R.id.editcomment);
         block_affichage_error = findViewById(R.id.materialcardview);
         Error_text_message = findViewById(R.id.text_error_message);
@@ -179,6 +198,13 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
                 }
             }
         });
+
+        //si le dark mode est activé
+        if (dark_mode_item.equals("1"))
+        {
+            block_messagerie_edit_text.setBackgroundColor(res.getColor(android.R.color.white));
+        }
+
     }
 
     @Override

@@ -76,6 +76,7 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
     private Profil user;
     private int temp_id_checkmention;
     private JSONObject reponse;
+    private String dark_mode_item = null;
 
 
 
@@ -547,6 +548,25 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
             holder.block_shimmer.setVisibility(View.VISIBLE);
             holder.mShimmerViewContainer.setVisibility(View.GONE);
         }
+
+
+        //La gestion du mode dark
+        dark_mode_item = database.getDARKMODE();
+        if (dark_mode_item.equals("1"))
+        {
+            holder.block_shimmer.setBackground(res.getDrawable(R.drawable.background_menu_message_public_mode_dark));
+            holder.title.setTextColor(res.getColor(R.color.graycolor));
+            holder.title1.setTextColor(res.getColor(R.color.graycolor));
+            holder.commentnumber.setTextColor(res.getColor(R.color.graycolor));
+            holder.contenu.setTextColor(res.getColor(R.color.graycolor));
+            holder.block_globale.setBackgroundColor(res.getColor(R.color.darkprimary));
+            holder.block_shimmer.setBackground(res.getDrawable(R.drawable.background_menu_message_public_mode_dark));
+                    /*holder.block_shimmer.setBackground(res.getDrawable(R.drawable.background_menu_message_public_mode_dark));
+                    holder.block_globale_notification.setBackgroundColor(res.getColor(R.color.darkprimarydark));
+                    holder.user_first_name.setBackgroundColor(res.getColor(R.color.darkprimarydark));*/
+        } else if (dark_mode_item.equals("0")) {
+
+        }
     }
 
 
@@ -580,6 +600,7 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
         LinearLayout dislike_block;
         RelativeLayout block_shimmer;
         ShimmerFrameLayout mShimmerViewContainer;
+        RelativeLayout block_globale;
 
         public MyViewHolder(View itemView)
         {
@@ -602,6 +623,7 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
             dislike_block = itemView.findViewById(R.id.dislike_block);
             block_shimmer = itemView.findViewById(R.id.block_shimmer);
             mShimmerViewContainer = itemView.findViewById(R.id.shimmer_view_container);
+            block_globale = itemView.findViewById(R.id.block_globale);
 
         }
     }

@@ -1,5 +1,7 @@
 package com.wazzaby.android.wazzaby.model.data;
 
+import android.graphics.drawable.Drawable;
+
 /**
  * Created by bossmaleo on 02/11/17.
  */
@@ -8,8 +10,13 @@ public class DrawerItem {
 
     private String title;
     private int imageID;
+    //private
 
     public DrawerItem(){}
+
+    /*public DrawerItem(String title, Drawable drawable) {
+
+    }*/
 
     public DrawerItem(String title,int imageID)
     {

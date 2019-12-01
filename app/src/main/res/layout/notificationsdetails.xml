@@ -45,6 +45,7 @@
                 android:layout_height="wrap_content">
 
                 <RelativeLayout
+                    android:id="@+id/block_globale"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/graycolor"
@@ -52,6 +53,7 @@
                     >
 
                     <RelativeLayout
+                        android:id="@+id/block_globale_cardview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/background_menu_message_public"

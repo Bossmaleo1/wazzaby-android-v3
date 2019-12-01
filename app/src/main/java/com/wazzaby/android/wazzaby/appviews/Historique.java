@@ -66,6 +66,8 @@ public class Historique extends AppCompatActivity implements SwipeRefreshLayout.
     public static RecyclerView recyclerView;
     private ConversationspublicAdapter allUsersAdapter;
 
+    private String dark_mode_item = null;
+
     /*cette variable est vrai lorsque le chargement et passe a false lorsque le chargement est sur le swiperefreshlayout*/
     private boolean swipestart = true;
     //On crée un compteur pour stabiliser le swiperefresh
@@ -82,18 +84,30 @@ public class Historique extends AppCompatActivity implements SwipeRefreshLayout.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        session = new SessionManager(this);
+        database = new DatabaseHandler(this);
+        res = getResources();
+        dark_mode_item = database.getDARKMODE();
+        //si le dark mode est activé
+        if (dark_mode_item.equals("1"))
+        {
+            setTheme(R.style.AppDarkTheme);
+            //edit_modenuit.setChecked(true);
+        } else if (dark_mode_item.equals("0")) {
+            setTheme(R.style.AppTheme);
+            //edit_modenuit.setChecked(false);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.historique);
         coordinatorLayout = findViewById(R.id.coordinatorLayout);
-        res = getResources();
         toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(res.getString(R.string.history));
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         context = this;
-        session = new SessionManager(this);
-        database = new DatabaseHandler(this);
+
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
         mShimmerViewContainer = findViewById(R.id.shimmer_view_container);
         //progressBar = (ProgressBar) bossmaleo.findViewById(R.id.progressbar);
