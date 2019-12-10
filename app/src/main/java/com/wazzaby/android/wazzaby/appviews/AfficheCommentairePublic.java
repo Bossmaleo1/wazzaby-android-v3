@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -53,6 +54,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import developer.semojis.Helper.EmojiconEditText;
+import developer.semojis.actions.EmojIconActions;
+
 public class AfficheCommentairePublic extends AppCompatActivity implements MenuItem.OnMenuItemClickListener {
 
     private Toolbar toolbar;
@@ -71,7 +75,7 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
     private Profil user;
     private String Libelle = null;
     private ImageView submitcomment;
-    private EditText editcomment;
+    private EmojiconEditText editcomment;
     private LinearLayout block_affichage_error;
     private TextView Error_text_message;
 
@@ -81,7 +85,9 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
     private String libelleitem;
     private String dark_mode_item = null;
     private RelativeLayout block_messagerie_edit_text;
-
+    private ImageView add_emoji;
+    private EmojIconActions emojIcon;
+    private View rootView;
 
 
     @Override
@@ -95,7 +101,7 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
         //si le dark mode est activé
         if (dark_mode_item.equals("1"))
         {
-            setTheme(R.style.AppDarkTheme3);
+            setTheme(R.style.AppDarkTheme);
             //edit_modenuit.setChecked(true);
         } else if (dark_mode_item.equals("0")) {
             setTheme(R.style.AppTheme);
@@ -109,7 +115,9 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
         toolbar =  findViewById(R.id.toolbar);
         progressBar = findViewById(R.id.progressbar);
         submitcomment = findViewById(R.id.submitcomment);
+        rootView = findViewById(R.id.appbarlayout);
         block_messagerie_edit_text = findViewById(R.id.block_messagerie_edit_text);
+        add_emoji = findViewById(R.id.add_emoji);
         editcomment = findViewById(R.id.editcomment);
         block_affichage_error = findViewById(R.id.materialcardview);
         Error_text_message = findViewById(R.id.text_error_message);
@@ -204,6 +212,22 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
         {
             block_messagerie_edit_text.setBackgroundColor(res.getColor(android.R.color.white));
         }
+
+        emojIcon= new EmojIconActions(this, rootView,  editcomment,
+                add_emoji);
+        emojIcon.ShowEmojIcon();
+
+        emojIcon.setKeyboardListener(new EmojIconActions.KeyboardListener() {
+            @Override
+            public void onKeyboardOpen() {
+                Log.e("Keyboard","open");
+            }
+
+            @Override
+            public void onKeyboardClose() {
+                Log.e("Keyboard","close");
+            }
+        });
 
     }
 

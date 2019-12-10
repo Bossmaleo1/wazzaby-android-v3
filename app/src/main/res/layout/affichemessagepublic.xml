@@ -109,8 +109,17 @@
                     android:layout_marginBottom="10dp"
                     >
 
+                        <ImageView
+                            android:id="@+id/add_emoji"
+                            android:layout_below="@+id/block_edittext"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="4"
+                            android:tint="@color/primarygraydark"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/ic_insert_emoticon_black_24dp"/>
 
-                        <com.google.android.material.textfield.TextInputEditText
+                        <developer.semojis.Helper.EmojiconEditText
                             android:id="@+id/editcomment"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -130,7 +139,7 @@
                             android:id="@+id/submitcomment"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="8"
+                            android:layout_weight="4"
                             android:tint="@color/primarygraydark"
                             android:layout_gravity="center_vertical"
                             android:src="@drawable/baseline_send_black_24" />
