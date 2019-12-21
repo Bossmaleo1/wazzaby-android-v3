@@ -24,6 +24,7 @@ import com.wazzaby.android.wazzaby.appviews.ProfilDetails;
 
 import static com.wazzaby.android.wazzaby.fragments.Accueil.mCartItemCount;
 import static com.wazzaby.android.wazzaby.fragments.Accueil.navigation;
+import static com.wazzaby.android.wazzaby.utils.MyApplication.CHANNEL_1_ID;
 
 public class MyReceiver extends BroadcastReceiver {
 
@@ -43,18 +44,15 @@ public class MyReceiver extends BroadcastReceiver {
         badge.setBadgeTextColor(Color.WHITE);
 
         Intent notifyIntent = new Intent(context, NotificationIntent.class);
-// Set the Activity to start in a new, empty task
+        // Set the Activity to start in a new, empty task
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-// Create the PendingIntent
+        // Create the PendingIntent
         PendingIntent notifyPendingIntent = PendingIntent.getActivity(
                 context, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
         );
 
-
-
-
-        //Toast.makeText(context,intent.getStringExtra("message"),Toast.LENGTH_LONG).show();
+        /*Toast.makeText(context,"Text du bossmaleo !!",Toast.LENGTH_LONG).show();
 
         Notification notificationBuilder = new NotificationCompat.Builder(context, "channel_id")
                 .setContentTitle("Wazzaby")
@@ -65,27 +63,24 @@ public class MyReceiver extends BroadcastReceiver {
                 .setContentIntent(notifyPendingIntent)
                 .setColor(Color.parseColor("#188dc8"))
                 .setAutoCancel(true).build();
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(1, notificationBuilder);*/
+
+        Notification notification = new NotificationCompat.Builder(context,CHANNEL_1_ID)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("Wazzaby")
+                .setContentText(intent.getStringExtra("message"))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setContentIntent(notifyPendingIntent)
+                .setOnlyAlertOnce(true)
+                .setAutoCancel(true)
+                .setColor(Color.BLUE)
+                .build();
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(1, notification);
 
-        /*NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);*/
-
-        notificationManager.notify(1, notificationBuilder);
-
-        /*snackbar = Snackbar
-                .make(Home.coordinatorLayout, intent.getStringExtra("message"), Snackbar.LENGTH_LONG)
-                .setAction("Voir", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-
-                    }
-                });
-
-        snackbar.show();*/
-        // Implement code here to be performed when
-        // broadcast is detected
     }
 
 }
