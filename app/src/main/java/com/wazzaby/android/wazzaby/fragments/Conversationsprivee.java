@@ -110,17 +110,17 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(allUsersAdapter);
-        this.ConnexionSynchronizationProblematique();
-        ConnexionProblematique();
+        //this.ConnexionSynchronizationProblematique();
+        //ConnexionProblematique();
         recyclerView.addOnItemTouchListener(new Conversationsprivee.RecyclerTouchListener(getActivity(), recyclerView, new Conversationsprivee.ClickListener() {
             @Override
             public void onClick(View view, int position) {
                 Intent intent = new Intent(getActivity(), MessageConstitution.class);
-                intent.putExtra("name",data.get(position).getFriendLibelle());
+                /*intent.putExtra("name",data.get(position).getFriendLibelle());
                 intent.putExtra("imageview",data.get(position).getImageID());
                 intent.putExtra("ID",data.get(position).getID());
                 intent.putExtra("KEYPUSH",data.get(position).getKEYPUSH());
-                intent.putExtra("PHOTO",data.get(position).getPHOTO());
+                intent.putExtra("PHOTO",data.get(position).getPHOTO());*/
                 startActivity(intent);
             }
 

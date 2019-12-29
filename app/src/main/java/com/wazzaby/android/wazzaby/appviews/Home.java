@@ -12,10 +12,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -36,7 +34,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.wazzaby.android.wazzaby.R;
-import com.wazzaby.android.wazzaby.broadcast.MyReceiver;
+import com.wazzaby.android.wazzaby.broadcast.receiverMessage.MyReceiverMessagerie;
+import com.wazzaby.android.wazzaby.broadcast.receiverNotification.MyReceiver;
 import com.wazzaby.android.wazzaby.connInscript.MainActivity;
 import com.wazzaby.android.wazzaby.fragments.Accueil;
 import com.wazzaby.android.wazzaby.fragments.FragmentDrawer;
@@ -52,6 +51,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.wazzaby.android.wazzaby.appviews.MessageConstitution.allUsersAdapter;
 import static com.wazzaby.android.wazzaby.fragments.FragmentDrawer.imageView;
 
 public class Home extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener{
@@ -130,12 +130,18 @@ public class Home extends AppCompatActivity implements FragmentDrawer.FragmentDr
                      }
                 });
 
-        IntentFilter filter = new IntentFilter("com.wazzaby.android.wazzaby.broadcast");
+        //Ici on appel la reception de la pushnotification du chat
+        IntentFilter filter = new IntentFilter("com.wazzaby.android.wazzaby.broadcast.receiverMessage");
+        IntentFilter filter2 = new IntentFilter("com.wazzaby.android.wazzaby.broadcast.receiverNotification");
 
-        MyReceiver receiver = new MyReceiver();
+        MyReceiverMessagerie receiver = new MyReceiverMessagerie();
         registerReceiver(receiver, filter);
 
+        MyReceiver receiver2 = new MyReceiver();
+        registerReceiver(receiver2, filter2);
+
         ConnexionSynchronizationModeAnonymous();
+
 
         //on lance ce service pour assurer la synchronisation de changement de problematique
         //this.ConnexionSynchronizationProblematique();

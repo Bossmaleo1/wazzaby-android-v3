@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.wazzaby.android.wazzaby.R;
+import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.data.Conversationprivateitem;
 
 import java.util.Collections;
@@ -55,7 +56,7 @@ public class ConversationspriveeAdapter extends RecyclerView.Adapter<Conversatio
         holder.icon1.setImageResource(current.getIcon());
         holder.message1.setBackground(current.getCouleur());
 
-        Uri uri2 = Uri.parse("https://wazaby939393.000webhostapp.com/Images/"+current.getPhoto());
+        Uri uri2 = Uri.parse(Const.dns+"/uploads/photo_de_profil/"+current.getPhoto());
         holder.photo1.setImageURI(uri2);
         //messages recues
         if(current.isEnvoie()) {
@@ -74,7 +75,7 @@ public class ConversationspriveeAdapter extends RecyclerView.Adapter<Conversatio
 
         holder.icon2.setImageResource(current.getIcon2());
         holder.message2.setText(current.getMessage2());
-        Uri uri = Uri.parse("https://wazaby939393.000webhostapp.com/Images/"+current.getPhoto2());
+        Uri uri = Uri.parse(Const.dns+"/uploads/photo_de_profil/"+current.getPhoto2());
         holder.photo2.setImageURI(uri);
     }
 

@@ -1,66 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:fresco="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/coordinatorLayout"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	xmlns:fresco="http://schemas.android.com/tools">
+	android:layout_height="match_parent">
 
-	<androidx.appcompat.widget.Toolbar
-		android:id="@+id/toolbar"
+	<com.google.android.material.appbar.AppBarLayout
+		android:id="@+id/appbarlayout"
 		android:layout_width="match_parent"
-		android:layout_height="?attr/actionBarSize"
-		android:background="?attr/colorPrimary"
-		app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-		android:fitsSystemWindows="true"
-		>
-		<RelativeLayout
+		android:layout_height="wrap_content"
+		android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+		<androidx.appcompat.widget.Toolbar
+			android:id="@+id/toolbar"
 			android:layout_width="match_parent"
-			android:layout_height="match_parent"
+			android:layout_height="?attr/actionBarSize"
+			android:background="?attr/colorPrimary"
+			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+			android:fitsSystemWindows="true"
+			xmlns:fresco="http://schemas.android.com/apk/res-auto"
 			>
 
-			<com.facebook.drawee.view.SimpleDraweeView
-				android:id="@+id/imageToolBar"
-				android:layout_width="40dp"
-				android:layout_height="40dp"
-				fresco:roundedCornerRadius="20dp"
-				android:layout_centerVertical="true"
-				android:layout_marginTop="3dp"
-				android:layout_toEndOf="@id/arrow_back"
-				android:layout_toRightOf="@+id/arrow_back"
-				/>
+			<RelativeLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
 
-			<TextView
-				android:id="@+id/toolbarText"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="12dp"
-				android:layout_marginLeft="10dp"
-				android:layout_marginStart="10dp"
-				android:layout_toEndOf="@id/imageToolBar"
-				android:layout_toRightOf="@+id/imageToolBar"
-				android:text="Your text"
-				/>
 
-			<TextView
-				android:id="@+id/datetime"
-				android:layout_below="@+id/toolbarText"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginLeft="10dp"
-				android:text="En ligne"
-				android:layout_marginStart="10dp"
-				android:textSize="10dp"
-				android:layout_toEndOf="@id/imageToolBar"
-				android:layout_toRightOf="@+id/imageToolBar"
-				/>
+				<ImageView
+					android:id="@+id/back_button"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:src="@drawable/ic_arrow_back_black_24dp"
+					android:tint="@android:color/white"
+					android:layout_centerVertical="true"
+					/>
 
-		</RelativeLayout>
+				<com.facebook.drawee.view.SimpleDraweeView
+					android:id="@+id/imageToolBar"
+					android:layout_width="40dp"
+					android:layout_height="40dp"
+					android:layout_marginLeft="5dp"
+					android:src="@drawable/ic_profile_colorier"
+					fresco:roundedCornerRadius="20dp"
+					android:layout_toRightOf="@+id/back_button"
+					android:layout_centerVertical="true"
+					/>
 
-	</androidx.appcompat.widget.Toolbar>
+				<RelativeLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_toRightOf="@+id/imageToolBar"
+					android:layout_centerVertical="true"
+					>
+
+					<TextView
+						android:id="@+id/toolbarText"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginLeft="10dp"
+						/>
+
+
+					<TextView
+						android:id="@+id/status_user"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_below="@+id/toolbarText"
+						android:text="En ligne"
+						android:textSize="10dp"
+						android:layout_marginLeft="10dp"
+					/>
+				</RelativeLayout>
+
+			</RelativeLayout>
+
+
+
+
+
+		</androidx.appcompat.widget.Toolbar>
+
+
+	</com.google.android.material.appbar.AppBarLayout>
 
 	<RelativeLayout
 		android:id="@+id/block"
-		android:layout_below="@+id/toolbar"
+		android:layout_marginTop="?attr/actionBarSize"
+		android:layout_below="@+id/appbarlayout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		>
@@ -81,57 +108,78 @@
 	</RelativeLayout>
 
 
-	<LinearLayout
-		android:layout_alignParentBottom="true"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:background="@android:color/white"
-		android:orientation="horizontal">
 
-		<LinearLayout
+
+	<RelativeLayout
+		android:layout_below="@+id/block"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<RelativeLayout
+			android:id="@+id/block_messagerie_edit_text"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:background="@drawable/rendermessagearea"
-			android:padding="10dp"
-			android:layout_weight="1"
+			android:layout_alignParentBottom="true"
 			>
+
+			<View
+				android:id="@+id/view"
+				android:layout_width="match_parent"
+				android:layout_height="2dp"
+				android:layout_marginBottom="10dp"
+				android:background="#dfdfdf"/>
+
 			<LinearLayout
+				android:layout_below="@+id/view"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:background="@drawable/rendermessagearea1"
-				android:padding="5dp"
+				android:background="@android:color/white"
+				android:orientation="horizontal"
+				android:layout_marginBottom="10dp"
 				>
 
-
-				<android.support.design.widget.TextInputLayout
-
+				<ImageView
+					android:id="@+id/add_emoji"
+					android:layout_below="@+id/block_edittext"
 					android:layout_width="match_parent"
-					android:layout_height="wrap_content">
+					android:layout_height="wrap_content"
+					android:layout_weight="4"
+					android:tint="@color/primarygraydark"
+					android:layout_gravity="center_vertical"
+					android:src="@drawable/ic_insert_emoticon_black_24dp"/>
 
-					<EditText
-						android:id="@+id/editvalue"
-						android:gravity="top|left"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:background="@android:color/white"
-						/>
+				<developer.semojis.Helper.EmojiconEditText
+					android:id="@+id/editcomment"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:gravity="center_vertical"
+					android:layout_weight="1"
+					android:hint="Votre Commentaire"
+					android:background="@android:color/transparent"
+					android:inputType="textMultiLine"
+					android:overScrollMode="always"
+					android:scrollbarStyle="insideInset"
+					android:scrollbars="vertical"
+					android:maxLines="6"
+					android:layout_marginLeft="5dp"
+					android:singleLine="true" />
 
-				</android.support.design.widget.TextInputLayout>
-
+				<ImageView
+					android:id="@+id/submitcomment"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_weight="4"
+					android:tint="@color/primarygraydark"
+					android:layout_gravity="center_vertical"
+					android:src="@drawable/baseline_send_black_24" />
 			</LinearLayout>
-		</LinearLayout>
-
-		<ImageView
-			android:id="@+id/sender"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_weight="5"
-			android:padding="4dp"
-			android:tint="@color/colorPrimary"
-			android:layout_gravity="center_vertical"
-			android:src="@drawable/ic_send_black_48dp" />
-	</LinearLayout>
+		</RelativeLayout>
+	</RelativeLayout>
 
 
 
-</RelativeLayout>
+
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

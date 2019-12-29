@@ -187,7 +187,14 @@
 
 
 
-        <receiver android:name=".broadcast.MyReceiver" >
+        <receiver android:name=".broadcast.receiverNotification.MyReceiver" >
+            <intent-filter>
+                <action android:name="com.wazzaby.android.wazzaby.broadcast" >
+                </action>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".broadcast.receiverMessage.MyReceiverMessagerie" >
             <intent-filter>
                 <action android:name="com.wazzaby.android.wazzaby.broadcast" >
                 </action>

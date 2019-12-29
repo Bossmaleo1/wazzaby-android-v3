@@ -58,6 +58,7 @@ public class Accueil extends Fragment {
     private Drawable Icon_annonce;
     private JSONObject reponse;
     public static int mCartItemCount = 0;
+    public static int mCartItemCountforchat = 0;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private String Keypush = null;
     private SessionManager session;
@@ -65,6 +66,7 @@ public class Accueil extends Fragment {
     private Profil user;
     public static BadgeDrawable badge;
     private String dark_mode_item = null;
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -103,9 +105,15 @@ public class Accueil extends Fragment {
         menu.findItem(R.id.notification).setTitle(notification_title_text);
 
         loadFragment(new Conversationspublic());
-        BadgeDrawable badge2 = navigation.showBadge(R.id.conversationprivee);
-        badge2.setNumber(5);
-        badge2.setBadgeTextColor(Color.WHITE);
+        //Gestion de l'affichage du badge de la messagerie instantanée
+        if(mCartItemCountforchat == 0){
+            navigation.removeBadge(R.id.conversationprivee);
+        } else {
+            BadgeDrawable badge2 = navigation.showBadge(R.id.conversationprivee);
+            badge2.setNumber(mCartItemCountforchat);
+            badge2.setBadgeTextColor(Color.WHITE);
+        }
+
         database = new DatabaseHandler(getActivity());
         session = new SessionManager(getActivity());
         res = getResources();

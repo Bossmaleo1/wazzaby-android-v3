@@ -1,0 +1,111 @@
+package com.wazzaby.android.wazzaby.broadcast.receiverNotification;
+
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.snackbar.Snackbar;
+import com.wazzaby.android.wazzaby.R;
+import com.wazzaby.android.wazzaby.appviews.NotificationIntent;
+import com.wazzaby.android.wazzaby.model.data.Conversationprivateitem;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import static com.wazzaby.android.wazzaby.appviews.MessageConstitution.context_messageconstitution;
+import static com.wazzaby.android.wazzaby.appviews.MessageConstitution.data_recyclerview;
+import static com.wazzaby.android.wazzaby.appviews.MessageConstitution.allUsersAdapter;
+import static com.wazzaby.android.wazzaby.fragments.Accueil.mCartItemCount;
+import static com.wazzaby.android.wazzaby.fragments.Accueil.navigation;
+import static com.wazzaby.android.wazzaby.utils.MyApplication.CHANNEL_1_ID;
+
+public class MyReceiver extends BroadcastReceiver {
+
+    private String message;
+    private String title;
+    private int succes;
+    private Snackbar snackbar;
+    private Resources res;
+    private String photo;
+
+    public MyReceiver() {
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+
+
+        mCartItemCount++;
+        BadgeDrawable badge = navigation.showBadge(R.id.notification);
+        badge.setNumber(mCartItemCount);
+        badge.setBadgeTextColor(Color.WHITE);
+
+        Intent notifyIntent = new Intent(context, NotificationIntent.class);
+        // Set the Activity to start in a new, empty task
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        // Create the PendingIntent
+        PendingIntent notifyPendingIntent = PendingIntent.getActivity(
+                context, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+        res = context.getResources();
+
+        try {
+            JSONObject reponse = new JSONObject(intent.getStringExtra("message"));
+            succes = reponse.getInt("succes");
+            if(succes == 1) {
+                message = reponse.getString("message");
+                title = reponse.getString("name");
+                photo = reponse.getString("photo");
+                MessageCorps(res,message);
+            } else {
+                message = reponse.getString("message");
+                title = "Wazzaby";
+                photo = reponse.getString("photo");
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        Notification notification = new NotificationCompat.Builder(context,CHANNEL_1_ID)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setContentIntent(notifyPendingIntent)
+                .setOnlyAlertOnce(true)
+                .setAutoCancel(true)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(message))
+                .setColor(Color.BLUE)
+                .build();
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(1, notification);
+
+    }
+
+    public void MessageCorps(Resources res,String message) {
+        Drawable bossdraw = res.getDrawable(R.drawable.rounded_corner);
+        Drawable bossdraw2 = res.getDrawable(R.drawable.rounded_corner1);
+        //database.addConversation(new Conversation(String.valueOf(ID),message,"2"));
+        data_recyclerview.add(new Conversationprivateitem(photo,R.drawable.arrow_bg1,
+                message,bossdraw,context_messageconstitution,R.drawable.arrow_bg2,
+                photo,message,bossdraw2,true,false));
+        allUsersAdapter.notifyDataSetChanged();
+    }
+
+}

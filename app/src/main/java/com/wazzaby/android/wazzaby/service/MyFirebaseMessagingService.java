@@ -1,22 +1,29 @@
 package com.wazzaby.android.wazzaby.service;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.wazzaby.android.wazzaby.appviews.Home;
+import com.wazzaby.android.wazzaby.connInscript.ProblematiqueConnexion;
+import com.wazzaby.android.wazzaby.model.data.Profil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     public static String TAG = "Something going well!!";
     private String channel_id = "channel_id";
+    private JSONObject reponse;
+    private int succes;
+    private String title;
 
     @Override
     public void onNewToken(String token) {
@@ -37,23 +44,36 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
+       // Toast.makeText(getApplicationContext(),"Test du bossmaleo !!",Toast.LENGTH_LONG).show();
+
+        try {
+            JSONObject reponse = new JSONObject(remoteMessage.getNotification().getBody());
+            succes = reponse.getInt("succes");
+            if(succes == 1) {
+                //message = reponse.getString("message");
+                //title = reponse.getString("name");
+                //MessageCorps(res,message);
+                Intent intent = new Intent();
+                intent.setAction("com.wazzaby.android.wazzaby.broadcast.receiverMessage");
+                intent.putExtra("message",remoteMessage.getNotification().getBody());
+                sendBroadcast(intent);
+            } else {
+                //message = reponse.getString("message");
+                //title = "Wazzaby";
+                Intent intent = new Intent();
+                intent.setAction("com.wazzaby.android.wazzaby.broadcast.receiverNotification");
+                intent.putExtra("message",remoteMessage.getNotification().getBody());
+                sendBroadcast(intent);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
 
-        Intent intent = new Intent();
-        intent.setAction("com.wazzaby.android.wazzaby.broadcast");
-        intent.putExtra("message",remoteMessage.getNotification().getBody());
-        sendBroadcast(intent);
 
         //startActivity(pushNotification);
         Log.e(TAG, "Data Payload: " + remoteMessage.getData().toString());
 
-        /*NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);*/
-
-        createNotificationChannel();
-
-        //notificationManager.notify(1, notificationBuilder.build());
-        //playNotificationSound();
     }
 
     public void playNotificationSound() {
@@ -66,27 +86,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             e.printStackTrace();
         }
     }
-
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Nom du channel";
-            String description = "Description du channel";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(channel_id, name, importance);
-            channel.setDescription(description);
-
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-           // notificationManager.notify(1,notificationBuilder.build());
-        }else  {
-            playNotificationSound();
-        }
-    }
-
 
 
 }
