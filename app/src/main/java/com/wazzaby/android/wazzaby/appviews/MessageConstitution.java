@@ -6,7 +6,21 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.net.Uri;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.wazzaby.android.wazzaby.connInscript.Connexion;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
 import android.util.Log;
@@ -23,7 +37,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.appcompat.app.AppCompatActivity;
 import com.wazzaby.android.wazzaby.R;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import com.wazzaby.android.wazzaby.model.data.Conversationprivateitem;
 import com.wazzaby.android.wazzaby.model.data.Profil;
 import developer.semojis.actions.EmojIconActions;
@@ -118,6 +135,7 @@ public class MessageConstitution extends AppCompatActivity {
         submitcomment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SendMessage();
                 MessageCorps();
             }
         });
@@ -143,9 +161,47 @@ public class MessageConstitution extends AppCompatActivity {
         //database.addConversation(new Conversation(String.valueOf(ID),message,"2"));
         data_recyclerview.add(new Conversationprivateitem(intent.getStringExtra("imageview"),R.drawable.arrow_bg1,
                 editcomment.getText().toString(),bossdraw,context_messageconstitution,R.drawable.arrow_bg2,
-                intent.getStringExtra("imageview"),editcomment.getText().toString(),bossdraw2,true,false));
+                intent.getStringExtra("imageview"),editcomment.getText().toString(),bossdraw2,false,true));
         allUsersAdapter.notifyDataSetChanged();
         editcomment.getText().clear();
+    }
+
+
+    public void SendMessage() {
+
+        String url_fcm_send_messages = Const.dns
+                .concat("/Apifcm/apiFCMmessagerie.php?message=")
+                .concat(editcomment.getText().toString())
+                .concat("&ID=").concat(String.valueOf(user.getID()))
+                .concat("&phoro=").concat(intent.getStringExtra("imageview"))
+                .concat("&succes=1")
+                .concat("&name=").concat(user.getPRENOM()+" "+user.getNOM())
+                .concat("&regId=").concat(intent.getStringExtra("KeyPush"))
+                .concat("&nom=Wazzaby");
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_fcm_send_messages,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MessageConstitution.this,"Erreur réseaux !!",Toast.LENGTH_LONG).show();
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+
     }
 
 
