@@ -15,8 +15,9 @@ public class friendProbItem {
     private Context context;
     private String Keypush;
     private int ID;
+    private String Anonyme;
 
-    public friendProbItem(int ID,String libelle,int onlinestatus,String imageID,int color,Context context,String keypush)
+    public friendProbItem(int ID,String libelle,int onlinestatus,String imageID,int color,Context context,String keypush,String Anonyme)
     {
         this.ID =ID;
         this.FriendLibelle = libelle;
@@ -25,6 +26,7 @@ public class friendProbItem {
         this.color1 = color;
         this.context = context;
         this.Keypush = keypush;
+        this.Anonyme = Anonyme;
     }
 
     public int getColor1() {
@@ -81,5 +83,13 @@ public class friendProbItem {
 
     public void setID(int ID) {
         this.ID = ID;
+    }
+
+    public void setAnonyme(String anonyme) {
+        Anonyme = anonyme;
+    }
+
+    public String getAnonyme() {
+        return Anonyme;
     }
 }

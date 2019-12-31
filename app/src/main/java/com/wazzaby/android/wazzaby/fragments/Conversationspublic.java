@@ -252,7 +252,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                                 materialCardView.setVisibility(View.VISIBLE);
                             }
 
-                           // Toast.makeText(getActivity(),"  "+response,Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getActivity(),"  "+object.getString("status_photo"),Toast.LENGTH_LONG).show();
 
                             object = reponse.getJSONObject(0);
                             String count = null;

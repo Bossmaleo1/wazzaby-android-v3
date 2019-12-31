@@ -100,6 +100,7 @@ public class UserOnline extends AppCompatActivity {
                 intent.putExtra("imageview",data.get(position).getImageID());
                 intent.putExtra("KeyPush",data.get(position).getKeypush());
                 intent.putExtra("ID",data.get(position).getID());
+                intent.putExtra("anonymous_recept",data.get(position).getAnonyme());
                 //intent.putExtra("ID",data.get(position).getID());
                 //intent.putExtra("KEYPUSH",data.get(position).getKeypush());
                 /*intent.putExtra("PHOTO",data.get(position).getImageID());*/
@@ -150,6 +151,7 @@ public class UserOnline extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        //Toast.makeText(UserOnline.this,""+response,Toast.LENGTH_LONG).show();
 
                         try {
                             JSONArray reponse = new JSONArray(response);
@@ -157,7 +159,7 @@ public class UserOnline extends AppCompatActivity {
                             {
 
                                 object = reponse.getJSONObject(i);
-                                friendProbItem FriendItem = new friendProbItem(object.getInt("ID"),object.getString("PRENOM")+" "+object.getString("NOM"),R.drawable.ic_lens_black_18dp,object.getString("PHOTO"),R.color.greencolor,context,object.getString("KEYPUSH"));
+                                friendProbItem FriendItem = new friendProbItem(object.getInt("ID"),object.getString("PRENOM")+" "+object.getString("NOM"),R.drawable.ic_lens_black_18dp,object.getString("PHOTO"),R.color.greencolor,context,object.getString("KEYPUSH"),object.getString("Anonyme"));
                                 data.add(FriendItem);
                             }
 
@@ -269,9 +271,6 @@ public class UserOnline extends AppCompatActivity {
             @Override
             protected Map<String,String> getParams(){
                 Map<String,String> params = new HashMap<String, String>();
-                //params.put("IDProb",String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB()));
-                /*params.put("ID",String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID()));
-                params.put("web","0");*/
                 return params;
             }
 

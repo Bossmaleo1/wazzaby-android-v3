@@ -136,6 +136,7 @@ public class MessageConstitution extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 SendMessage();
+                SaveMessage();
                 MessageCorps();
             }
         });
@@ -150,7 +151,7 @@ public class MessageConstitution extends AppCompatActivity {
         });
 
 
-        //Toast.makeText(getApplicationContext()," "+intent.getIntExtra("ID",0),Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext()," "+intent.getStringExtra("anonymous_recept"),Toast.LENGTH_LONG).show();
 
     }
 
@@ -161,7 +162,7 @@ public class MessageConstitution extends AppCompatActivity {
         //database.addConversation(new Conversation(String.valueOf(ID),message,"2"));
         data_recyclerview.add(new Conversationprivateitem(intent.getStringExtra("imageview"),R.drawable.arrow_bg1,
                 editcomment.getText().toString(),bossdraw,context_messageconstitution,R.drawable.arrow_bg2,
-                intent.getStringExtra("imageview"),editcomment.getText().toString(),bossdraw2,false,true));
+                user.getPHOTO(),editcomment.getText().toString(),bossdraw2,false,true));
         allUsersAdapter.notifyDataSetChanged();
         editcomment.getText().clear();
     }
@@ -173,7 +174,7 @@ public class MessageConstitution extends AppCompatActivity {
                 .concat("/Apifcm/apiFCMmessagerie.php?message=")
                 .concat(editcomment.getText().toString())
                 .concat("&ID=").concat(String.valueOf(user.getID()))
-                .concat("&phoro=").concat(intent.getStringExtra("imageview"))
+                .concat("&phoro=").concat(user.getPHOTO())
                 .concat("&succes=1")
                 .concat("&name=").concat(user.getPRENOM()+" "+user.getNOM())
                 .concat("&regId=").concat(intent.getStringExtra("KeyPush"))
@@ -188,7 +189,7 @@ public class MessageConstitution extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MessageConstitution.this,"Erreur réseaux !!",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MessageConstitution.this,"Erreur réseau !!",Toast.LENGTH_LONG).show();
                     }
                 }){
             @Override
@@ -202,6 +203,43 @@ public class MessageConstitution extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
 
+    }
+
+    public void SaveMessage() {
+
+        String url_save_message = Const.dns
+                .concat("/WazzabyApi/public/api/InsertMessage?id_eme=")
+                .concat(String.valueOf(user.getID()))
+                .concat("&id_recept=").concat(String.valueOf(intent.getIntExtra("ID",0)))
+                .concat("&id_prob=").concat(String.valueOf(user.getIDPROB()))
+                .concat("&message=").concat(editcomment.getText().toString())
+                .concat("&anonymous=").concat(String.valueOf(user.getETAT()))
+                .concat("&anonymous_recept=").concat(intent.getStringExtra("anonymous_recept"));
+
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_save_message,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MessageConstitution.this,"Erreur réseau !!",Toast.LENGTH_LONG).show();
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
     }
 
 
