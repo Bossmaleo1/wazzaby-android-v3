@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.wazzaby.android.wazzaby.R;
+import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
 import com.wazzaby.android.wazzaby.model.data.ConversationItem;
@@ -61,7 +62,7 @@ public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdap
         ConversationItem current = data.get(position);
         holder.title.setText(current.getFriendLibelle());
         if(!current.getImageID().equals("null")) {
-            Uri uri2 = Uri.parse("https://wazaby939393.000webhostapp.com/Images/" + current.getImageID());
+            Uri uri2 = Uri.parse(Const.dns+"/uploads/photo_de_profil/" + current.getImageID());
             holder.icon.setImageURI(uri2);
         }else
         {

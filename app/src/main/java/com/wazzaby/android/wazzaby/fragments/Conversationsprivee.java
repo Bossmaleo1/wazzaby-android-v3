@@ -93,6 +93,7 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
                 startActivity(intent);
             }
         });
+
         context = getActivity();
         res = getResources();
         database = new DatabaseHandler(getActivity());
@@ -112,15 +113,16 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
         recyclerView.setAdapter(allUsersAdapter);
         //this.ConnexionSynchronizationProblematique();
         //ConnexionProblematique();
+        ConnexionRecentConversation();
         recyclerView.addOnItemTouchListener(new Conversationsprivee.RecyclerTouchListener(getActivity(), recyclerView, new Conversationsprivee.ClickListener() {
             @Override
             public void onClick(View view, int position) {
                 Intent intent = new Intent(getActivity(), MessageConstitution.class);
-                /*intent.putExtra("name",data.get(position).getFriendLibelle());
+                intent.putExtra("name",data.get(position).getFriendLibelle());
                 intent.putExtra("imageview",data.get(position).getImageID());
+                intent.putExtra("KeyPush",data.get(position).getKEYPUSH());
                 intent.putExtra("ID",data.get(position).getID());
-                intent.putExtra("KEYPUSH",data.get(position).getKEYPUSH());
-                intent.putExtra("PHOTO",data.get(position).getPHOTO());*/
+                intent.putExtra("anonymous_recept","1");
                 startActivity(intent);
             }
 
@@ -202,24 +204,31 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
         void onDrawerItemSelected(View view, int position);
     }
 
-    private void ConnexionProblematique()
+    private void ConnexionRecentConversation()
     {
         progressBar.setVisibility(View.VISIBLE);
+
+        String url_message_privee = Const.dns.concat("/WazzabyApi/public/api/DisplayRecentUserChat?id_prob=")
+                                    .concat(String.valueOf(user.getIDPROB()))
+                                    .concat("&id_user=").concat(String.valueOf(user.getID()));
+
         //TestProgressBar();
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Const.URL_MESSAGE_PRIVEE,
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_message_privee,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         JSONArray reponse = null;
 
-                        // Toast.makeText(getActivity()," "+response,Toast.LENGTH_LONG).show();
                         try {
                             reponse = new JSONArray(response);
                             for(int i = 0;i<reponse.length();i++)
                             {
                                 object = reponse.getJSONObject(i);
 
-                                data.add(new ConversationItem(context,object.getInt("Id"), object.getString("Libelle"),object.getString("Prenom")+" "+object.getString("Nom"),R.drawable.ic_lens_black_18dp,object.getString("Photo"),R.color.greencolor,object.getString("KEYPUSH"),object.getString("PHOTO")));
+                                data.add(new ConversationItem(context,object.getInt("id"), object.getString("message")
+                                        ,object.getString("Prenom")+" "+object.getString("Nom")
+                                        ,R.drawable.ic_lens_black_18dp,object.getString("Photo"),R.color.greencolor
+                                        ,object.getString("Keypush"),object.getString("Photo")));
                             }
 
 
@@ -242,7 +251,7 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            ConnexionProblematique();
+                                            ConnexionRecentConversation();
                                         }
                                     });
 
@@ -255,7 +264,7 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            ConnexionProblematique();
+                                            ConnexionRecentConversation();
                                         }
                                     });
 
@@ -268,7 +277,7 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            ConnexionProblematique();
+                                            ConnexionRecentConversation();
                                         }
                                     });
 
@@ -281,7 +290,7 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            ConnexionProblematique();
+                                            ConnexionRecentConversation();
                                         }
                                     });
 
@@ -294,7 +303,7 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            ConnexionProblematique();
+                                            ConnexionRecentConversation();
                                         }
                                     });
 
@@ -307,7 +316,7 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            ConnexionProblematique();
+                                            ConnexionRecentConversation();
                                         }
                                     });
                             snackbar.show();
@@ -319,7 +328,7 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
                                     .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            ConnexionProblematique();
+                                            ConnexionRecentConversation();
                                         }
                                     });
 
@@ -331,9 +340,9 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
             @Override
             protected Map<String,String> getParams(){
                 Map<String,String> params = new HashMap<String, String>();
-                params.put("ID",String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID()));
+                /*params.put("ID",String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getID()));
                 params.put("IDProb",String.valueOf(database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID))).getIDPROB()));
-                params.put("web","0");
+                params.put("web","0");*/
                 return params;
             }
 
@@ -386,6 +395,8 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         requestQueue.add(stringRequest);
     }
+
+
 
 
 }

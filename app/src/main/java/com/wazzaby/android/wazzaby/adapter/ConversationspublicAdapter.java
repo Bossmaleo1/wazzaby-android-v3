@@ -277,8 +277,15 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
                         .concat("&etat=0").concat("&id_recepteur=").concat(String.valueOf(data.get(position).getId_recepteur()))
                         .concat("&anonymous=").concat(String.valueOf(anonymous));
 
-                String  pushnotification_url = Const.dns.concat("/Apifcm/apiFCMmessagerie.php?message=").concat(message).concat("&title=Wazzaby")
-                        .concat("&regId=").concat(data.get(position).getPushkey_recepteur());
+                String  pushnotification_url = Const.dns.concat("/Apifcm/apiFCMmessagerie.php?message=")
+                        .concat(message)
+                        .concat("&title=Wazzaby")
+                        .concat("&regId=").concat(data.get(position).getPushkey_recepteur())
+                        .concat("&phoro=").concat(user.getPHOTO())
+                        .concat("&ID=").concat(String.valueOf(user.getID()))
+                        .concat("&name=").concat(user.getPRENOM()+" "+user.getNOM())
+                        .concat("&nom=Wazzaby")
+                        .concat("&succes=1");
 
                 if(data.get(position).getCheckmention() == 1) {
 
@@ -427,7 +434,12 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
                         .concat("&anonymous=").concat(String.valueOf(anonymous));
 
                 String  pushnotification_url = Const.dns.concat("/Apifcm/apiFCMmessagerie.php?message=").concat(message).concat("&title=Wazzaby")
-                        .concat("&regId=").concat(data.get(position).getPushkey_recepteur());
+                        .concat("&regId=").concat(data.get(position).getPushkey_recepteur())
+                        .concat("&phoro=").concat(user.getPHOTO())
+                        .concat("&ID=").concat(String.valueOf(user.getID()))
+                        .concat("&name=").concat(user.getPRENOM()+" "+user.getNOM())
+                        .concat("&nom=Wazzaby")
+                        .concat("&succes=1");;
 
                 if (data.get(position).getCheckmention() == 2) {
 

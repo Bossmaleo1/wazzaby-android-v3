@@ -10,7 +10,9 @@
         android:id="@+id/main_block"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/graycolor"
+        android:background="@drawable/selector_row"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
         >
 
         <RelativeLayout
@@ -21,7 +23,6 @@
             android:focusableInTouchMode="true"
             android:focusable="true"
             android:layout_gravity="center"
-            android:background="@drawable/selector_row"
             >
 
             <RelativeLayout
@@ -33,14 +34,12 @@
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/icon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    fresco:roundedCornerRadius="20dp"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginRight="10dp"
                     android:layout_centerVertical="true"
-                    fresco:roundedCornerRadius="25dp"
                     />
 
                 <TextView
@@ -66,6 +65,7 @@
                     android:layout_below="@+id/title1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     >
 
                     <ImageView

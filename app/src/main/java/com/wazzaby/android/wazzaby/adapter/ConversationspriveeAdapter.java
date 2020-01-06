@@ -26,6 +26,8 @@ public class ConversationspriveeAdapter extends RecyclerView.Adapter<Conversatio
     private LayoutInflater inflater;
     private Context context;
 
+    public static final int VIEW_HEADER = 1, VIEW_INFO = 2;
+
 
     public ConversationspriveeAdapter(Context context, List<Conversationprivateitem> data)
     {
@@ -78,6 +80,13 @@ public class ConversationspriveeAdapter extends RecyclerView.Adapter<Conversatio
         Uri uri = Uri.parse(Const.dns+"/uploads/photo_de_profil/"+current.getPhoto2());
         holder.photo2.setImageURI(uri);
     }
+
+    @Override
+    public int getItemViewType(int position) {
+        if(position == 0) return VIEW_HEADER;
+        return VIEW_INFO;
+    }
+
 
     @Override
     public int getItemCount() {

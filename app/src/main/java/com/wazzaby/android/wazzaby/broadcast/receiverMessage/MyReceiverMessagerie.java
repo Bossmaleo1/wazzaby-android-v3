@@ -28,6 +28,8 @@ import static com.wazzaby.android.wazzaby.appviews.MessageConstitution.allUsersA
 import static com.wazzaby.android.wazzaby.appviews.MessageConstitution.context_messageconstitution;
 import static com.wazzaby.android.wazzaby.appviews.MessageConstitution.data_recyclerview;
 import static com.wazzaby.android.wazzaby.appviews.MessageConstitution.etat_du_boss;
+import static com.wazzaby.android.wazzaby.appviews.MessageConstitution.layoutManager;
+import static com.wazzaby.android.wazzaby.appviews.MessageConstitution.smoothScroller;
 import static com.wazzaby.android.wazzaby.fragments.Accueil.mCartItemCountforchat;
 import static com.wazzaby.android.wazzaby.fragments.Accueil.navigation;
 import static com.wazzaby.android.wazzaby.utils.MyApplication.CHANNEL_1_ID;
@@ -140,6 +142,8 @@ public class MyReceiverMessagerie extends BroadcastReceiver {
 
 
         if (etat_du_boss == 1 && ID_USER_ONFOCUS == id_user_we_receved) {
+            smoothScroller.setTargetPosition((data_recyclerview.size()-1));
+            layoutManager.startSmoothScroll(smoothScroller);
             allUsersAdapter.notifyDataSetChanged();
         }
 

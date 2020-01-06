@@ -649,7 +649,12 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
 
         //On construit l'url de la pushnotification
         String pushnotification_url = Const.dns.concat("/Apifcm/apiFCMmessagerie.php?message=").concat(message).concat("&title=Wazzaby")
-                .concat("&regId=").concat(user.getKEYPUSH());
+                .concat("&regId=").concat(user.getKEYPUSH())
+                .concat("&ID=").concat(String.valueOf(user.getID()))
+                .concat("&succes=1")
+                .concat("&name=").concat(user.getPRENOM()+" "+user.getNOM())
+                .concat("&nom=Wazzaby")
+                .concat("&phoro=").concat(user.getPHOTO());
         ConnexionToServer(pushnotification_url);
 
     }

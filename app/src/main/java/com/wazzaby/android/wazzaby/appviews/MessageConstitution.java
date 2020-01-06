@@ -24,6 +24,7 @@ import com.wazzaby.android.wazzaby.connInscript.Connexion;
 import com.wazzaby.android.wazzaby.model.Database.SessionManager;
 import com.wazzaby.android.wazzaby.model.dao.DatabaseHandler;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,6 +32,8 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import com.wazzaby.android.wazzaby.model.Const;
 import com.wazzaby.android.wazzaby.adapter.ConversationspriveeAdapter;
+
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,6 +46,11 @@ import java.util.Map;
 
 import com.wazzaby.android.wazzaby.model.data.Conversationprivateitem;
 import com.wazzaby.android.wazzaby.model.data.Profil;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import developer.semojis.actions.EmojIconActions;
 
 
@@ -71,6 +79,8 @@ public class MessageConstitution extends AppCompatActivity {
     //cette variable nous permet de savoir si l'affichage doit être réactualiser ou pas
     public static int etat_du_boss = 0;
     public static int ID_USER_ONFOCUS = 0;
+    public static  RecyclerView.SmoothScroller smoothScroller;
+    public static LinearLayoutManager layoutManager;
 
 
     @Override
@@ -103,18 +113,33 @@ public class MessageConstitution extends AppCompatActivity {
         profilimage.setImageURI(uri);
         profiltextname.setText(intent.getStringExtra("name"));
 
+        Toast.makeText(MessageConstitution.this,"Keypush : "+intent.getStringExtra("KeyPush"),Toast.LENGTH_LONG).show();
+
         //on met a jour la variable qui permet de distinguer le user online qui a le focus de ceux qui ne l'ont pas
         this.ID_USER_ONFOCUS = intent.getIntExtra("ID",0);
 
         recyclerView = findViewById(R.id.my_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        smoothScroller = new LinearSmoothScroller(this) {
+            @Override protected int getVerticalSnapPreference() {
+                return LinearSmoothScroller.SNAP_TO_START;
+            }
+        };
+
+
         allUsersAdapter = new ConversationspriveeAdapter(this,data_recyclerview);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(allUsersAdapter);
+
+
+
         rootView = findViewById(R.id.appbarlayout);
         add_emoji = findViewById(R.id.add_emoji);
         submitcomment = findViewById(R.id.submitcomment);
         back_button = findViewById(R.id.back_button);
+
+        AfficherMessage();
 
         emojIcon= new EmojIconActions(this, rootView,  editcomment,
                 add_emoji);
@@ -151,7 +176,6 @@ public class MessageConstitution extends AppCompatActivity {
         });
 
 
-        //Toast.makeText(getApplicationContext()," "+intent.getStringExtra("anonymous_recept"),Toast.LENGTH_LONG).show();
 
     }
 
@@ -163,7 +187,12 @@ public class MessageConstitution extends AppCompatActivity {
         data_recyclerview.add(new Conversationprivateitem(intent.getStringExtra("imageview"),R.drawable.arrow_bg1,
                 editcomment.getText().toString(),bossdraw,context_messageconstitution,R.drawable.arrow_bg2,
                 user.getPHOTO(),editcomment.getText().toString(),bossdraw2,false,true));
+
+        smoothScroller.setTargetPosition((data_recyclerview.size()-1));
+        layoutManager.startSmoothScroll(smoothScroller);
+
         allUsersAdapter.notifyDataSetChanged();
+        //smoothScroller.setTargetPosition((data_recyclerview.size()-1));
         editcomment.getText().clear();
     }
 
@@ -241,6 +270,86 @@ public class MessageConstitution extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
+
+
+    public void AfficherMessage() {
+
+        //Toast.makeText(MessageConstitution.this," "+String.valueOf(intent.getIntExtra("ID",0)),Toast.LENGTH_LONG).show();
+
+        String url_display_message = Const.dns
+                .concat("/WazzabyApi/public/api/DisplayMessage?id_user=")
+                .concat(String.valueOf(user.getID()))
+                .concat("&id_prob=").concat(String.valueOf(user.getIDPROB()))
+                .concat("&id_recep=").concat(String.valueOf(intent.getIntExtra("ID",0)));
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_display_message,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //Toast.makeText(MessageConstitution.this," "+response,Toast.LENGTH_LONG).show();
+                        JSONDESENCODEMessage(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MessageConstitution.this,"Erreur réseau !!",Toast.LENGTH_LONG).show();
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+
+    public void JSONDESENCODEMessage(String response) {
+        try {
+            JSONArray reponse = new JSONArray(response);
+            for(int i = (reponse.length()-1);i>=0;i--) {
+                JSONObject object = reponse.getJSONObject(i);
+                String message_libelle = object.getString("message");
+                int id_recep = object.getInt("id_recep");
+                int id_eme = object.getInt("id_eme");
+
+                if (id_eme == user.getID()) {
+                    Drawable bossdraw = getResources().getDrawable(R.drawable.rounded_corner);
+                    Drawable bossdraw2 = getResources().getDrawable(R.drawable.rounded_corner1);
+                    data_recyclerview.add(new Conversationprivateitem(intent.getStringExtra("imageview"),R.drawable.arrow_bg1,
+                            message_libelle,bossdraw,context_messageconstitution,R.drawable.arrow_bg2,
+                            user.getPHOTO(),message_libelle,bossdraw2,false,true));
+                } else if (id_recep == user.getID()) {
+                    Drawable bossdraw = getResources().getDrawable(R.drawable.rounded_corner);
+                    Drawable bossdraw2 = getResources().getDrawable(R.drawable.rounded_corner1);
+                    data_recyclerview.add(new Conversationprivateitem(intent.getStringExtra("imageview"),R.drawable.arrow_bg1,
+                            message_libelle,bossdraw,context_messageconstitution,R.drawable.arrow_bg2,
+                            user.getPHOTO(),message_libelle,bossdraw2,true,false));
+                }
+
+            }
+
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if(data_recyclerview.size()>0) {
+            smoothScroller.setTargetPosition((data_recyclerview.size()-1));
+            layoutManager.startSmoothScroll(smoothScroller);
+            allUsersAdapter.notifyDataSetChanged();
+        }
+
+
+
+    }
+
+
+
+
 
 
 
