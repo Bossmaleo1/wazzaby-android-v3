@@ -57,9 +57,7 @@ public class MyReceiverMessagerie extends BroadcastReceiver {
         badge.setBadgeTextColor(Color.WHITE);
 
         Intent notifyIntent = new Intent(context, MessageConstitution.class);
-        // Set the Activity to start in a new, empty task
-        /*notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
+
         res = context.getResources();
         try {
             JSONObject reponse = new JSONObject(intent.getStringExtra("message"));
@@ -109,26 +107,7 @@ public class MyReceiverMessagerie extends BroadcastReceiver {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(1, notification);
 
-        /*if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            Notification notification_inferieur_oreo = new NotificationCompat.Builder(context,CHANNEL_1_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle(title)
-                    .setContentText(message)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                    .setContentIntent(notifyPendingIntent)
-                    .setOnlyAlertOnce(true)
-                    .setAutoCancel(true)
-                    .setLargeIcon(myBitmap)
-                    .setStyle(new NotificationCompat.BigTextStyle()
-                            .bigText(message))
-                    .setColor(Color.BLUE)
-                    .build();
-            NotificationManager notificationManager_inferieur_oreo = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager_inferieur_oreo.notify(Config.NOTIFICATION_ID, notification_inferieur_oreo);
-        }*/
 
-        //Toast.makeText(context," "+id_user_we_receved,Toast.LENGTH_LONG).show();
 
     }
 

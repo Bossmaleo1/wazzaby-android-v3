@@ -720,7 +720,7 @@ public class Conversationspublic extends Fragment implements SwipeRefreshLayout.
                                 {
                                     count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
                                 } else {
-                                    count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inter);
+                                    count = object.getString("countcomment")+" "+res.getString(R.string.convertpublic_inters);
                                 }
 
                                 ConversationPublicItem conversationPublicItem = new ConversationPublicItem(context,object.getInt("user_id"),object.getInt("id")

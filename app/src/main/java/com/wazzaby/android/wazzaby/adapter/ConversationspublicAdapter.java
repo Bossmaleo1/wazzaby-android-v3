@@ -172,6 +172,7 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
                 intent.putExtra("nom",current.getID());
                 intent.putExtra("anonymous",current.getAnonymous());
                 intent.putExtra("id_recepteur",current.getId_recepteur());
+                intent.putExtra("pushkeynotification",current.getPushkey_recepteur());
                 context.startActivity(intent);
             }
         });
@@ -255,7 +256,7 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
             public void onClick(View view) {
                 int anonymous;
                 String message;
-                if (Integer.valueOf(user.getETAT()) == 1) {
+                if (String.valueOf(user.getETAT()).equals("1")) {
                     anonymous = 1;
                     message = "Votre message public vient de faire reagir "
                             .concat("Utilisateur")
@@ -275,7 +276,7 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
                         .concat("&libelle=").concat(message)
                         .concat("&id_type=").concat(String.valueOf(data.get(position).getID()))
                         .concat("&etat=0").concat("&id_recepteur=").concat(String.valueOf(data.get(position).getId_recepteur()))
-                        .concat("&anonymous=").concat(String.valueOf(anonymous));
+                        .concat("&anonymous=").concat(String.valueOf(user.getETAT()));
 
                 String  pushnotification_url = Const.dns.concat("/Apifcm/apiFCMmessagerie.php?message=")
                         .concat(message)
@@ -411,7 +412,7 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
 
                 int anonymous;
                 String message;
-                if(Integer.valueOf(user.getETAT()) == 1)
+                if(String.valueOf(user.getETAT()).equals("1"))
                 {
                     anonymous = 1;
                     message =  "Votre message public vient de faire reagir "
@@ -431,7 +432,7 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
                         .concat("&libelle=").concat(message)
                         .concat("&id_type=").concat(String.valueOf(data.get(position).getID()))
                         .concat("&etat=0").concat("&id_recepteur=").concat(String.valueOf(data.get(position).getId_recepteur()))
-                        .concat("&anonymous=").concat(String.valueOf(anonymous));
+                        .concat("&anonymous=").concat(String.valueOf(user.getETAT()));
 
                 String  pushnotification_url = Const.dns.concat("/Apifcm/apiFCMmessagerie.php?message=").concat(message).concat("&title=Wazzaby")
                         .concat("&regId=").concat(data.get(position).getPushkey_recepteur())
@@ -439,7 +440,7 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
                         .concat("&ID=").concat(String.valueOf(user.getID()))
                         .concat("&name=").concat(user.getPRENOM()+" "+user.getNOM())
                         .concat("&nom=Wazzaby")
-                        .concat("&succes=1");;
+                        .concat("&succes=1");
 
                 if (data.get(position).getCheckmention() == 2) {
 

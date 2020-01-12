@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -330,8 +331,9 @@ public class Accueil extends Fragment {
                         //Toast.makeText(getActivity(),String.valueOf(response),Toast.LENGTH_LONG).show();
                         try {
                             JSONObject jsonObject = new JSONObject(response);
-                            //Toast.makeText(getActivity(),String.valueOf(jsonObject.getInt("count")),Toast.LENGTH_LONG).show();
+
                             mCartItemCount = jsonObject.getInt("count");
+                            //Toast.makeText(getActivity(),"le count : "+mCartItemCount, Toast.LENGTH_LONG).show();
                             /*BadgeDrawable badge = navigation.showBadge(R.id.notification);
                             badge.setNumber(mCartItemCount);
                             badge.setBadgeTextColor(Color.WHITE);*/

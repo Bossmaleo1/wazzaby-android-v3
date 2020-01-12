@@ -468,7 +468,7 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
     private void SENDCommentary()
     {
         String url = Const.dns+"/WazzabyApi/public/api/addComment?id_user="+String.valueOf(user.getID())+"&id_messagepublic="
-                +String.valueOf(intent.getIntExtra("nom",0))+"&libelle_comment="+Libelle+"&anonymous="+String.valueOf(intent.getIntExtra("anonymous",0));
+                +String.valueOf(intent.getIntExtra("nom",0))+"&libelle_comment="+Libelle+"&anonymous="+String.valueOf(user.getETAT());
         progressBar.setVisibility(View.VISIBLE);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -518,7 +518,7 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
                 .concat("&libelle=").concat(message)
                 .concat("&id_type=").concat(String.valueOf(intent.getIntExtra("nom",0))).concat("&etat=0")
                 .concat("&id_recepteur=").concat(String.valueOf(intent.getIntExtra("id_recepteur",0)))
-                .concat("&anonymous=").concat(String.valueOf(intent.getIntExtra("anonymous",0)));
+                .concat("&anonymous=").concat(String.valueOf(user.getETAT()));
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url_notification,
                 new Response.Listener<String>() {
@@ -601,21 +601,7 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
                         }
 
                         allUsersAdapter.notifyDataSetChanged();
-                            /*for(int i = 0;i<reponse.length();i++)
-                            {*/
 
-                        /*if  (reponse.length()>0) {
-                            object = reponse.getJSONObject(0);
-                            displaycommentary commentary = new displaycommentary(object.getString("user_photo"),context,R.drawable.ic_done_all_black_18dp
-                                    ,object.getString("updated"),R.color.greencolor,2,object.getString("status_text_content"),
-                                    object.getString("name"));
-                            data.add(commentary);
-
-                            countcommentitem = object.getInt("countcomment");
-                            dateitem = object.getJSONObject("date").getString("date");
-                            commentitem_id = object.getInt("id");
-                            libelleitem = object.getString("status_text_content");
-                        }*/
                     }
                 },
                 new Response.ErrorListener() {
@@ -637,6 +623,7 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
     }
 
     //Cette méthode est le service HTTP pour l'envoie d'une pushnotification du commentaire de l'utilisateur
+    //Cette méthode est le service HTTP pour l'envoie d'une pushnotification du commentaire de l'utilisateur
     public void SendCommentaryPushNotification() {
         String message;
         if (Integer.valueOf(user.getETAT()) == 1) {
@@ -649,9 +636,9 @@ public class AfficheCommentairePublic extends AppCompatActivity implements MenuI
 
         //On construit l'url de la pushnotification
         String pushnotification_url = Const.dns.concat("/Apifcm/apiFCMmessagerie.php?message=").concat(message).concat("&title=Wazzaby")
-                .concat("&regId=").concat(user.getKEYPUSH())
+                .concat("&regId=").concat(String.valueOf(intent.getStringExtra("pushkeynotification")))
                 .concat("&ID=").concat(String.valueOf(user.getID()))
-                .concat("&succes=1")
+                .concat("&succes=0")
                 .concat("&name=").concat(user.getPRENOM()+" "+user.getNOM())
                 .concat("&nom=Wazzaby")
                 .concat("&phoro=").concat(user.getPHOTO());

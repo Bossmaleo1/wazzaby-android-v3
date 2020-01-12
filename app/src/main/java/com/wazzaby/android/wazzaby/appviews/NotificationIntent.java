@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -58,7 +59,7 @@ public class NotificationIntent extends AppCompatActivity implements SwipeRefres
     private SessionManager session;
     private DatabaseHandler database;
     private Resources res;
-    private Profil user;
+    public static Profil user;
     private String url;
     private JSONObject object;
     private List<NotificationItem> data = new ArrayList<>();
@@ -81,6 +82,11 @@ public class NotificationIntent extends AppCompatActivity implements SwipeRefres
     private int compteur_swiperefresh = 0;
     private SwipeRefreshLayout swipeRefreshLayout;
 
+    private LinearLayout notification_mistake_block;
+
+    private String dark_mode_item = null;
+    private RelativeLayout block_shimmer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,12 +99,15 @@ public class NotificationIntent extends AppCompatActivity implements SwipeRefres
         materialCardView = findViewById(R.id.materialcardview);
         recyclerView = findViewById(R.id.my_recycler_view);
         error_message = findViewById(R.id.text_error_message);
-        coordinatorLayout =  findViewById(R.id.coordinatorLayout);
+        coordinatorLayout = findViewById(R.id.coordinatorLayout);
         notification_main_shimmer = findViewById(R.id.notification_main_shimmer);
+        notification_mistake_block = findViewById(R.id.notification_mistake_block);
+        block_shimmer = findViewById(R.id.block_shimmer);
 
         database = new DatabaseHandler(this);
         session = new SessionManager(this);
         res = getResources();
+        dark_mode_item = database.getDARKMODE();
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
         url = Const.dns.concat("/WazzabyApi/public/api/displayNotification?id_recepteur=")
                 .concat(String.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
@@ -110,38 +119,9 @@ public class NotificationIntent extends AppCompatActivity implements SwipeRefres
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         allUsersAdapter = new NotificationAdapter(this,data);
-        //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(allUsersAdapter);
-        /*recyclerView.addOnItemTouchListener(new NotificationIntent.RecyclerTouchListener(this, recyclerView, new Conversationspublic.ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                Intent intent = new Intent(this, NotificationsDetails.class);
-                intent.putExtra("notificationitem",data.get(position));
-                startActivity(intent);
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
-        }));*/
-
-        this.ConnexionSynchronizationProblematique();
-
-        ConnexionNotification();
-
-        materialCardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                materialCardView.setVisibility(View.GONE);
-                //progressBar.setVisibility(View.VISIBLE);
-                ConnexionNotification();
-            }
-        });
-
-        this.ConnexionSynchronizationProblematique();
-        recyclerView.addOnItemTouchListener(new NotificationIntent.RecyclerTouchListener(getApplicationContext(), recyclerView, new NotificationIntent.ClickListener() {
+        recyclerView.addOnItemTouchListener(new NotificationIntent.RecyclerTouchListener(this, recyclerView, new NotificationIntent.ClickListener() {
             @Override
             public void onClick(View view, int position) {
                 Intent intent = new Intent(getApplicationContext(), NotificationsDetails.class);
@@ -155,25 +135,163 @@ public class NotificationIntent extends AppCompatActivity implements SwipeRefres
             }
         }));
 
-        ConnexionNotification();
-
         materialCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 materialCardView.setVisibility(View.GONE);
-                //progressBar.setVisibility(View.VISIBLE);
+               // Toast.makeText(NotificationIntent.this,"Bossmaleo test !!",Toast.LENGTH_LONG).show();
                 ConnexionNotification();
             }
         });
+
+
+
+       /* materialCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                materialCardView.setVisibility(View.GONE);
+                mShimmerViewContainer.startShimmer();
+                mShimmerViewContainer.setVisibility(View.VISIBLE);
+                ConnexionNotification();
+            }
+        });*/
+
+        if (dark_mode_item.equals("1"))
+        {
+            block_shimmer.setBackground(res.getDrawable(R.drawable.background_menu_message_public_mode_dark));
+            notification_main_shimmer.setBackgroundColor(res.getColor(R.color.darkprimarydark));
+            /*holder.block_shimmer.setBackground(res.getDrawable(R.drawable.background_menu_message_public_mode_dark));
+            holder.block_globale_notification.setBackgroundColor(res.getColor(R.color.darkprimarydark));*/
+            /*coordinatorLayout.setBackgroundColor(getResources().getColor(R.color.darkprimary));
+            recyclerView.setBackgroundColor(getResources().getColor(R.color.darkprimary));*/
+        } else if (dark_mode_item.equals("0")) {
+
+        }
+
+        this.ConnexionSynchronizationProblematique();
+
+        ConnexionNotification();
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent i = new Intent();
+                setResult(RESULT_OK, i);
+                finish();
+                return true;
+
+
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+
+    public void ConnexionNotification() {
+
+        //progressBar.setVisibility(View.VISIBLE);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //progressBar.setVisibility(View.GONE);
+
+                        swipestart = true;
+
+                        try {
+                            JSONArray reponse = new JSONArray(response);
+                            if (reponse.length() == 0) {
+                                error_message.setText(R.string.empty_notification_error);
+                                materialCardView.setVisibility(View.VISIBLE);
+                                notification_main_shimmer.setVisibility(View.GONE);
+                            } else {
+
+                                object = reponse.getJSONObject(0);
+                                notification_main_shimmer.setVisibility(View.GONE);
+
+                                NotificationItem notificationItem
+                                        = new NotificationItem(
+                                        object.getInt("id_messagepublic"), object.getString("updated_messagepublic"), object.getString("libelle"), object.getString("updated"),
+                                        object.getInt("etat"), object.getInt("id_type"), object.getInt("expediteur_id"), object.getInt("notification_id"), object.getInt("id_libelle"),
+                                        object.getString("name_messagepublic"), object.getString("nom"), object.getString("prenom"), object.getString("photo"), object.getInt("countjaime"),
+                                        object.getInt("countjaimepas"), object.getInt("checkmention"), object.getInt("id_checkmention"), object.getString("user_photo_messagepublic")
+                                        , object.getString("status_text_content_messagepublic"), object.getString("etat_photo_status_messagepublic"),
+                                        object.getString("status_photo_messagepublic"),0);
+                                data.add(notificationItem);
+
+                                date = reponse.getJSONObject(0).getJSONObject("date").getString("date");
+                                Countnotification = reponse.getJSONObject(0).getInt("countnotification");
+                                notification_id = reponse.getJSONObject(0).getInt("notification_id");
+                                if(swipestart) {
+                                    ConnexionItemNotification();
+                                }
+
+                            }
+
+                        }catch (JSONException e){
+                            e.printStackTrace();
+                        }
+
+                        allUsersAdapter.notifyDataSetChanged();
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error_message.setText(res.getString(R.string.error_network));
+                        materialCardView.setVisibility(View.VISIBLE);
+                        mShimmerViewContainer.stopShimmer();
+                        mShimmerViewContainer.setVisibility(View.GONE);
+                        notification_main_shimmer.setVisibility(View.GONE);
+                        //progressBar.setVisibility(View.GONE);
+                        snackbar = Snackbar
+                                .make(coordinatorLayout, res.getString(R.string.error_volley_timeouterror), Snackbar.LENGTH_LONG)
+                                .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                        materialCardView.setVisibility(View.GONE);
+                                        //progressBar.setVisibility(View.GONE);
+                                        ConnexionNotification();
+                                    }
+                                });
+                        snackbar.show();
+                        //progressBar.setVisibility(View.GONE);
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
     }
 
     @Override
     public void onRefresh() {
+
+        /*mShimmerViewContainer.setVisibility(View.VISIBLE);
+        mShimmerViewContainer.startShimmer();*/
         compteur_swiperefresh++;
         swipeRefreshLayout.setRefreshing(false);
         //On efface les deux listes de conversations publiques
         data.clear();
         dataswiperefresh.clear();
+        materialCardView.setVisibility(View.GONE);
+        notification_main_shimmer.setVisibility(View.VISIBLE);
+        mShimmerViewContainer.setVisibility(View.VISIBLE);
+        mShimmerViewContainer.startShimmer();
         //on test si le compteur est paire
         if (compteur_swiperefresh%2 == 0) {
             swipestart = true;
@@ -182,6 +300,7 @@ public class NotificationIntent extends AppCompatActivity implements SwipeRefres
             recyclerView.setAdapter(allUsersAdapter);
             allUsersAdapter.notifyDataSetChanged();
             mShimmerViewContainer.setVisibility(View.VISIBLE);
+            mShimmerViewContainer.startShimmer();
             ConnexionNotification();
         } else {
             swipestart = false;
@@ -190,6 +309,7 @@ public class NotificationIntent extends AppCompatActivity implements SwipeRefres
             recyclerView.setAdapter(allUsersAdapter);
             allUsersAdapter.notifyDataSetChanged();
             mShimmerViewContainer.setVisibility(View.VISIBLE);
+            mShimmerViewContainer.startShimmer();
             ConnexionNotificationSwipeRefresh();
         }
 
@@ -247,92 +367,6 @@ public class NotificationIntent extends AppCompatActivity implements SwipeRefres
     }
 
 
-    public void ConnexionNotification() {
-
-        //progressBar.setVisibility(View.VISIBLE);
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        //progressBar.setVisibility(View.GONE);
-
-                        swipestart = true;
-
-                        try {
-                            JSONArray reponse = new JSONArray(response);
-                            if (reponse.length() == 0) {
-                                error_message.setText(" Vous avez aucune notification");
-                                materialCardView.setVisibility(View.VISIBLE);
-                            } else {
-
-                                object = reponse.getJSONObject(0);
-
-
-
-                                NotificationItem notificationItem
-                                        = new NotificationItem(
-                                        object.getInt("id_messagepublic"), object.getString("updated_messagepublic"), object.getString("libelle"), object.getString("updated"),
-                                        object.getInt("etat"), object.getInt("id_type"), object.getInt("expediteur_id"), object.getInt("notification_id"), object.getInt("id_libelle"),
-                                        object.getString("name_messagepublic"), object.getString("nom"), object.getString("prenom"), object.getString("photo"), object.getInt("countjaime"),
-                                        object.getInt("countjaimepas"), object.getInt("checkmention"), object.getInt("id_checkmention"), object.getString("user_photo_messagepublic")
-                                        , object.getString("status_text_content_messagepublic"), object.getString("etat_photo_status_messagepublic"),
-                                        object.getString("status_photo_messagepublic"),0);
-                                data.add(notificationItem);
-
-                                date = reponse.getJSONObject(0).getJSONObject("date").getString("date");
-                                Countnotification = reponse.getJSONObject(0).getInt("countnotification");
-                                notification_id = reponse.getJSONObject(0).getInt("notification_id");
-                                if(swipestart) {
-                                    ConnexionItemNotification();
-                                }
-
-                            }
-
-                        }catch (JSONException e){
-                            e.printStackTrace();
-                        }
-
-                        allUsersAdapter.notifyDataSetChanged();
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error_message.setText(" Erreur reseaux, veuillez reessayer svp !");
-                        materialCardView.setVisibility(View.VISIBLE);
-                        mShimmerViewContainer.stopShimmer();
-                        mShimmerViewContainer.setVisibility(View.GONE);
-                        notification_main_shimmer.setVisibility(View.GONE);
-                        //progressBar.setVisibility(View.GONE);
-                        snackbar = Snackbar
-                                .make(coordinatorLayout, res.getString(R.string.error_volley_timeouterror), Snackbar.LENGTH_LONG)
-                                .setAction(res.getString(R.string.try_again), new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-
-                                        materialCardView.setVisibility(View.GONE);
-                                        //progressBar.setVisibility(View.GONE);
-                                        ConnexionNotification();
-                                    }
-                                });
-                        snackbar.show();
-                        //progressBar.setVisibility(View.GONE);
-                    }
-                }){
-            @Override
-            protected Map<String,String> getParams(){
-                Map<String,String> params = new HashMap<String, String>();
-                return params;
-            }
-        };
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
-    }
-
-
-    //this web api help use to make our lazzy loading
     //this web api help use to make our lazzy loading
     private void ConnexionItemNotification() {
         String url_lazy_loading = Const.dns.concat("/WazzabyApi/public/api/displayNotificationItem?id_recepteur=")
@@ -393,7 +427,7 @@ public class NotificationIntent extends AppCompatActivity implements SwipeRefres
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        error_message.setText(" Erreur reseaux, veuillez reessayer svp !");
+                        error_message.setText(res.getString(R.string.error_network));
                         materialCardView.setVisibility(View.VISIBLE);
                         //progressBar.setVisibility(View.GONE);
                         snackbar = Snackbar
@@ -423,45 +457,6 @@ public class NotificationIntent extends AppCompatActivity implements SwipeRefres
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                Intent i = new Intent();
-                setResult(RESULT_OK, i);
-                finish();
-                return true;
-
-
-
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-
-        }
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Intent i = new Intent();
-        setResult(RESULT_OK, i);
-        finish();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mShimmerViewContainer.startShimmer();
-    }
-
-    @Override
-    public void onPause() {
-        mShimmerViewContainer.stopShimmer();
-        super.onPause();
-    }
 
     //Cette methode assure la synchronization après une mise à jour de problématique
     public void ConnexionSynchronizationProblematique() {
@@ -506,6 +501,8 @@ public class NotificationIntent extends AppCompatActivity implements SwipeRefres
         requestQueue.add(stringRequest);
     }
 
+    /**/
+
     public void ConnexionNotificationSwipeRefresh() {
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -517,8 +514,10 @@ public class NotificationIntent extends AppCompatActivity implements SwipeRefres
                         try {
                             JSONArray reponse = new JSONArray(response);
                             if (reponse.length() == 0) {
-                                error_message.setText(" Vous avez aucune notification");
+                                error_message.setText(res.getString(R.string.no_notification));
                                 materialCardView.setVisibility(View.VISIBLE);
+                                notification_main_shimmer.setVisibility(View.GONE);
+                                mShimmerViewContainer.setVisibility(View.GONE);
                             } else {
 
                                 object = reponse.getJSONObject(0);
@@ -538,6 +537,8 @@ public class NotificationIntent extends AppCompatActivity implements SwipeRefres
                                 date = reponse.getJSONObject(0).getJSONObject("date").getString("date");
                                 Countnotification = reponse.getJSONObject(0).getInt("countnotification");
                                 notification_id = reponse.getJSONObject(0).getInt("notification_id");
+                                notification_main_shimmer.setVisibility(View.GONE);
+                                mShimmerViewContainer.setVisibility(View.GONE);
                                 if(swipestart==false) {
                                     ConnexionItemNotificationSwipeRefresh();
                                 }
@@ -555,7 +556,7 @@ public class NotificationIntent extends AppCompatActivity implements SwipeRefres
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        error_message.setText(" Erreur reseaux, veuillez reessayer svp !");
+                        error_message.setText(res.getString(R.string.network_error));
                         materialCardView.setVisibility(View.VISIBLE);
                         mShimmerViewContainer.stopShimmer();
                         mShimmerViewContainer.setVisibility(View.GONE);
@@ -587,7 +588,6 @@ public class NotificationIntent extends AppCompatActivity implements SwipeRefres
         requestQueue.add(stringRequest);
     }
 
-
     private void ConnexionItemNotificationSwipeRefresh() {
         String url_lazy_loading = Const.dns.concat("/WazzabyApi/public/api/displayNotificationItem?id_recepteur=")
                 .concat(String.valueOf(session.getUserDetail().get(SessionManager.Key_ID)))
@@ -614,6 +614,9 @@ public class NotificationIntent extends AppCompatActivity implements SwipeRefres
                                         object.getInt("countjaimepas"), object.getInt("checkmention"), object.getInt("id_checkmention"), object.getString("user_photo_messagepublic")
                                         , object.getString("status_text_content_messagepublic"), object.getString("etat_photo_status_messagepublic"),
                                         object.getString("status_photo_messagepublic"),0);
+
+                                notification_main_shimmer.setVisibility(View.GONE);
+                                mShimmerViewContainer.setVisibility(View.GONE);
 
                                 //shall we test if our data array is not empty
                                 if(dataswiperefresh.size()>0) {
@@ -647,7 +650,7 @@ public class NotificationIntent extends AppCompatActivity implements SwipeRefres
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        error_message.setText(" Erreur reseaux, veuillez reessayer svp !");
+                        error_message.setText(res.getString(R.string.network_error1));
                         materialCardView.setVisibility(View.VISIBLE);
                         //progressBar.setVisibility(View.GONE);
                         snackbar = Snackbar
@@ -677,5 +680,24 @@ public class NotificationIntent extends AppCompatActivity implements SwipeRefres
     }
 
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent i = new Intent();
+        setResult(RESULT_OK, i);
+        finish();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mShimmerViewContainer.startShimmer();
+    }
+
+    @Override
+    public void onPause() {
+        mShimmerViewContainer.stopShimmer();
+        super.onPause();
+    }
 
 }

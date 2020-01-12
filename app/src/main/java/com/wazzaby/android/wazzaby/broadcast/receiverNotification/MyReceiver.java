@@ -10,6 +10,8 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.widget.Toast;
+
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import com.google.android.material.badge.BadgeDrawable;
@@ -43,10 +45,12 @@ public class MyReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
 
-        mCartItemCount++;
+        //mCartItemCount++;
         BadgeDrawable badge = navigation.showBadge(R.id.notification);
-        badge.setNumber(mCartItemCount);
+        badge.setNumber(mCartItemCount+1);
         badge.setBadgeTextColor(Color.WHITE);
+
+        //Toast.makeText(context,"Test du boss avec son count : "+mCartItemCount,Toast.LENGTH_LONG).show();
 
         Intent notifyIntent = new Intent(context, NotificationIntent.class);
         // Set the Activity to start in a new, empty task
