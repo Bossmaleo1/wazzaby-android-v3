@@ -102,8 +102,9 @@ public class categorieProbAdapter  extends RecyclerView.Adapter<categorieProbAda
                     holder.icon.setImageResource(R.drawable.baseline_sports_cricket_black_24);
                 }else if (current.getLibelle().equals("Hockey")) {
                     holder.icon.setImageResource(R.drawable.baseline_sports_hockey_black_24);
+                } else if (current.getLibelle().equals("Ecologie")) {
+                    holder.icon.setImageResource(R.drawable.baseline_eco_black_24);
                 }
-
                 else {
                     holder.icon.setImageResource(R.drawable.ic_subject_black_24dp);
                 }

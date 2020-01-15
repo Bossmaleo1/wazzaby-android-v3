@@ -272,6 +272,14 @@ public class Sharepublicconversation extends AppCompatActivity {
             }
         });
 
+        //si le dark mode est activé
+        if (dark_mode_item.equals("1"))
+        {
+            editText.setTextColor(res.getColor(android.R.color.white));
+        } else if (dark_mode_item.equals("0")) {
+            editText.setTextColor(res.getColor(R.color.colorPrimary));
+        }
+
     }
 
     @Override

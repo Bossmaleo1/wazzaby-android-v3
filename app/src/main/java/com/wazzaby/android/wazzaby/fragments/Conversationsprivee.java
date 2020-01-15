@@ -51,6 +51,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import static com.wazzaby.android.wazzaby.appviews.Home.titlehome;
 
@@ -70,6 +72,8 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
     private DatabaseHandler database;
     private SessionManager session;
     private Profil user;
+    private LinearLayout cardviewerrormaleo;
+    private TextView text_error_message;
 
     public Conversationsprivee() {
         // Required empty public constructor
@@ -100,6 +104,8 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
         session = new SessionManager(getActivity());
         user = database.getUSER(Integer.valueOf(session.getUserDetail().get(SessionManager.Key_ID)));
         progressBar = bossmaleo.findViewById(R.id.progressbar);
+        cardviewerrormaleo = bossmaleo.findViewById(R.id.materialcardview);
+        text_error_message = bossmaleo.findViewById(R.id.text_error_message);
         coordinatorLayout = bossmaleo.findViewById(R.id.coordinatorLayout);
         mSwipeRefreshLayout =  bossmaleo.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setColorSchemeResources(
@@ -131,6 +137,14 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
 
             }
         }));
+
+        cardviewerrormaleo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cardviewerrormaleo.setVisibility(View.GONE);
+                ConnexionRecentConversation();
+            }
+        });
 
 
 
@@ -207,6 +221,7 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
     private void ConnexionRecentConversation()
     {
         progressBar.setVisibility(View.VISIBLE);
+        cardviewerrormaleo.setVisibility(View.GONE);
 
         String url_message_privee = Const.dns.concat("/WazzabyApi/public/api/DisplayRecentUserChat?id_prob=")
                                     .concat(String.valueOf(user.getIDPROB()))
@@ -235,15 +250,22 @@ public class Conversationsprivee extends Fragment implements SwipeRefreshLayout.
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        cardviewerrormaleo.setVisibility(View.GONE);
                         progressBar.setVisibility(View.GONE);
                         allUsersAdapter.notifyDataSetChanged();
+
+
+                        if (reponse.length() == 0) {
+                            text_error_message.setText("Vous avez aucune conversation privée sur cette problematique");
+                            cardviewerrormaleo.setVisibility(View.VISIBLE);
+                        }
 
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        cardviewerrormaleo.setVisibility(View.VISIBLE);
                         if(error instanceof ServerError)
                         {
                             snackbar = Snackbar

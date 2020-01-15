@@ -286,7 +286,7 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
                         .concat("&ID=").concat(String.valueOf(user.getID()))
                         .concat("&name=").concat(user.getPRENOM()+" "+user.getNOM())
                         .concat("&nom=Wazzaby")
-                        .concat("&succes=1");
+                        .concat("&succes=0");
 
                 if(data.get(position).getCheckmention() == 1) {
 
@@ -440,7 +440,7 @@ public class ConversationspublicAdapter  extends RecyclerView.Adapter<Conversati
                         .concat("&ID=").concat(String.valueOf(user.getID()))
                         .concat("&name=").concat(user.getPRENOM()+" "+user.getNOM())
                         .concat("&nom=Wazzaby")
-                        .concat("&succes=1");
+                        .concat("&succes=0");
 
                 if (data.get(position).getCheckmention() == 2) {
 

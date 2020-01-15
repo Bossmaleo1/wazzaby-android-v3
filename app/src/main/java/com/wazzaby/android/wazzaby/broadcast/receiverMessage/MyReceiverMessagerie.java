@@ -51,9 +51,9 @@ public class MyReceiverMessagerie extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        mCartItemCountforchat++;
+        //mCartItemCountforchat++;
         BadgeDrawable badge = navigation.showBadge(R.id.conversationprivee);
-        badge.setNumber(mCartItemCountforchat);
+        //badge.setNumber(mCartItemCountforchat);
         badge.setBadgeTextColor(Color.WHITE);
 
         Intent notifyIntent = new Intent(context, MessageConstitution.class);

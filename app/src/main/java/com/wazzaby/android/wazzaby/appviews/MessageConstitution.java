@@ -113,7 +113,7 @@ public class MessageConstitution extends AppCompatActivity {
         profilimage.setImageURI(uri);
         profiltextname.setText(intent.getStringExtra("name"));
 
-        Toast.makeText(MessageConstitution.this,"Keypush : "+intent.getStringExtra("KeyPush"),Toast.LENGTH_LONG).show();
+        //Toast.makeText(MessageConstitution.this,"Keypush : "+intent.getStringExtra("KeyPush"),Toast.LENGTH_LONG).show();
 
         //on met a jour la variable qui permet de distinguer le user online qui a le focus de ceux qui ne l'ont pas
         this.ID_USER_ONFOCUS = intent.getIntExtra("ID",0);

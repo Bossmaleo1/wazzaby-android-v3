@@ -110,6 +110,7 @@
                     android:inputType="textMultiLine"
                     android:overScrollMode="always"
                     android:scrollbarStyle="insideInset"
+                    android:textColor="@android:color/white"
                     android:lines="10"
                     android:maxLines="11"
                     android:scrollbars="vertical"
